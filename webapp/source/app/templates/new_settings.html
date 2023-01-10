@@ -1,0 +1,141 @@
+{% include "navbar.html" %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 offset-lg-0">
+            <div class="card text-center">
+                <div class="card-header">
+                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Benutzer Einstellungen:</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/settings" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-lg-5 text-center" style="margin-top: 38px;">
+                                <div class="row">
+                                    <div class="col test"><img class="img-circle" src="/static/pp/{{ session.image }}"
+                                            style="width: 200px;height: 200px;"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col" style="margin-top: 15px;">
+                                        <input name="image" value="image" style="margin-top: 5px;" type="file"
+                                            accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 offset-lg-1 justify-content-center align-items-center align-content-center"
+                                style="margin-top: 30px">
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-left: 15px; margin-top: 5px;">Vorname:</label>
+                                <input class="form-control form-control_piglet" name="name" type="text"
+                                    style="margin-top: 5px;" value="{{ session.name }}">
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-left: 15px;margin-top: 5px;">Nachname:</label>
+                                <input class="form-control form-control_piglet" name="surname" type="text"
+                                    style="margin-top: 0px;" value="{{ session.surname }}">
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-left: 15px;margin-top: 5px;">Farbe:</label>
+                                <input class="form-control form-control_piglet" name="color" type="color"
+                                    style="margin-top: 0px;" value="{{ session.color }}">
+                                <button class="btn btn-piglet" type="submit"
+                                    style="width: 100%;margin-top: 30px;">Speichern</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="container" style="margin-top: 60px;">
+        <div class="row">
+            <div class="col-lg-12 offset-lg-0">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Benachrichtungs
+                            Einstellungen:</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="/settings">
+                            <div class="row">
+                                <div class="col-lg-8 offset-xl-2">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Benachrichtungs-Typ</th>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Glocke</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            {% for listobj in noti_settings %}
+                                                {% for setting, settinglist in listobj.items() %}
+                                            <tr>
+                                                <td>{{ settinglist[1].display_name }}</td>
+                                                {% for key, mailweb in settinglist[0].items() %}
+                                                {% if mailweb == 1 %}
+                                                <td>
+                                                    <input class="form-check-input" type="checkbox" checked
+                                                        name="{{ setting }}" value="{{ key }}_1">
+                                                </td>
+                                                {% else %}
+                                                <td><input class="form-check-input" type="checkbox" name="{{ setting }}"
+                                                        value="{{ key }}_1"></td>
+                                                {% endif %}
+                                                {% endfor %}
+                                                {% endfor %}
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4 offset-xl-4">
+                                        <button class="btn btn-piglet" type="submit"
+                                            style="width: 100%;margin-top: 30px;">Speichern</button>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
+    <div class="container" style="margin-top: 60px;">
+        <div class="accordion" role="tablist" id="accordion-1">
+            <div class="accordion-item" style="box-shadow: 2px 1px 12px rgba(33,37,41,0.35);border-radius: 10px;border-width: 1px;border-color: brown">
+                <header class="header-piglet" style="border-radius: 10px;border-width: 1px;">
+                    <button class="accordion-button collapsed text-danger" data-bs-toggle="collapse" data-bs-target="#accordion-1 .item-1" aria-expanded="true" aria-controls="accordion-1 .item-1" style="border-top-left-radius: 10px; border-top-right-radius: 10px;border-width: 1px; font-weight: bold; color: var(--bs-danger);">Danger Zone</button>
+                </header>
+                <div class="accordion-collapse collapse item-1" role="tabpanel" data-bs-parent="#accordion-1">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-lg-5 col-xl-8 offset-xl-0">
+                                <label class="form-label"><strong>Useraccount löschen:</strong>
+                                <br>Löscht den aktuellen Useraccount, wenn keine Buchungen gepeichert sind<br>
+                            </label>
+                                <hr>
+                                <label class="form-label"><strong>Useraccount löschen (force):</strong>
+                                    <br>Löscht den aktuellen Useraccount &amp; sämtliche Buchungen/Kategorien/Budgets<br>
+                                </label>
+                            </div>
+                            <div class="col-lg-5 col-xl-4 offset-xl-0" style="margin-top: 18px">
+                                <form method="post" action="/settings">
+                                    <button name="mode" value="regular" class="btn btn-danger d-lg-flex justify-content-lg-center" type="submit" style="width: 100%;">User löschen</button>
+                                    <hr>
+                                    <button name="mode" value="force" class="btn btn-danger d-lg-flex justify-content-lg-center" type="submit" style="width: 100%;">User löschen (force)</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+-->
+
+    </body>
+    {% extends "footer.html" %}
+
+    </html>

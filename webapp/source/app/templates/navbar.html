@@ -1,0 +1,291 @@
+{% block nav %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <!-- Default Bootstrap und FA -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='index/bootstrap/css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static',filename='index/bootstrap/js/bootstrap.min.js') }}"></script>
+
+
+    <!--<script src="static/index/js/button.js"></script>-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+
+    <!-- Datatables -->
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" language="javascript"
+        src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript"
+        src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
+
+
+    <!-- Navbar -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+
+    <link rel="shortcut icon" type="image/x-icon" href={{ url_for( 'static' , filename='favicon_v2.ico' ) }}>
+    <link rel="stylesheet" href="{{ url_for('static', filename='nav.css')}}">
+
+    <!-- Custom + Darkmode -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='custom.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='slider.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bell.css') }}">
+    <script type="text/javascript" language="javascript" src="{{ url_for('static', filename='nav.js')}}"></script>
+
+
+    {% if session.title == "dashboard" %}
+    <title>Piglet | Dashboard</title>
+    {% elif session.title == "report" %}
+    <title>Piglet | Berichte</title>
+    {% elif session.title == "order" %}
+    <title>Piglet | Neue Ausgabe</title>
+    {% elif session.title == "settings" %}
+    <title>Piglet | Einstellungen</title>
+    {% elif session.title == "budget" %}
+    <title>Piglet | Budget</title>
+    {% elif session.title == "category" %}
+    <title>Piglet | Kategorie</title>
+    {% elif session.title == "notifications" %}
+    <title>Piglet | Nachrichten</title>
+    {% else %}
+    <title>Piglet</title>
+    {% endif %}
+</head>
+
+
+
+<body id="body-pd" class="body-pd light-theme">
+    <header class="header body-pd" id="header">
+        <div class="header_toggle"> <i class='bx' id="header-toggle"></i> </div>
+        <div class="dropdown">
+            <a href="#" class="notification dropdown-toggle link-piglet-nav" id="notiRead" aria-expanded="false"
+                data-bs-toggle="dropdown" name="{{ notilist }}" onclick="notiRead();">
+                {% if noticount == 0 %}
+                <span><i class="far fa-bell fa-fw"></i></span>
+                {% else %}
+                <span><i class="bell fas fa-bell fa-fw"></i></span>
+                {% endif %}
+                <span class="badge">{{ noticount }}</span>
+            </a>
+
+            <div class="dropdown-menu">
+                <h6 class="dropdown-header" style="text-align: center">Benachrichtigungen</h6>
+                <hr>
+                {% if notifications != {} %}
+                {% for ts, noti in notifications.items() %}
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                    <div><span class="small text-primary">{{ ts }}</span>
+                        <p> {{ noti }} </p>
+                    </div>
+                </a>
+                {% endfor %}
+                {% else %}
+                <div class="d-flex justify-content-center">
+                    <h6 style="text-align: center"></i>Keine ungelesenen Nachrichten &#128640;</h6>
+                </div>
+                {% endif %}
+                <hr>
+                <div class="d-flex justify-content-center">
+                    <a href="{{ url_for('notifications') }}" class="btn"><i style="text-align: center"></i>Alle
+                        anzeigen</a>
+                </div>
+            </div>
+
+            <a href="#" class="dropdown-toggle link-piglet-nav" data-bs-toggle="dropdown">{{ session.name }} <img
+                    src="static/pp/{{ session.image }}" alt="Avatar" class="avatar"></a>
+            <div class="dropdown-menu">
+                {% if session.budgets|length > 1 %}
+                {% if session.title != "settings" %}
+                <select class="dropdown-item" id="updateBudget" name="my_budget" required="" onchange="updateBudget()">
+                    {% for list in session.budgets %}
+                    {% if list.id == session.budget_id %}
+                    <option value="{{ list.id }}" selected>{{ list.name }}</option>
+                    {% else %}
+                    <option value="{{ list.id }}">{{ list.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                {% endif %}
+                {% endif %}
+                <a href="{{ url_for( 'settings' ) }}" class="dropdown-item"><i class='bx bx-user nav_icon'></i>
+                    Account</a>
+                <a href="{{ url_for( 'logout') }}" class="dropdown-item"><i class='bx bx-log-out nav_icon'></i>
+                    Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="l-navbar show_nav" id="nav-bar">
+        <nav class="nav">
+            <div>
+                <a class="nav_logo" href="{{ url_for( 'overview') }}"><img class='bx bx-layer nav_logo-icon '
+                        src="{{ url_for('static', filename='logo_v2.png')}}" width="25" height="25"><span
+                        class="nav_logo-name">Piglet</span></a>
+                <div class="nav_list">
+                    {% if session.title == "dashboard" %}
+                    <a href="{{ url_for( 'overview') }}" class="nav_link active"> <i
+                            class='bx bxs-dashboard nav_icon '></i> <span class="nav_name">Dashboard</span> </a>
+                    <a href="{{ url_for( 'get_data') }}" class="nav_link"> <i class='bx bxs-wallet-alt nav_icon '></i>
+                        <span class="nav_name">Ausgabe hinzufügen</span> </a>
+                    <a href="{{ url_for( 'category') }}" class="nav_link"> <i class='bx bxs-category-alt nav_icon '></i>
+                        <span class="nav_name">Kategorien</span> </a>
+                    <a href="{{ url_for( 'budget' ) }}" class="nav_link"><i class='bx bxs-directions nav_icon'></i>
+                        Budget</a>
+                    <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
+                            class="nav_name">Analyse</span> </a>
+                    {% elif session.title == "order" %}
+                    <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
+                        <span class="nav_name">Dashboard</span> </a>
+                    <a href="{{ url_for( 'get_data') }}" class="nav_link active"> <i
+                            class='bx bxs-wallet-alt nav_icon '></i> <span class="nav_name">Ausgabe hinzufügen</span>
+                    </a>
+                    <a href="{{ url_for( 'category') }}" class="nav_link"> <i class='bx bxs-category-alt nav_icon '></i>
+                        <span class="nav_name">Kategorien</span> </a>
+                    <a href="{{ url_for( 'budget' ) }}" class="nav_link"><i class='bx bxs-directions nav_icon'></i>
+                        Budget</a>
+                    <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
+                            class="nav_name">Analyse</span> </a>
+
+                    {% elif session.title == "report" %}
+                    <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
+                        <span class="nav_name">Dashboard</span> </a>
+                    <a href="{{ url_for( 'get_data') }}" class="nav_link"> <i class='bx bxs-wallet-alt nav_icon '></i>
+                        <span class="nav_name">Ausgabe hinzufügen</span> </a>
+                    <a href="{{ url_for( 'category') }}" class="nav_link"> <i class='bx bxs-category-alt nav_icon '></i>
+                        <span class="nav_name">Kategorien</span> </a>
+                    <a href="{{ url_for( 'budget' ) }}" class="nav_link"><i class='bx bxs-directions nav_icon'></i>
+                        Budget</a>
+                    <a href="{{ url_for( 'reports') }}" class="nav_link active"> <i class='bx bxs-report nav_icon '></i>
+                        <span class="nav_name">Analyse</span> </a>
+
+                    {% elif session.title == "category" %}
+                    <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
+                        <span class="nav_name">Dashboard</span> </a>
+                    <a href="{{ url_for( 'get_data') }}" class="nav_link"> <i class='bx bxs-wallet-alt nav_icon '></i>
+                        <span class="nav_name">Ausgabe hinzufügen</span> </a>
+                    <a href="{{ url_for( 'category') }}" class="nav_link active"> <i
+                            class='bx bxs-category-alt nav_icon '></i> <span class="nav_name">Kategorien</span> </a>
+                    <a href="{{ url_for( 'budget' ) }}" class="nav_link"><i class='bx bxs-directions nav_icon'></i>
+                        Budget</a>
+                    <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
+                            class="nav_name">Analyse</span> </a>
+                    {% elif session.title == "budget" %}
+                    <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
+                        <span class="nav_name">Dashboard</span> </a>
+                    <a href="{{ url_for( 'get_data') }}" class="nav_link"> <i class='bx bxs-wallet-alt nav_icon '></i>
+                        <span class="nav_name">Ausgabe hinzufügen</span> </a>
+                    <a href="{{ url_for( 'category') }}" class="nav_link"> <i class='bx bxs-category-alt nav_icon '></i>
+                        <span class="nav_name">Kategorien</span> </a>
+                    <a href="{{ url_for( 'budget' ) }}" class="nav_link active"><i
+                            class='bx bxs-directions nav_icon'></i> Budget</a>
+                    <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
+                            class="nav_name">Analyse</span> </a>
+                    {% else %}
+                    <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
+                        <span class="nav_name">Dashboard</span> </a>
+                    <a href="{{ url_for( 'get_data') }}" class="nav_link"> <i class='bx bxs-wallet-alt nav_icon '></i>
+                        <span class="nav_name">Ausgabe hinzufügen</span> </a>
+                    <a href="{{ url_for( 'category') }}" class="nav_link"> <i class='bx bxs-category-alt nav_icon '></i>
+                        <span class="nav_name">Kategorien</span> </a>
+                    <a href="{{ url_for( 'budget' ) }}" class="nav_link"><i class='bx bxs-directions nav_icon'></i>
+                        Budget</a>
+                    <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
+                            class="nav_name">Analyse</span> </a>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div>
+                <a id="dm" class="nav_link btn-toggle"><i class='nav_icon bx' id="moon"></i>
+                    <span class="nav_name">Darkmode</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+    {% if session.verified == 0 %}
+    <div class="container">
+        <div class="row">
+            <div>
+                <div class="alert alert-warning">
+                    <center>Email ist nicht verifiziert - <a href="{{ url_for('resend') }}">Erneut senden</a></center>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        const btn = document.getElementById("dm");
+
+        const body = document.getElementById("body-pd");
+
+        const currentTheme = localStorage.getItem("theme");
+
+        if (currentTheme != "dark") {
+            document.body.classList.remove("dark-theme");
+            document.body.classList.add("light-theme");
+            localStorage.setItem("theme", "light");
+        } else {
+            document.body.classList.add("dark-theme");
+            document.body.classList.remove("light-theme");
+            localStorage.setItem("theme", "dark");
+        }
+
+        btn.addEventListener("click", function () {
+            document.body.classList.toggle("dark-theme");
+            document.body.classList.toggle("light-theme");
+
+            let theme = "light";
+            if (document.body.classList.contains("dark-theme")) {
+                theme = "dark";
+            }
+            localStorage.setItem("theme", theme);
+
+        });
+    </script>
+    <script id="darkmode">
+        theme = localStorage.getItem("theme");
+
+        var moon_element = document.getElementById("moon")
+        if (theme == "dark") {
+            moon_element.classList.add("bxs-moon")
+        } else {
+            moon_element.classList.add("bx-moon")
+        }
+    </script>
+    <script>
+        function updateBudget() {
+            var x = document.getElementById("updateBudget").value;
+            $.ajax({
+                url: "{{ url_for('updateBudget') }}",
+                type: 'POST',
+                data: {
+                    'id': x
+                },
+                success: function (data) {
+                    window.location.reload(true);
+                }
+            });
+        }
+    </script>
+    <script>
+        function notiRead() {
+            var x = document.getElementById("notiRead").getAttribute("name")
+            $.ajax({
+                url: "{{ url_for('readNotis') }}",
+                type: 'POST',
+                data: { "ids": x },
+            });
+        }
+    </script>
+    </body>
+    {% endblock %}

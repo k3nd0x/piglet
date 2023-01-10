@@ -1,0 +1,52 @@
+{% include "navbar.html" %}
+
+<div class="container" style="margin-top: 10px">
+    <div class="row">
+        <div class="col-lg-12 offset-lg-0">
+            <div class="card text-center">
+                <div class="card-header">
+                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Ausgabe hinzufügen:</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-6 offset-xl-3">
+                            <form method="post" , action="/new-order">
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-top: 20px;">Angefallene Kosten eintragen:</label>
+                                <input class="form-control form-control_piglet" type="number" min="0.01" step="0.01"
+                                    name="value" placeholder="Kosten (€)" style="margin-top: 10px">
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-top: 30px;">Optionale Beschreibung:</label>
+                                <input class="form-control form-control_piglet" name="description"
+                                    placeholder="Optional: bspw. Kupsch, Shell, o.Ä." style="margin-top: 10px">
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-top: 30px;">Kategorie auswählen:</label>
+                                <input type="hidden" name="userid" value="{{ session.userid }}">
+                                <select class="form-control form-control_piglet" name="category"
+                                    style="margin-top: 10px" required="">
+                                    {% for c in categorylist %}
+                                    <option value="{{ c['id'] }}">{{ c['name'] }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-piglet" type="submit"
+                                    style="width: 100%;margin-top: 30px;">Ausgabe hinzufügen</button>
+                            </form>
+
+                            {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {%
+                            for key,value in msgs.items() %}
+                            <div class="alert alert-{{ value }}"
+                                style="border-radius: 40px;margin-top: 30px;text-align: center;">
+                                {{key}}
+                            </div>
+                            {% endfor %} {% endfor %} {% endif %} {% endwith %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% extends "footer.html" %}
+
+
+</html>

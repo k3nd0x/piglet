@@ -1,0 +1,199 @@
+body.light-theme {
+    --text-color: #222;
+    --bkg-color: #fff;
+    --card-color: #bdbdbd;
+    --formcontrol: #d8d8d8;
+    --navtoggler: #eee;
+    --pagination: #2739ff;
+    --pagination-text: #fff;
+    --nav-color: #5966f3;
+    --piglet-color: #2739ff;
+}
+
+body.dark-theme {
+    --text-color: #eee;
+    --piglet-color: #ff9edf;
+    --bkg-color: #181b1f;
+    --card-color: rgb(32, 32, 32);
+    --formcontrol: #151b61;
+    --navtoggler: #eee;
+    --pagination: #fff;
+    --pagination-text: #000;
+    --nav-color: #13195c;
+}
+
+body {
+    background: var(--bkg-color);
+    color: var(--text-color);
+}
+.text-piglet {
+	color: var(--piglet-color);
+}
+.card {
+    background: var(--bkg-color);
+    color: var(--text-color);
+}
+.accordion-body {
+    background: var(--card-color);
+    color: var(--text-color);
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+.accordion-button {
+    background: var(--card-color);
+    color: var(--text-color);
+}
+.accordion-button:not(.collapsed){
+    background: var(--card-color);
+    color: var(--text-color);
+}
+
+.header-piglet {
+    background: var(--bkg-color);
+    color: var(--text-color);
+}
+
+.table {
+    background: var(--bkg-color);
+    color: var(--text-color);
+}
+
+.btn-piglet {
+    background: var(--piglet-color);
+    color: var(--pagination-text);
+}
+
+.btn-piglet:hover {
+    color: var(--pagination-text);
+}
+
+.form-control {
+    background-color: var(--formcontrol);
+    color: var(--text-color);
+}
+
+.navbar-toggler-icon {
+    background: var(--navtoggler);
+}
+
+.page-link {
+    background-color: var(--bkg-color);
+    color: var(--text-color);
+}
+
+.page-item.active .page-link {
+    color: var(--pagination-text);
+    background-color: var(--pagination);
+    border-color: var(--text-color);
+}
+
+.nav {
+    background: var(--nav-color);
+    color: var(--text-color);
+}
+
+.l-navbar {
+    background: var(--nav-color);
+    color: var(--text-color);
+}
+
+.header {
+    background: var(--bkg-color);
+    color: var(--text-color);
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked+.slider {
+    background-color: #2196F3;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+
+/* Rounded sliders */
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+.accordion-item:last-of-type .accordion-button.collapsed {
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.dropdown-menu {
+    background: var(--bkg-color);
+    color: var(--piglet-color);
+}
+.dropdown-item.focus, .dropdown-item:hover {
+    background-color: var(--bkg-color);
+    color: var(--piglet-color);
+}
+.dropdown-item {
+    color: var(--text-color)
+}
+.link-piglet-nav {
+    color: var(--text-color);
+    text-decoration: none;
+}
+.link-piglet-nav:hover {
+    color: var(--piglet-color);
+}
+
+.modal-content{
+   color: var(--piglet-color);
+}
+
+.modal-header {
+	background-color: var(--bkg-color);
+}
+.modal-body {
+	background-color: var(--bkg-color);
+}
