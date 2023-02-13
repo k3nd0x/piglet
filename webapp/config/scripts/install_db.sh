@@ -49,5 +49,3 @@ fi
 #	mysql -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < /opt/scripts/piglet.sql
 #	touch "/var/lib/mysql/installed"
 #fi
-	
-
