@@ -1,0 +1,21 @@
+name: Docker_build_ubuntu
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file dockerfile --tag k3nd0x/piglet:1.0.2
+    - name: Push the image
+      run: docker push k3nd0x/piglet:1.0.2
+      
