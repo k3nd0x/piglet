@@ -42,7 +42,6 @@ def get_data():
             categorylist = get_data_api("categorylist",data=userid,auth=auth())
 
             response = post_data_api("orders", data,auth=auth())
-            print(response,flush=True)
 
             if response == "Ausgabe hinzugefügt":
                 flash_message = {response: "success"}
@@ -63,8 +62,6 @@ def get_data():
 # Default Index
 @app.route('/', methods=["GET"])
 def overview():
-    print("Index.html: ")
-    print(session,flush=True)
     if session:
         userid = session["userid"]
         budget_id = session["budget_id"]
@@ -90,8 +87,8 @@ def settings():
     if session:
         session["title"] = "settings"
         noticount, notilist, notifications = get_notis()
+        noti_settings = get_data_api("settings", auth=auth())
         if request.method == "GET":
-            noti_settings = get_data_api("settings", auth=auth())
             return render_template("new_settings.html", noti_settings=noti_settings, notifications=notifications, notilist=notilist, noticount=noticount)
             
         elif request.method == "POST":
@@ -132,13 +129,12 @@ def settings():
                     session["image"] = response["image"]
                     session["email"] = response["email"]
                     session["color"] = response["color"]
-                return render_template("new_settings.html", notifications=notifications, notilist=notilist, noticount=noticount)
+                return render_template("new_settings.html", notifications=notifications, notilist=notilist, noticount=noticount,noti_settings=noti_settings)
             else:
                 data_to_api = { "settings": {}}
 
                 for setting in [ "category_removed", "order_added", "order_removed", "category_added" ]:
                     payload = request.form.getlist(setting)
-                    print(payload,flush=True)
 
                     if len(payload) == 0:
                         mail = "0"
@@ -172,7 +168,6 @@ def settings():
 
                 return_data = post_data_api("settings",data_to_api,auth=auth())
 
-                print(return_data,flush=True)
 
 
                 return redirect(url_for('settings'))
@@ -333,17 +328,21 @@ def delete_ts(timestamp):
 # Confirm a Email Adresse per Shamail Variable -> Überedenken 
 @app.route('/confirm')
 def confirm():
-    mailhash = request.args.get("u")
+    if session:
+        mailhash = request.args.get("u")
 
-    payload = { "hashed_mail": mailhash, "send": False}
+        payload = { "hashed_mail": mailhash, "send": False}
 
-    response = post_data_api("confirm", payload,auth=auth())
+        response = post_data_api("confirm", payload,auth=auth())
 
-    if response == True:
-        session["verified"] = "1"
-        return render_template("confirm.html")
+        if response == True:
+            session["verified"] = "1"
+            return render_template("confirm.html")
+        else:
+            return render_template("something502.html")
     else:
-        return render_template("something502.html")
+        return redirect(url_for('login'))
+
 
 # Resend the email Verification Email
 @app.route('/resend')

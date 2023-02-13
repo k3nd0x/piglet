@@ -5,22 +5,22 @@
         <div class="col-lg-12 offset-lg-0">
             <div class="card text-center">
                 <div class="card-header">
-                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Ausgabe hinzufügen:</h5>
+                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Add new Order</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-xl-6 offset-xl-3">
                             <form method="post" , action="/new-order">
                                 <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-top: 20px;">Angefallene Kosten eintragen:</label>
+                                    style="margin-top: 20px;">Enter your expenditures:</label>
                                 <input class="form-control form-control_piglet" type="number" min="0.01" step="0.01"
-                                    name="value" placeholder="Kosten (€)" style="margin-top: 10px">
+                                    name="value" placeholder="Value" style="margin-top: 10px">
                                 <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-top: 30px;">Optionale Beschreibung:</label>
+                                    style="margin-top: 30px;">Optional Description:</label>
                                 <input class="form-control form-control_piglet" name="description"
-                                    placeholder="Optional: bspw. Kupsch, Shell, o.Ä." style="margin-top: 10px">
+                                    placeholder="Optional: e.g. Gas, Groceries ..." style="margin-top: 10px">
                                 <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-top: 30px;">Kategorie auswählen:</label>
+                                    style="margin-top: 30px;">Select Category:</label>
                                 <input type="hidden" name="userid" value="{{ session.userid }}">
                                 <select class="form-control form-control_piglet" name="category"
                                     style="margin-top: 10px" required="">
@@ -29,7 +29,7 @@
                                     {% endfor %}
                                 </select>
                                 <button class="btn btn-piglet" type="submit"
-                                    style="width: 100%;margin-top: 30px;">Ausgabe hinzufügen</button>
+                                    style="width: 100%;margin-top: 30px;">Add Order</button>
                             </form>
 
                             {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {%

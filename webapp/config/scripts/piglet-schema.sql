@@ -257,6 +257,7 @@ CREATE TABLE `registered_user` (
   `shamail` varchar(255) DEFAULT NULL,
   `budget_id` int(255) DEFAULT NULL,
   `bid_mapping` int(255) DEFAULT NULL,
+  `admin` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `email` (`email`)

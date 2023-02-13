@@ -5,7 +5,7 @@
         <div class="col-lg-12 col-xxl-6 offset-lg-0" style="margin-top: 10px">
             <div class="card text-center">
                 <div class="card-header">
-                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Übersicht nach Benutzer:</h5>
+                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Spend per User</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-center">
@@ -17,7 +17,7 @@
         <div class="col-lg-12 col-xxl-6 offset-lg-0" style="margin-top: 10px">
             <div class="card text-center">
                 <div class="card-header">
-                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Übersicht nach Kategorien:</h5>
+                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Spend per Category</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-center">
@@ -33,7 +33,7 @@
         <div class="col-lg-12 offset-lg-0">
             <div class="card">
                 <div class="card-header text-center">
-                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Letzte Buchungen:</h5>
+                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Last Orders</h5>
                 </div>
                 <div class="card-body">{% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {{msgs}} {% endfor %} {% endif %} {% endwith %}
                     <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
@@ -41,11 +41,11 @@
                             <thead>
                                 <tr>
                                     <th>User</th>
-                                    <th>Kategorie</th>
-                                    <th>Wert</th>
-                                    <th>Zeitpunkt</th>
-                                    <th>Beschreibung</th>
-                                    <th>Aktionen</th>
+                                    <th>Category</th>
+                                    <th>Value</th>
+                                    <th>Timestamp</th>
+                                    <th>Description</th>
+                                    <th>Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -102,11 +102,11 @@
             "pagingType": "full_numbers",
             "order": [],
             "language": {
-                "lengthMenu": "Maximale Einträge _MENU_",
-                "zeroRecords": "Leider nichts gefunden &#128533",
-                "info": "Seite _PAGE_ von _PAGES_",
-                "infoEmpty": "Keine Einträge gefunden",
-                "infoFiltered": "(gefiltert von allen _MAX_ Einträgen )",
+                "lengthMenu": "Max entries _MENU_",
+                "zeroRecords": "Sorry nothing found &#128533",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No entries found",
+                "infoFiltered": "(filter of all _MAX_ entries )",
                 "search": "Suche",
                 "paginate": {
                     "first": "",

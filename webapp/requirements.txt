@@ -6,6 +6,8 @@ flask-WTF
 gunicorn
 requests
 passlib
+redis
+flask_session
 
 fastapi 
 pydantic 
@@ -13,7 +15,7 @@ uvicorn
 mysql-connector
 fastapi-health 
 colour 
-sendgrid 
+secure-smtplib
 python-multipart 
 passlib 
 jose 

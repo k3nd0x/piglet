@@ -8,10 +8,9 @@ from pydantic import BaseModel
 from typing import Optional
 
 from .mysql import sql
-from .functs import get_budgetid,get_notisettings
-from .functs import hex_color,check,_get_uids
+from .functs import get_budgetid,get_notisettings, hex_color,check,_get_uids
 
-from .sendmail import send_noti
+from .sendmail import mail
 
 from .admin import oauth2_scheme,get_current_user
 
@@ -62,7 +61,6 @@ async def categories(catname: str, color: str, budget_id: int, current_user = De
 
             if dstuid != user_id:
                 notisettings = get_notisettings(mysql,dstuid,"1","2")
-                print(notisettings,flush=True)
 
                 if notisettings[0]["web"] == 1:
                     noti_query = '''insert into pig_notifications (srcuid, budgetid, value, destuid, state,messageid,typeid) values ({},{},{},{},0,1,2)'''.format(user_id, budget_id, cat_id, dstuid)
@@ -83,7 +81,8 @@ async def categories(catname: str, color: str, budget_id: int, current_user = De
 
                     header = '''{} hat eine neue Kategorie hinzugefügt!'''.format(username)
                     
-                    send_noti(email,value,header)
+                    payload = { "mode": "noti", "to_address": email, "value": mailvalue, "header": header }
+                    mailstate, code, message = mail(payload)
 
     elif existing == 1:
         response = "Category already exists"
@@ -142,53 +141,3 @@ async def _update_category(budget_id: str, catid: str, name: Optional[str]=None,
 
     return response
 
-#@category.get("/graph", summary="Test")
-#async def graph(budgetid: str):
-#
-#    print(budget_id,flush=True)
-#
-#
-#    return budget_id
-#
-#    timestamps = {}
-#    from calendar import monthrange
-#    from datetime import datetime
-#
-#    if has_numbers(month) == False:
-#        month = month.lower()
-#        query = """select id from months where name='%s'"""%(month)
-#        month = get(query)[0]["id"]
-#
-#
-#
-#    monthrange = monthrange(int(year), int(month))
-#    length_month = monthrange[1]
-#
-#    mfrom = "01." + str(month) + "." + str(year) + " 00:00:00,00"
-#    mto = str(length_month) + "." + str(month) + "." + str(year) + " 23:59:59,59"
-#
-#    mfrom_ms = datetime.strptime(mfrom,'%d.%m.%Y %H:%M:%S,%f')
-#    mfrom_ms = str(mfrom_ms.timestamp() * 1000)
-#
-#    mto_ms = datetime.strptime(mto,'%d.%m.%Y %H:%M:%S,%f')
-#    mto_ms = str(mto_ms.timestamp() * 1000)
-#
-#
-#    if ".0" in mfrom_ms:
-#        mfrom_ms = mfrom_ms.replace(".0", '')
-#    if ".0" in mto_ms:
-#        mto_ms = mto_ms.replace('.0', '')
-#    time_from = str(mfrom_ms)
-#    time_to = str(mto_ms)
-#
-#    print(time_from,flush=True)
-#    print(time_to,flush=True)
-#
-#
-#    query = '''select (select name from registered_user where id=user_id) as user_id, sum(value) as value from new_orders where budget_id={} and timestamp between {} and {} group by user_id'''.format(budget_id,time_from,time_to)
-#
-#    print(query,flush=True)
-#
-#    response = get(query)
-#
-#    return response

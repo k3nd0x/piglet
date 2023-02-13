@@ -1,11 +1,8 @@
-from flask import Flask, render_template, flash, request, session, url_for, redirect, Markup, make_response
+from flask import render_template, flash, request, session, url_for, redirect, Markup
 from passlib.hash import sha256_crypt as sha256
 import hashlib
 import uuid
-from datetime import datetime, timedelta
 from source.app import app
-
-from flask import jsonify
 
 from .api_func import post_data_api,get_data_api,get_token
 
@@ -77,8 +74,6 @@ def login():
             
             x = "test"
             session["test"] = x
-            print(session)
-
 
             if response["name"] != None:
                 session["name"] = response["name"]

@@ -12,7 +12,7 @@ from fastapi.responses import JSONResponse
 import uuid
 
 from .mysql import sql
-from .sendmail import send_resetmail, send_verification
+from .sendmail import mail
 from .functs import hex_color, get_timestamp
 from .admin import oauth2_scheme,get_current_user
 
@@ -69,7 +69,6 @@ async def register_user(registerUser: registerUser):
 @user.get("/login-user")
 async def login_user(current_user = Depends(get_current_user)):
     mysql = sql()
-    print(current_user,flush=True)
 
     email = current_user["email"]
 
@@ -77,7 +76,6 @@ async def login_user(current_user = Depends(get_current_user)):
 
 
     response = mysql.get(query)
-    print(response,flush=True)
 
     mysql.close()
 
@@ -236,7 +234,8 @@ async def forgot_password(email: Optional[str]=None ,tmphash: Optional[str]=None
                 db_response = mysql.post(query)
                 if db_response:
                     response = "timestampSetMailSent"
-                    send_resetmail(email,tmphash)
+                    payload = { "mode": "verify", "to_address": email, "hashed_url": tmphash }
+                    mailstate, code, message = mail(payload)
                 else:
                     response = "MYSQl Query failed"
                 
@@ -250,7 +249,10 @@ async def forgot_password(email: Optional[str]=None ,tmphash: Optional[str]=None
                     query = '''update pig_pwforgot set hash="{}" where email="{}"'''.format(tmphash,email)
                     mysql.post(query)
                     mysql.close()
-                    send_resetmail(email,tmphash)
+
+                    payload = { "mode": "reset", "to_address": email, "hashed_url": tmphash }
+                    mailstate, code, message = mail(payload)
+
                     return True, "timestampSetMailSent"
                 else:
                     mysql.close()
@@ -306,7 +308,9 @@ async def confirm(hashed_mail: Optional[str]=None, send: Optional[bool]=False,cu
     hashed_email = hashed_email[0]["shamail"]
 
     if send:
-        value = send_verification(email,hashed_email)
+        payload = { "mode": "verify", "to_address": email, "hashed_url": hashed_email }
+        mailstate, code, message = mail(payload)
+        value = mailstate
 
     elif not send and hashed_mail:
         update_user = '''update registered_user set verified=1 where shamail="{}"'''.format(hashed_mail[:15])

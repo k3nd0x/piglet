@@ -11,7 +11,7 @@ from typing import Optional
 from .mysql import sql
 from .admin import oauth2_scheme
 from .functs import get_budgetid,check,_get_uids,get_notisettings
-from .sendmail import send_noti
+from .sendmail import mail
 
 from .admin import oauth2_scheme,get_current_user
 
@@ -63,7 +63,7 @@ class newOrder(BaseModel):
 async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
     mysql = sql()
     try:
-        curr = "EUR"
+        curr = "USD"
         value = float(newOrder.value)
         category = int(newOrder.category)
         userid = int(newOrder.userid)
@@ -125,7 +125,8 @@ async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
 
                     header = '''{} hat eingekauft!'''.format(username)
                     
-                    send_noti(email,mailvalue,header)
+                    payload = { "mode": "noti", "to_address": email, "value": mailvalue, "header": header }
+                    mailstate, code, message = mail(payload)
     else:
         output = "Query failed - try again later"
 

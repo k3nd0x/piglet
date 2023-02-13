@@ -4,13 +4,13 @@
         <div class="col-lg-12 offset-lg-0">
             <div class="card text-center">
                 <div class="card-header">
-                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Meine Budgets:</h5>
+                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">My Budgets</h5>
                 </div>
                 <div class="card-body">
                     <div class="col-xl-6 offset-xl-3">
                         <form method="post" action="/newbudget">
                             <input class="form-control form-control_piglet" name="budgetname" placeholder="Budget Name" style="margin-top: 10px;text-align: center;">
-                            <button class="btn btn-piglet" type="submit" style="width: 100%;margin-top: 10px;">Budget hinzufügen</button>
+                            <button class="btn btn-piglet" type="submit" style="width: 100%;margin-top: 10px;">Add Budget</button>
                         </form>
                     </div>
                     <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
@@ -18,7 +18,7 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Aktionen</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,7 +35,7 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="budgetModalLabel">Budget ändern</h5>
+                                                        <h5 class="modal-title" id="budgetModalLabel">Change Budget</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
                                                     </div>
                                                     <div class="modal-body">
@@ -63,14 +63,14 @@
 			    <div class="modal-dialog">
 				<div class="modal-content">
 				    <div class="modal-header">
-					<h5 class="modal-title" id="budgetModalLabel">Budget teilen</h5>
+					<h5 class="modal-title" id="budgetModalLabel">Share Budget</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
 				    </div>
                 <div class="modal-body">
                     <form method="post" action="/sharewith">
-                        <label class="form-label d-lg-flex justify-content-lg-center">Mit wem möchtest du das Budget teilen?</label>
+                        <label class="form-label d-lg-flex justify-content-lg-center">Who do you want to share the budget with?</label>
                         <input class="form-control form-control_piglet" name="shareto" id="shareto" placeholder="Email Addresse" style="margin-top: 10px;text-align: center;">
-                        <button class="btn btn-piglet" name="id" value="{{ i.id }}" type="submit" style="width: 100%;margin-top: 30px;">Absenden</button>
+                        <button class="btn btn-piglet" name="id" value="{{ i.id }}" type="submit" style="width: 100%;margin-top: 30px;">Send</button>
                     </form>
 				</div>
 

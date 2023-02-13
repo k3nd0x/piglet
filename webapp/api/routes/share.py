@@ -12,7 +12,7 @@ import hashlib
 from .mysql import sql
 from .functs import get_budgetid, check, get_timestamp
 
-from .sendmail import send_share
+from .sendmail import mail
 
 from .admin import oauth2_scheme,get_current_user
 share = APIRouter()
@@ -42,16 +42,15 @@ async def newshare(budget_id: str, shareto: str, current_user = Depends(get_curr
     set_timestamp = '''insert into pig_urlexpire(url,budget_id) values("{}","{}")'''.format(uri,budget_id)
     mysql.post(set_timestamp)
 
-    mailstate = send_share(name,shareto,budget_name,uri)
+    payload = { "mode": "share", "hashed_url": uri, "budget": budget_name, "to_address": shareto, "user": name } 
+    mailstate, code, message = mail(payload)
 
     mysql.close()
 
-    if mailstate == 202:
+    if mailstate:
         raise HTTPException(status_code=200, detail="OK")
     else:
         raise HTTPException(status_code=502, detail="Internal Server Error")
-
-    return mailstate
 
 @share.post("/wanttoconn")
 async def wanttoconn(sharecode: str, current_user = Depends(get_current_user)):

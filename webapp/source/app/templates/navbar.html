@@ -5,6 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="content-language" content="en">
     <!-- Default Bootstrap und FA -->
     <link rel="stylesheet" href="{{ url_for('static', filename='index/bootstrap/css/bootstrap.min.css') }}">
     <script src="{{ url_for('static',filename='index/bootstrap/js/bootstrap.min.js') }}"></script>
@@ -18,12 +19,9 @@
 
     <!-- Datatables -->
     <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script type="text/javascript" language="javascript"
-        src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript"
-        src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
-    </script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
 
 
@@ -43,17 +41,17 @@
     {% if session.title == "dashboard" %}
     <title>Piglet | Dashboard</title>
     {% elif session.title == "report" %}
-    <title>Piglet | Berichte</title>
+    <title>Piglet | Analyze</title>
     {% elif session.title == "order" %}
-    <title>Piglet | Neue Ausgabe</title>
+    <title>Piglet | New Order</title>
     {% elif session.title == "settings" %}
-    <title>Piglet | Einstellungen</title>
+    <title>Piglet | Settings</title>
     {% elif session.title == "budget" %}
     <title>Piglet | Budget</title>
     {% elif session.title == "category" %}
-    <title>Piglet | Kategorie</title>
+    <title>Piglet | Categories</title>
     {% elif session.title == "notifications" %}
-    <title>Piglet | Nachrichten</title>
+    <title>Piglet | Notifications</title>
     {% else %}
     <title>Piglet</title>
     {% endif %}
@@ -99,7 +97,7 @@
             </div>
 
             <a href="#" class="dropdown-toggle link-piglet-nav" data-bs-toggle="dropdown">{{ session.name }} <img
-                    src="static/pp/{{ session.image }}" alt="Avatar" class="avatar"></a>
+		src="{{ url_for('static', filename=session.image) }}", alt="Avatar" class="avatar"></a>
             <div class="dropdown-menu">
                 {% if session.budgets|length > 1 %}
                 {% if session.title != "settings" %}
@@ -133,71 +131,71 @@
                     <a href="{{ url_for( 'overview') }}" class="nav_link active"> <i
                             class='bx bxs-dashboard nav_icon '></i> <span class="nav_name">Dashboard</span> </a>
                     <a href="{{ url_for( 'get_data') }}" class="nav_link"> <i class='bx bxs-wallet-alt nav_icon '></i>
-                        <span class="nav_name">Ausgabe hinzufügen</span> </a>
+                        <span class="nav_name">Add Order</span> </a>
                     <a href="{{ url_for( 'category') }}" class="nav_link"> <i class='bx bxs-category-alt nav_icon '></i>
-                        <span class="nav_name">Kategorien</span> </a>
+                        <span class="nav_name">Categories</span> </a>
                     <a href="{{ url_for( 'budget' ) }}" class="nav_link"><i class='bx bxs-directions nav_icon'></i>
                         Budget</a>
                     <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
-                            class="nav_name">Analyse</span> </a>
+                            class="nav_name">Analyze</span> </a>
                     {% elif session.title == "order" %}
                     <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
                         <span class="nav_name">Dashboard</span> </a>
                     <a href="{{ url_for( 'get_data') }}" class="nav_link active"> <i
-                            class='bx bxs-wallet-alt nav_icon '></i> <span class="nav_name">Ausgabe hinzufügen</span>
+                            class='bx bxs-wallet-alt nav_icon '></i> <span class="nav_name">Add Order</span>
                     </a>
                     <a href="{{ url_for( 'category') }}" class="nav_link"> <i class='bx bxs-category-alt nav_icon '></i>
-                        <span class="nav_name">Kategorien</span> </a>
+                        <span class="nav_name">Categories</span> </a>
                     <a href="{{ url_for( 'budget' ) }}" class="nav_link"><i class='bx bxs-directions nav_icon'></i>
                         Budget</a>
                     <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
-                            class="nav_name">Analyse</span> </a>
+                            class="nav_name">Analyze</span> </a>
 
                     {% elif session.title == "report" %}
                     <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
                         <span class="nav_name">Dashboard</span> </a>
                     <a href="{{ url_for( 'get_data') }}" class="nav_link"> <i class='bx bxs-wallet-alt nav_icon '></i>
-                        <span class="nav_name">Ausgabe hinzufügen</span> </a>
+                        <span class="nav_name">Add Order</span> </a>
                     <a href="{{ url_for( 'category') }}" class="nav_link"> <i class='bx bxs-category-alt nav_icon '></i>
-                        <span class="nav_name">Kategorien</span> </a>
+                        <span class="nav_name">Categories</span> </a>
                     <a href="{{ url_for( 'budget' ) }}" class="nav_link"><i class='bx bxs-directions nav_icon'></i>
                         Budget</a>
                     <a href="{{ url_for( 'reports') }}" class="nav_link active"> <i class='bx bxs-report nav_icon '></i>
-                        <span class="nav_name">Analyse</span> </a>
+                        <span class="nav_name">Analyze</span> </a>
 
                     {% elif session.title == "category" %}
                     <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
                         <span class="nav_name">Dashboard</span> </a>
                     <a href="{{ url_for( 'get_data') }}" class="nav_link"> <i class='bx bxs-wallet-alt nav_icon '></i>
-                        <span class="nav_name">Ausgabe hinzufügen</span> </a>
+                        <span class="nav_name">Add Order</span> </a>
                     <a href="{{ url_for( 'category') }}" class="nav_link active"> <i
-                            class='bx bxs-category-alt nav_icon '></i> <span class="nav_name">Kategorien</span> </a>
+                            class='bx bxs-category-alt nav_icon '></i> <span class="nav_name">Categories</span> </a>
                     <a href="{{ url_for( 'budget' ) }}" class="nav_link"><i class='bx bxs-directions nav_icon'></i>
                         Budget</a>
                     <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
-                            class="nav_name">Analyse</span> </a>
+                            class="nav_name">Analyze</span> </a>
                     {% elif session.title == "budget" %}
                     <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
                         <span class="nav_name">Dashboard</span> </a>
                     <a href="{{ url_for( 'get_data') }}" class="nav_link"> <i class='bx bxs-wallet-alt nav_icon '></i>
-                        <span class="nav_name">Ausgabe hinzufügen</span> </a>
+                        <span class="nav_name">Add Order</span> </a>
                     <a href="{{ url_for( 'category') }}" class="nav_link"> <i class='bx bxs-category-alt nav_icon '></i>
-                        <span class="nav_name">Kategorien</span> </a>
+                        <span class="nav_name">Categories</span> </a>
                     <a href="{{ url_for( 'budget' ) }}" class="nav_link active"><i
                             class='bx bxs-directions nav_icon'></i> Budget</a>
                     <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
-                            class="nav_name">Analyse</span> </a>
+                            class="nav_name">Analyze</span> </a>
                     {% else %}
                     <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
                         <span class="nav_name">Dashboard</span> </a>
                     <a href="{{ url_for( 'get_data') }}" class="nav_link"> <i class='bx bxs-wallet-alt nav_icon '></i>
-                        <span class="nav_name">Ausgabe hinzufügen</span> </a>
+                        <span class="nav_name">Add Order</span> </a>
                     <a href="{{ url_for( 'category') }}" class="nav_link"> <i class='bx bxs-category-alt nav_icon '></i>
-                        <span class="nav_name">Kategorien</span> </a>
+                        <span class="nav_name">Categories</span> </a>
                     <a href="{{ url_for( 'budget' ) }}" class="nav_link"><i class='bx bxs-directions nav_icon'></i>
                         Budget</a>
                     <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
-                            class="nav_name">Analyse</span> </a>
+                            class="nav_name">Analyze</span> </a>
                     {% endif %}
 
                 </div>
@@ -216,7 +214,7 @@
         <div class="row">
             <div>
                 <div class="alert alert-warning">
-                    <center>Email ist nicht verifiziert - <a href="{{ url_for('resend') }}">Erneut senden</a></center>
+                    <center>Email is not verified - <a href="{{ url_for('resend') }}">Resend</a></center>
                 </div>
             </div>
         </div>

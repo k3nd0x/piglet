@@ -1,4 +1,5 @@
-FROM alpine:3.17.1
+FROM piglet:1.0.1
+#FROM alpine:3.17.1
 RUN apk add --update \
     build-base \
     python3-dev \
@@ -8,17 +9,17 @@ RUN apk add --update \
     py3-pip \
     supervisor \
     mysql-client \
-    vim
+    vim \
+    redis
+
 COPY webapp /webapp
 
-RUN mkdir -p /var/log/supervisor
+WORKDIR /webapp
 
-ENV MYSQL_PASSWORD= MYSQL_USER= MYSQL_DATABASE= MYSQL_HOST= PIP_USE_PEP517=1
+ENV MYSQL_PASSWORD= MYSQL_USER= MYSQL_DATABASE= MYSQL_HOST= PIP_USE_PEP517=1 DOMAIN= MAIL_SERVER= MAIL_PORT= MAIL_USER= MAIL_PASSWORD= MAIL_ENCRYPTIONPROTOCOL=
 
-RUN pip3 install --quiet --upgrade pip && pip3 install --quiet --upgrade setuptools && pip3 install --quiet -r /webapp/requirements.txt
+#RUN pip3 install --quiet --upgrade pip && pip3 install --quiet --upgrade setuptools && pip3 install --quiet -r /webapp/requirements.txt
 
 EXPOSE 8080 80
-
-WORKDIR /webapp
 
 ENTRYPOINT ["supervisord", "--nodaemon", "--configuration", "/webapp/supervisord.conf"]

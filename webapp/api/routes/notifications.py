@@ -9,8 +9,7 @@ from typing import Optional
 from datetime import datetime
 
 from .mysql import sql
-from .functs import get_budgetid
-from .functs import hex_color
+from .functs import get_budgetid,hex_color
 
 from .admin import oauth2_scheme,get_current_user
 

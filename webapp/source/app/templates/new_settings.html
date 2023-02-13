@@ -5,15 +5,16 @@
         <div class="col-lg-12 offset-lg-0">
             <div class="card text-center">
                 <div class="card-header">
-                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Benutzer Einstellungen:</h5>
+                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">User Settings</h5>
                 </div>
                 <div class="card-body">
                     <form method="post" action="/settings" enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-lg-5 text-center" style="margin-top: 38px;">
                                 <div class="row">
-                                    <div class="col test"><img class="img-circle" src="/static/pp/{{ session.image }}"
-                                            style="width: 200px;height: 200px;"></div>
+					<div class="col test">
+						<img class="img-circle" src="{{ url_for('static', filename=session.image) }}" style="width: 200px;height: 200px;">
+					</div>
                                 </div>
                                 <div class="row">
                                     <div class="col" style="margin-top: 15px;">
@@ -25,19 +26,19 @@
                             <div class="col-lg-5 offset-lg-1 justify-content-center align-items-center align-content-center"
                                 style="margin-top: 30px">
                                 <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-left: 15px; margin-top: 5px;">Vorname:</label>
+                                    style="margin-left: 15px; margin-top: 5px;">Name</label>
                                 <input class="form-control form-control_piglet" name="name" type="text"
                                     style="margin-top: 5px;" value="{{ session.name }}">
                                 <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-left: 15px;margin-top: 5px;">Nachname:</label>
+                                    style="margin-left: 15px;margin-top: 5px;">Surname</label>
                                 <input class="form-control form-control_piglet" name="surname" type="text"
                                     style="margin-top: 0px;" value="{{ session.surname }}">
                                 <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-left: 15px;margin-top: 5px;">Farbe:</label>
+                                    style="margin-left: 15px;margin-top: 5px;">Color</label>
                                 <input class="form-control form-control_piglet" name="color" type="color"
                                     style="margin-top: 0px;" value="{{ session.color }}">
                                 <button class="btn btn-piglet" type="submit"
-                                    style="width: 100%;margin-top: 30px;">Speichern</button>
+                                    style="width: 100%;margin-top: 30px;">Save</button>
                             </div>
                         </div>
                     </form>
@@ -51,8 +52,7 @@
             <div class="col-lg-12 offset-lg-0">
                 <div class="card">
                     <div class="card-header text-center">
-                        <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Benachrichtungs
-                            Einstellungen:</h5>
+                        <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Notification Settings</h5>
                     </div>
                     <div class="card-body">
                         <form method="post" action="/settings">
@@ -61,9 +61,9 @@
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th scope="col">Benachrichtungs-Typ</th>
+                                                <th scope="col">Notification Type</th>
                                                 <th scope="col">Email</th>
-                                                <th scope="col">Glocke</th>
+                                                <th scope="col">Bell</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -92,7 +92,7 @@
                                 <div class="row">
                                     <div class="col-lg-4 offset-xl-4">
                                         <button class="btn btn-piglet" type="submit"
-                                            style="width: 100%;margin-top: 30px;">Speichern</button>
+                                            style="width: 100%;margin-top: 30px;">Save</button>
                                     </div>
                                 </div>
                         </form>

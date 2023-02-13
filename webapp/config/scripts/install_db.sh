@@ -1,42 +1,42 @@
 #!/bin/ash
+DATE=`date '+%Y-%m-%d %H:%m:%S'`
 
-if [[ -z "$MYSQL_USER" ]];
+if [[ -z "$MYSQL_USER" ]]
 then
-	USER="${MYSQL_USER}"
-else
 	USER="piglet"
+else
+	USER="${MYSQL_USER}"
 fi
 
-if [[ -z "$MYSQL_HOST" ]];
+if [[ -z "$MYSQL_HOST" ]]
 then
+	HOST="database"
+else
 	HOST="${MYSQL_HOST}"
-else
-	HOST="piglet"
 fi
 
-if [[ -z "$MYSQL_DATABASE" ]];
+if [[ -z "$MYSQL_DATABASE" ]]
 then
-	DATABASE="${MYSQL_DATABASE}"
-else
 	DATABASE="piglet"
+else
+	DATABASE="${MYSQL_DATABASE}"
 fi
 
 while ! nc -z database 3306 &> /dev/null
 do
-	echo "waiting for database host"
+	echo "$DATE waiting for database host"
 	sleep 5
 done
-
 
 TABLES=`mysql -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST -e 'show tables'`
 
 if [ -z "$TABLES" ]
 then
-	echo "Import schema"
-	mysql -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST < /opt/scripts/piglet-schema.sql
+	echo "$DATE Import schema"
+	mysql -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST < /webapp/config/scripts/piglet-schema.sql
 	exit 0
 else
-	echo "Database schema is already set - not overwriting"
+	echo "$DATE Database schema is already set - not overwriting"
 	exit 0
 fi
 	
