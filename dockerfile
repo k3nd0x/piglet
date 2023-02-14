@@ -17,7 +17,7 @@ WORKDIR /webapp
 
 ENV MYSQL_PASSWORD= MYSQL_USER= MYSQL_DATABASE= MYSQL_HOST= PIP_USE_PEP517=1 DOMAIN= MAIL_SERVER= MAIL_PORT= MAIL_USER= MAIL_PASSWORD= MAIL_ENCRYPTIONPROTOCOL=
 
-#RUN pip3 install --quiet --upgrade pip && pip3 install --quiet --upgrade setuptools && pip3 install --quiet -r /webapp/requirements.txt
+RUN pip3 install --quiet --upgrade pip && pip3 install --quiet --upgrade setuptools && pip3 install --quiet -r /webapp/requirements.txt
 
 EXPOSE 8080 80
 
