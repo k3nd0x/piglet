@@ -86,8 +86,8 @@ Following ENV variables are possible:
 - admin settings page for all users
 
 # Known issues
-- Site is flashing white at reload when darkmode is active #1
-- Nav Menue is popping out at reload when its in mini mode #2
+- Site is flashing white at reload when darkmode is active https://github.com/k3nd0x/piglet/issues/1
+- Nav Menue is popping out at reload when its in mini mode https://github.com/k3nd0x/piglet/issues/2
 
 # Disclaimer
 
