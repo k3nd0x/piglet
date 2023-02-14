@@ -15,9 +15,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file dockerfile --tag k3nd0x/piglet:1.0.2
+      run: docker build . --file dockerfile --tag k3nd0x/piglet:latest
     - uses: docker/login-action@v2
-    - with:
+      with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_KEY }}
     - name: Push the image
