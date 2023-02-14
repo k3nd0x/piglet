@@ -1,22 +1,19 @@
 # piglet :pig:
 
-Simple Webapp to manage and administrate budgets in a household
-
-# About
-
-This project is an easy webapp to manage your budget. It comes with an lightweight webinterface and an api.
+A simple Webapp to manage and administrate budgets in a household. \
+It comes with an lightweight webinterface and an api.
 You can easily add, categorize and compare your expenditures, individualize your categories and profile.
 
 # Installation
 #### With Docker
-The Image is available at `k3nd0x/piglet`. 
+The Image is available at `k3nd0x/piglet`. \
 All relevant webapp data is in the container image.
 
-The mariadb image is the official image from the MariaDB Foundation.
-To keep the data consistent you only have to store the mariadb data (`/var/lib/mysql`) locally. (See volume config in docker-compose file)
-In the `.env` file you have to set our private data like mysql_password and mysql_user.
+The mariadb image is the official image from the MariaDB Foundation. \
+To keep the data consistent you only have to store the mariadb data (`/var/lib/mysql`) locally. (See volume config in docker-compose file) \
+In the `.env` file you have to set our private data like mysql_password and mysql_user. 
 
-You can use the docker-compose.yml to create both containers: `docker-compose up`
+You can use the `docker-compose.yml` to create both containers: `docker-compose up`
 
 At the first startup a database will be created with the data from the `.env` file and some default data will be imported.
 ```
@@ -41,7 +38,7 @@ services:
         MAIL_PASSWORD: ${MAIL_PASSWORD}
         MAIL_PORT: ${MAIL_PORT}
         MAIL_ENCRYPTIONPROTOCOL: ${MAIL_ENCRYPTIONPROTOCOL}
-        DOMAIN: ${DOMAIN}
+        DOMAIN: ${DOMAIN} # Default 'localhost'
       volumes:
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
@@ -59,8 +56,8 @@ volumes:
   database-data:
 ```
 
-The default login is: 
-Username: `admin@localhost` (when $DOMAIN variable is set the default user is admin@$DOMAIN)
+Default login 
+Username: `admin@$DOMAIN`
 Password: `admin`
 
 
@@ -71,7 +68,7 @@ Following ENV variables are possible:
 | MYSQL_DATABASE  | Name of the piglet database | piglet | :x:
 | MYSQL_HOST | Hostname or IP Address of the databasehost | database | :x:
 | MYSQL_PASSWORD | Password for the piglet database user | None | :white_check_mark:
-| DOMAIN | Default domain of the piglet instance | None | :x:
+| DOMAIN | Default domain of the piglet instance | localhost | :x:
 | MAIL_SERVER | Mailserver for email notification | None | :x:
 | MAIL_PORT | Mailserver Port | None | :x:
 | MAIL_USER | Mailserver User | None | :x:
