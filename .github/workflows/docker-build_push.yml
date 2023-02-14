@@ -2,9 +2,9 @@ name: Docker_build_ubuntu
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    paths: 
+    - 'webapp/**'
+    - 'dockerfile'
 
 jobs:
 
