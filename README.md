@@ -7,7 +7,50 @@ Simple Webapp to manage and administrate budgets in a household
 This project is an easy webapp to manage your budget. It comes with an lightweight webinterface and an api.
 You can easily add, categorize and compare your expenditures, individualize your categories and profile.
 
-# Deployment
+# Installation
+## With Docker
+The Image is available at `k3nd0x/piglet` 
+
+```
+version: '3.3'
+services:
+    piglet:
+      restart: unless-stopped
+      container_name: piglet
+      depends_on:
+        - database
+      ports:
+        - '0.0.0.0:80:80' # Piglet
+        - '0.0.0.0:8080:8080' # API
+      image: piglet:1.0.1
+      environment:
+        MYSQL_DATABASE: ${MYSQL_DATABASE} # Default 'piglet'
+        MYSQL_USER: ${MYSQL_USER} # Default 'piglet'
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        MYSQL_HOST: ${MYSQL_HOST}
+        MAIL_SERVER: ${MAIL_SERVER}
+        MAIL_USER: ${MAIL_USER}
+        MAIL_PASSWORD: ${MAIL_PASSWORD}
+        MAIL_PORT: ${MAIL_PORT}
+        MAIL_ENCRYPTIONPROTOCOL: ${MAIL_ENCRYPTIONPROTOCOL}
+        DOMAIN: ${DOMAIN}
+      volumes:
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    database:
+      image: mariadb:latest
+      container_name: piglet-db
+      volumes:
+        - database-data:/var/lib/mysql
+      environment:
+        MYSQL_RANDOM_ROOT_PASSWORD: 1
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+volumes:
+  database-data:
+```
+
 You can use the docker-compose.yml to create both containers (piglet, mariadb). 
 
 Following ENV variables are possible:
