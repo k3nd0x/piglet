@@ -24,6 +24,8 @@ import time
 
 @admin.on_event("startup")
 async def startup_event():
+    date = datetime.now().strftime("%Y-%m-%d %H:%M:%S,%s")
+    print("{} - Starting Piglet API...".format(date))
     admin_uid = None
     while admin_uid is None:
         try:
@@ -42,7 +44,7 @@ async def startup_event():
             """INSERT INTO pig_bidmapping VALUES (10000,100,NULL,NULL,NULL)""",
             """INSERT INTO pig_budgets VALUES (100,0,"Default",0,"3ec5d92868964bfbbf223ca88f379ee9")""",
             """INSERT INTO pig_category VALUES (1,"Groceries",1,1,100,"#123456")""","""INSERT INTO "pig_notiobj" VALUES (1,"added","hinzufügen"),(2,"removed","entfernen"),(3,"joined","Beitritt")""",
-            """INSERT INTO pig_notisettings VALUES (1,1,1,0,1),(1,1,2,1,1),(1,2,1,1,1),(1,2,2,1,1)""",
+            """INSERT INTO pig_notisettings VALUES (1,1,1,1,1),(1,1,2,1,1),(1,2,1,1,1),(1,2,2,1,1)""",
             """INSERT INTO pig_notitype VALUES (1,"order","Money"),(2,"category","Category"),(3,"budget","Budget")""",
             """INSERT INTO pig_notiobj VALUES (1,'added','added'),(2,'removed','removed'),(3,'joined','joined')""",
             '''INSERT INTO registered_user VALUES (1,"admin@{}",1,"864fd3978f508ef03a3e9c24aef43b639d7725c15e08eeaf961a9b81c3adc097:0b108f78bca548fa8fa2721e46d83150","admin","admin","default.png",NULL,"#8a40d0","7eb304283ead5f6",100,10000,1)'''.format(domain)]
@@ -52,7 +54,6 @@ async def startup_event():
             try:
                 mysql.post(i)
             except:
-                print("{} failed".format(i))
                 continue
 #@admin.on_event("shutdown"):
 #async def shutdown_event():

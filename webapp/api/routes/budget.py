@@ -101,7 +101,6 @@ async def _leave(budgetid: str, force: bool, current_user = Depends(get_current_
         
         response = []
         for i in query,query1,query2,query3:
-            print(i,flush=True)
             response.append(mysql.post(i))
 
         query = '''select mode from pig_budgets where id={budgetid}'''.format(budgetid=budgetid)

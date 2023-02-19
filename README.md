@@ -74,6 +74,7 @@ Following ENV variables are possible:
 | MAIL_USER | Mailserver User | None | :x:
 | MAIL_PASSWORD | Mailserver Password | None | :x:
 | MAIL_ENCRYPTIONPROTOCOL | Mailserver Encryption Protocol | None | :x:
+| SECURE_COOKIE | Setting to allow login over http | False | :x:
 
 *The Mail sending process is currently in beta state
 
@@ -93,3 +94,7 @@ Following ENV variables are possible:
 
 I started to build this project at the beginning of my programming career so please be gentle if something is not working as expected.
 Feel free to edit or just open a issue. Feature requests can also be added at the issue tab.
+
+Currently "unsecure cookie setting" is activated to allow a login over http per default.
+If you want to access your piglet instance over the internet I highly recommend to access the site over a reverse proxy with https.
+If you accessing the piglet instance over https please disable "unsecure cookie setting". Just set the env var `SECURE_COOKIE` to True (default: False).

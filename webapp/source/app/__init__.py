@@ -20,7 +20,11 @@ app.config['UPLOAD_FOLDER'] = PROFILE_PICTURES
 
 
 app.config['SESSION_COOKIE_SAMESITE'] = "None"
-app.config['SESSION_COOKIE_SECURE'] = "True"
+if os.environ.get('SECURE_COOKIE') == "True":
+    app.config['SESSION_COOKIE_SECURE'] = True
+else:
+    app.config['SESSION_COOKIE_SECURE'] = False
+
 
 # Load the config file
 app.config.from_object('config')

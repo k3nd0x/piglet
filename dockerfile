@@ -9,13 +9,13 @@ RUN apk add --update \
     supervisor \
     mysql-client \
     vim \
-    redis
+    redis 
 
 COPY webapp /webapp
 
 WORKDIR /webapp
 
-ENV MYSQL_PASSWORD= MYSQL_USER= MYSQL_DATABASE= MYSQL_HOST= PIP_USE_PEP517=1 DOMAIN= MAIL_SERVER= MAIL_PORT= MAIL_USER= MAIL_PASSWORD= MAIL_ENCRYPTIONPROTOCOL=
+ENV MYSQL_PASSWORD= MYSQL_USER= MYSQL_DATABASE= MYSQL_HOST= PIP_USE_PEP517=1 DOMAIN= MAIL_SERVER= MAIL_PORT= MAIL_USER= MAIL_PASSWORD= MAIL_ENCRYPTIONPROTOCOL= SECURE_COOKIE=
 
 RUN pip3 install --quiet --upgrade pip && pip3 install --quiet --upgrade setuptools && pip3 install --quiet -r /webapp/requirements.txt
 

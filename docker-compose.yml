@@ -20,6 +20,7 @@ services:
         MAIL_PORT: ${MAIL_PORT}
         MAIL_ENCRYPTIONPROTOCOL: ${MAIL_ENCRYPTIONPROTOCOL}
         DOMAIN: ${DOMAIN}
+        SECURE_COOKIE: ${SECURE_COOKIE}
       volumes:
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
