@@ -25,7 +25,5 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: install compose
-      run: apt update && apt install docker-compose -y
     - name: Run the compose
       run: docker-compose -d up
