@@ -9,9 +9,7 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
@@ -23,3 +21,11 @@ jobs:
     - name: Push the image
       run: docker push k3nd0x/piglet:latest
       
+  run-compose:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: install compose
+      run: apt update && apt install docker-compose -y
+    - name: Run the compose
+      run: docker-compose -d up
