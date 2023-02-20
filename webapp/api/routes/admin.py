@@ -38,7 +38,7 @@ async def startup_event():
     if os.environ.get("DOMAIN"):
         domain = os.environ.get("DOMAIN")
     else:
-        domain = "local"
+        domain = "localhost"
 
     inserts = [ """INSERT INTO months VALUES (2,"February"),(3,"March"),(4,"April"),(5,"May"),(6,"June"),(7,"July"),(8,"August"),(9,"September"),(10,"October"),(11,"November"),(12,"December"),(1,"January")""",
             """INSERT INTO pig_bidmapping VALUES (10000,100,NULL,NULL,NULL)""",
