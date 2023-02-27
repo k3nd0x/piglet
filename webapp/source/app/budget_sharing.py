@@ -21,9 +21,9 @@ def share():
             response = post_data_api("sharewith", data, auth=auth())
 
             if response["detail"] == "OK":
-                flash_message = {"Email wurde versendet": "success"}
+                flash_message = {"Email sent": "success"}
             else:
-                flash_message = {"Fehler beim einladen": "danger"}
+                flash_message = {"Failed to invite": "danger"}
 
             flash(flash_message)
 
@@ -55,13 +55,13 @@ def connect():
             if response["detail"] == "OK":
                 my_budgets = get_data_api("my_budgets",data=session["userid"],auth=auth())
                 session["budgets"] = my_budgets
-                flash_message = {"Beitritt abgeschlossen": "success"}
+                flash_message = {"Join completed": "success"}
             elif response["detail"] == "Payment required":
-                flash_message = {"Maximale Anzahl ausgereizt" : "danger"}
+                flash_message = {"Max budgets per user reached (currently 4)" : "danger"}
             elif response["detail"] == "Not found":
-                flash_message = {"Der Link ist abgelaufen" : "danger"}
+                flash_message = {"Link expired" : "danger"}
             else:
-                flash_message = {"Fehler beim joinen" : "danger"}
+                flash_message = {"Failed to join" : "danger"}
 
             flash(flash_message)
             return redirect(url_for('connect'))

@@ -14,7 +14,7 @@ def register():
         data = request.form.to_dict()
 
         if data["password1"] != data["password2"]:
-            flash_message = { 'Passwörter stimmen nicht überein': "danger" }
+            flash_message = { 'Passwords are not the same': "danger" }
             flash(flash_message)
             return render_template("register.html")
         
@@ -30,7 +30,7 @@ def register():
         response = post_data_api("register",create_dict)
 
         if response == {'detail': 'User already exists'}:
-            flash_message = { Markup('User {email} existiert bereits <a href="/login?email={email}">Hier einloggen</a>'.format(email=email)): "danger" }
+            flash_message = { Markup('User {email} is already existing <a href="/login?email={email}">Login here</a>'.format(email=email)): "danger" }
             flash(flash_message)
             return render_template("register.html")
         else:
@@ -49,7 +49,7 @@ def login():
             flash(flash_message)
             return render_template("login.html")
         elif responsare == {'detail': 'Not found'}:
-            flash_message = { Markup("User {} nicht gefunden <a href='/register'>Hier registrieren</a>".format(data["email"])): "danger"}
+            flash_message = { Markup("User {} not found <a href='/register'>Sign Up</a>".format(data["email"])): "danger"}
             flash(flash_message)
             return render_template("login.html")
 
@@ -112,9 +112,9 @@ def passwordlost():
             return render_template("passwordlostsuccess.html")
         elif response[0] == False:
             if response[1] == "alreadyProvided":
-                flash_message = { "Passwort zurücksetzten wurde innerhalb der letzten 15 Minuten bereits angefordert": "danger"}
+                flash_message = { "Reset password has already been requested within the last 15 Minutes": "danger"}
             elif response[1] == "UserNotAvailable":
-                flash_message = { "User nicht bekannt": "danger"}
+                flash_message = { "User not known": "danger"}
 
             flash(flash_message)
 
@@ -146,7 +146,7 @@ def newpw():
         elif request.method == "POST":
             data = request.form.to_dict()
             if data["password1"] != data["password2"]:
-                flash_message = { 'Passwörter stimmen nicht überein': "danger" }
+                flash_message = { 'Passwords are not the same': "danger" }
                 flash(flash_message)
                 return render_template("resetpassword.html")
             else:

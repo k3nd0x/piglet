@@ -43,7 +43,7 @@ def get_data():
 
             response = post_data_api("orders", data,auth=auth())
 
-            if response == "Ausgabe hinzugefügt":
+            if response == "Order added!":
                 flash_message = {response: "success"}
             else:
                 flash_message = {response: "danger"}
@@ -262,10 +262,10 @@ def category():
                 payload["budget_id"] = budget_id
                 response = post_data_api("categories", payload,auth=auth())
                 if response == "True":
-                    flash_message = {"Kategorie hinzugefügt": "success"}
+                    flash_message = {"Category added!": "success"}
                     categories = get_data_api("categorylist",data=budget_id,auth=auth())
                 else:
-                    flash_message = {"Fehler bein Anlegen": "danger"}
+                    flash_message = {"Error on creation": "danger"}
 
                 flash(flash_message)
 
@@ -276,9 +276,9 @@ def category():
                 response = post_data_api("uCat", data=payload,auth=auth())
 
                 if response:
-                    flash_message = { "Kategorie geändert": "success"}
+                    flash_message = { "Category changed": "success"}
                 else:
-                    flash_message = { "Fehler beim ändern": "danger"}
+                    flash_message = { "Error at change": "danger"}
 
                 flash(flash_message)
 
@@ -297,9 +297,9 @@ def delete():
             return_value = del_data_api('categories',data,auth=auth())
 
             if return_value =="Entity deleted":
-                flash_message = {"Kategorie gelöscht": "success"}
+                flash_message = {"Category deleted": "success"}
             else:
-                flash_message = {"Fehler beim löschen": "danger"}
+                flash_message = {"Error at delete": "danger"}
 
             flash(flash_message)
             return category()
