@@ -74,7 +74,7 @@
             </a>
 
             <div class="dropdown-menu">
-                <h6 class="dropdown-header" style="text-align: center">Benachrichtigungen</h6>
+                <h6 class="dropdown-header" style="text-align: center">Notifications</h6>
                 <hr>
                 {% if notifications != {} %}
                 {% for ts, noti in notifications.items() %}
@@ -86,13 +86,12 @@
                 {% endfor %}
                 {% else %}
                 <div class="d-flex justify-content-center">
-                    <h6 style="text-align: center"></i>Keine ungelesenen Nachrichten &#128640;</h6>
+                    <h6 style="text-align: center"></i>No unread notifications &#128640;</h6>
                 </div>
                 {% endif %}
                 <hr>
                 <div class="d-flex justify-content-center">
-                    <a href="{{ url_for('notifications') }}" class="btn"><i style="text-align: center"></i>Alle
-                        anzeigen</a>
+                    <a href="{{ url_for('notifications') }}" class="btn"><i style="text-align: center"></i>View all</a>
                 </div>
             </div>
 

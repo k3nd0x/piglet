@@ -89,7 +89,7 @@ async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
         insert = mysql.post(query)
 
     if insert == True:
-        output = "Ausgabe hinzugefügt".format(userid,value, curr, category,description)
+        output = "Order added".format(userid,value, curr, category,description)
 
         # 2022-07-04 Update MYSQL nötig - keine ids in new_order verfügbar
         #get_lastinsert = '''select id from new_orders where user_id={} order by timestamp DESC limit 1'''.format(userid)
@@ -111,22 +111,26 @@ async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
                     noti_query = '''insert into pig_notifications (srcuid, budgetid,value,destuid,state,messageid,typeid) values ({},{},{},{},0,1,1)'''.format(userid,budget_id,value,dstuid)
 
                     mysql.post(noti_query)
+
+                try:
                 
-                if notisettings[0]["mail"] == 1:
-                    username = '''select name from registered_user where id={}'''.format(userid)
-                    budget_name = '''select name from pig_budgets where id={}'''.format(budget_id)
-                    email = '''select email from registered_user where id={}'''.format(dstuid)
+                    if notisettings[0]["mail"] == 1:
+                        username = '''select name from registered_user where id={}'''.format(userid)
+                        budget_name = '''select name from pig_budgets where id={}'''.format(budget_id)
+                        email = '''select email from registered_user where id={}'''.format(dstuid)
 
-                    username = mysql.get(username)[0]["name"]
-                    budget_name = mysql.get(budget_name)[0]["name"]
-                    email = mysql.get(email)[0]["email"]
+                        username = mysql.get(username)[0]["name"]
+                        budget_name = mysql.get(budget_name)[0]["name"]
+                        email = mysql.get(email)[0]["email"]
 
-                    mailvalue = '''{} hat {} € zum Budget {} hinzugefügt!'''.format(username, value, budget_name)
+                        mailvalue = '''{} added {} $ to the budget {}'''.format(username, value, budget_name)
 
-                    header = '''{} hat eingekauft!'''.format(username)
-                    
-                    payload = { "mode": "noti", "to_address": email, "value": mailvalue, "header": header }
-                    mailstate, code, message = mail(payload)
+                        header = '''{} went shopping!'''.format(username)
+                        
+                        payload = { "mode": "noti", "to_address": email, "value": mailvalue, "header": header }
+                        mailstate, code, message = mail(payload)
+                except:
+                    print("Error sending mail - check your mailserver config")
     else:
         output = "Query failed - try again later"
 

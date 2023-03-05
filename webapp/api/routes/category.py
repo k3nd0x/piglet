@@ -77,9 +77,9 @@ async def categories(catname: str, color: str, budget_id: int, current_user = De
                     email = mysql.get(email)[0]["email"]
                     cat_name = mysql.get(cat_name)[0]["name"]
 
-                    value = '''{} hat eine neue Kategorie '{}' zum Budget {} hinzugefügt!'''.format(username, cat_name, budget_name)
+                    value = '''{} added a new category '{}' to the budget {}!'''.format(username, cat_name, budget_name)
 
-                    header = '''{} hat eine neue Kategorie hinzugefügt!'''.format(username)
+                    header = '''{} Added a new category!'''.format(username)
                     
                     payload = { "mode": "noti", "to_address": email, "value": mailvalue, "header": header }
                     mailstate, code, message = mail(payload)

@@ -41,12 +41,12 @@ async def notification(show_all: Optional[bool] = False, current_user = Depends(
         if entry["type"] == "order":
             if entry["message"] == "added":
                 id_list.append(str(entry["id"]))
-                message = "{} hat {}€ zum Budget {} hinzugefügt".format(srcname, entry["value"], entry["budget"])
+                message = "{} added {}$ to the budget {}".format(srcname, entry["value"], entry["budget"])
 
         elif entry["type"] == "category":
             if entry["message"] == "added":
                 id_list.append(str(entry["id"]))
-                message = "{} hat eine neue Kategorie zum Budget {} hinzugefügt".format(srcname, entry["budget"])
+                message = "{} added a new category {}".format(srcname, entry["budget"])
 
         timestamp = entry["timestamp"]
 

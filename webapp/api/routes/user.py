@@ -55,12 +55,22 @@ async def register_user(registerUser: registerUser):
     query = '''insert into registered_user( id, email,password,color, shamail,budget_id,bid_mapping ) select max( id ) + 1, "{}", "{}", "{}", "{}","{}","{}" from registered_user'''.format(email,password,color,shamail,budget_id,bid_mapping)
 
     return_value = mysql.post(query)
+    user_id = mysql.lastrowid()
 
     if return_value == "duplicated":
         raise HTTPException(status_code=409, detail="User already exists")
-    else:
-        send_verification(email,hashed_mail)
-        return_value = "added"
+
+    print("################################# DEBUG ############################## {}".format(user_id),flush=True)
+
+    noti_queries = [ "INSERT INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1)".format(user_id=user_id) ]
+    for i in noti_queries:
+        try:
+            mysql.post(i)
+        except:
+            continue
+    payload = { "mode": "verify", "to_address": email, "hashed_url": hashed_mail }
+    mail(payload)
+    return_value = "added"
 
     mysql.close()
 

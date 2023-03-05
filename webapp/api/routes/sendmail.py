@@ -62,6 +62,8 @@ def mail(payload=None):
         error_message = e.smtp_error
 
         return [ False, e.smtp_code, e.smtp_error ]
+    except:
+        return [ False, "Mail", "error" ]
 
 
 
