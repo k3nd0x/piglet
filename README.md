@@ -2,7 +2,9 @@
 
 A simple Webapp to manage and administrate budgets in a household. \
 It comes with an lightweight webinterface and an api.
-You can easily add, categorize and compare your expenditures, individualize your categories and profile.
+You can easily add, categorize and compare your expenditures, individualize your categories and profile. 
+
+![Dashboard](DOCS/piglet_dashboard.PNG)
 
 # Installation
 #### With Docker
