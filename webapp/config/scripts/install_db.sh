@@ -8,6 +8,13 @@ else
 	USER="${MYSQL_USER}"
 fi
 
+if [[ -z "$MYSQL_PORT" ]]
+then
+	PORT="3306"
+else
+	PORT="${MYSQL_PORT}"
+fi
+
 if [[ -z "$MYSQL_HOST" ]]
 then
 	HOST="database"
@@ -22,7 +29,7 @@ else
 	DATABASE="${MYSQL_DATABASE}"
 fi
 
-while ! nc -z database 3306 &> /dev/null
+while ! nc -z $HOST $PORT &> /dev/null
 do
 	echo "$DATE waiting for database host"
 	sleep 5
