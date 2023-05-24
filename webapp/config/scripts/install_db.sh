@@ -40,7 +40,7 @@ TABLES=`mysql -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST -e 'show tables'`
 if [ -z "$TABLES" ]
 then
 	echo "$DATA create database $DATABASE if not exist"
-	mysql -u $USER -p$MYSQL_PASSWORD -h $HOST -e 'create database IF NOT EXISTS `$DATABASE`'
+	mysql -u $USER -p$MYSQL_PASSWORD -h $HOST -e 'create database IF NOT EXISTS $DATABASE'
 	echo "$DATE Import schema"
 	mysql -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST < /webapp/config/scripts/piglet-schema.sql
 	exit 0

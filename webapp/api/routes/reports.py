@@ -86,14 +86,27 @@ async def months(budget_id: str, current_user = Depends(get_current_user)):
 
     check(mysql,current_user["bid_mapping"], budget_id)
 
-    response = mysql.get("""select distinct CONVERT(YEAR(new_orders.timestamp),CHAR(50)) as year, CONVERT(months.id, INT) as id, months.name from months inner join new_orders on MONTHNAME(new_orders.timestamp)=months.name where budget_id={} group by id""".format(budget_id))
+    query = """select distinct YEAR(new_orders.timestamp) as year, CONVERT(months.id, INT) as id, months.name from months inner join new_orders on MONTHNAME(new_orders.timestamp)=months.name where budget_id={}""".format(budget_id)
+
+    response = mysql.get(query)
     #response = mysql.get("""select distinct CONVERT(YEAR(new_orders.timestamp),CHAR(50)) as year where budget_id={} order by year desc""".format(budget_id))
     return_dict = {}
 
+    year_list = []
+    month_dict = []
     for i in response:
-        if i["year"] not in return_dict:
-            return_dict[i["year"]] = []
-        return_dict[i["year"]].append({ "id": i["id"], "name": i["name"]})
+        if str(i["year"]) not in year_list:
+            year_list.append(str(i["year"]))
+        if {"id": i["id"], "name": i["name"]} not in month_dict:
+            month_dict.append({"id": i["id"], "name": i["name"]})
+    month_dict = sorted(month_dict, key=lambda d: d['id'])
+
+    #for i in response:
+    #    if i["year"] not in return_dict:
+    #        return_dict[i["year"]] = []
+    #    return_dict[i["year"]].append({ "id": i["id"], "name": i["name"]})
+    mysql.close()
 
 
-    return return_dict
+    return month_dict,year_list
+
