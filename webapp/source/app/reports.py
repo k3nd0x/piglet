@@ -12,7 +12,7 @@ def reports():
 
         session["title"] = "report"
         budget_id = session["budget_id"]
-        months = get_data_api('months',budget_id, auth=auth())
+        months,years = get_data_api('months',budget_id, auth=auth())
         if months == {'detail': 'Not Found'}:
             months = { "Not found": [ { "keine": "Einträge" } ] }
 
@@ -25,13 +25,11 @@ def reports():
             if reports == {'detail': 'Not found!'}:
                 flash_message = {"Keine Einträge in diesem Monat": "danger" }
                 flash(flash_message)
-                return render_template("reports_get.html", months=months, notifications=notifications, noticount=noticount, notilist=notilist)
+                return render_template("reports_get.html", years=years, months=months, notifications=notifications, noticount=noticount, notilist=notilist)
 
-            year = session["year"]
-            month = session["month"]
             reports = reports["users"]
-            
-            return render_template("reports.html", months=months, graphdata=graphdata, reports=reports, month=month, year=year,notifications=notifications, noticount=noticount, notilist=notilist)
+
+            return render_template("reports.html", months=months, years=years, graphdata=graphdata, reports=reports, notifications=notifications, noticount=noticount, notilist=notilist)
 
         elif request.method == "POST":
             data = request.values.get
@@ -43,6 +41,8 @@ def reports():
             session["month"] = data["month"]
             session["year"] = data["year"]
 
+            print(session,flush=True)
+
             #timestamps = get_data_api('timestamp', data)
             graphdata = get_data_api('graph_report',data, auth=auth())
             reports = get_data_api('reports', data, auth=auth())
@@ -50,7 +50,7 @@ def reports():
             if reports == {'detail': 'Not found!'}:
                 flash_message = {"Keine Einträge in diesem Monat": "danger" }
                 flash(flash_message)
-                return render_template("reports_get.html", months=months, notifications=notifications, noticount=noticount, notilist=notilist)
+                return render_template("reports_get.html", years=years, months=months, notifications=notifications, noticount=noticount, notilist=notilist)
 
 
             year = data["year"]
@@ -68,14 +68,15 @@ def reports():
 
                 #flash(debt)
 
-                return render_template("reports_debt.html", months=months, graphdata=graphdata, reports=reports, month=month, debt=debt,year=year,notifications=notifications, noticount=noticount, notilist=notilist)
+                return render_template("reports_debt.html", years=years, months=months, graphdata=graphdata, reports=reports,  debt=debt,year=year,notifications=notifications, noticount=noticount, notilist=notilist)
                 #return return redirect(url_for('reports'))
 
             else:
-                return render_template("reports.html", months=months, graphdata=graphdata, reports=reports, month=month, year=year,notifications=notifications, noticount=noticount, notilist=notilist)
+                return render_template("reports.html", years=years, months=months, graphdata=graphdata, reports=reports, year=year,notifications=notifications, noticount=noticount, notilist=notilist)
 
         else:
-            return render_template("reports_get.html", months=months,notifications=notifications, noticount=noticount, notilist=notilist)
-            
+            return render_template("reports_get.html", years=years, months=months,notifications=notifications, noticount=noticount, notilist=notilist)
+
     else:
         return redirect(url_for('login'))
+

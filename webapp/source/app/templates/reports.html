@@ -4,36 +4,32 @@
             <div class="col-lg-12 offset-lg-0">
                 <div class="card text-center">
                     <div class="card-header">
-                        <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Overview</h5>
+                        <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Analyse:</h5>
                     </div>
                     <div class="card-body">
                         <div class="col-xl-6 offset-xl-3">
                             <form method="POST" action="/reports">
                                 <select class="form-control form-control_piglet" name="year" style="margin-top: 10px;">
-                                    {% for item in months %}
-                {% if item == session.year %} 
+                                    {% for item in years %}
+                                        {% if item == session.year %}
                                         <option value="{{ session.year }}" selected >{{ session.year }}</option>
-                {% else %}
+                                        {% else %}
                                         <option value="{{ item }}">{{ item }}</option>
-                {% endif %}
+                                        {% endif %}
                                     {% endfor %}
                                     </select>
-                                <select class="form-control form-control_piglet" name="month" style="margin-top: 10px">
-                                        {% for key,value in months.items() %}
-                                        {% for months in value %}
-                    {% if months.name == session.month %}
-                                        <option value="{{ session.month }}" selected>{{ session.month }}</option>
-                    {% else %}
-                                        <option value="{{ months.name }}">{{ months.name }}</option>
-                    {% endif %}
-                                        {% endfor %}
+                                <select class="form-control form-control_piglet" name="month" style="margin-top: 10px;">
+                                        {% for value in months %}
+                                            {% if value.name == session.month %}
+                                                <option value="{{ session.month }}" selected>{{ session.month }}</option>
+                                            {% else %}
+                                                    <option value="{{ value.name }}">{{ value.name }}</option>
+                                            {% endif %}
                                         {% endfor %}
                                 <input type="hidden" name="budget_id" value="{{ session.budget_id }}">
-                                        
                                     </select>
                                 <button class="btn btn-piglet" type="submit" style="margin-top: 20px;">Generate</button></form>
                         </div>
-                    </div>
                 </div>
                     {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {% for key,value in msgs.items() %}
                     <div class="row" style="margin-top: 30px;">
@@ -55,23 +51,23 @@
             <div class="col-lg-12 col-xxl-6 offset-lg-0">
                 <div class="card text-center">
                     <div class="card-header">
-                        <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Overview per User {{month}} {{year}}</h5>
+                        <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Overview {{session.month}} {{session.year}}:</h5>
                     </div>
                     <div class="card-body">
-			    <div class="d-flex justify-content-center">
-				<canvas id="byUser" style="width:100%;max-width:1000px"></canvas>
+                            <div class="d-flex justify-content-center">
+                                <canvas id="byUser" style="width:100%;max-width:1000px"></canvas>
                     </div>
                     </div>
                 </div>
             </div>
-	    <div class="col-lg-12 col-xxl-6 offset-lg-0">
+            <div class="col-lg-12 col-xxl-6 offset-lg-0">
                 <div class="card text-center">
                     <div class="card-header">
-                        <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Overview per Category {{month}} {{year}}</h5>
+                        <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Overview by Category {{session.month}} {{session.year}}:</h5>
                     </div>
                     <div class="card-body">
-			    <div class="d-flex justify-content-center">
-				<canvas id="byCat" style="width:100%;max-width:1000px"></canvas>
+                            <div class="d-flex justify-content-center">
+                                <canvas id="byCat" style="width:100%;max-width:1000px"></canvas>
                     </div>
                     </div>
                 </div>
@@ -83,7 +79,7 @@
             <div class="col-lg-12 offset-lg-0">
                 <div class="card text-center">
                     <div class="card-header">
-                        <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Debt in {{month}} {{year}}:</h5>
+                        <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Debt {{session.month}} {{session.year}}:</h5>
                     </div>
                     <div class="card-body">
                         <div class="col-xl-6 offset-xl-3">
@@ -117,10 +113,10 @@ new Chart("byUser", {
   },
   options: {
     legend: {
-	    display: false,
+            display: false,
     title: {
       display: true,
-      text: "Overview per User"
+      text: "Overview"
     }
     }
   }
@@ -142,10 +138,10 @@ new Chart("byCat", {
   },
   options: {
     legend: {
-	    display: false,
+            display: false,
     title: {
       display: true,
-      text: "Overview per Category"
+      text: "Overview by category"
     }
     }
   }
