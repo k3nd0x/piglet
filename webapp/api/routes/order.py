@@ -9,7 +9,6 @@ from pydantic import BaseModel
 from typing import Optional
 
 from .mysql import sql
-from .admin import oauth2_scheme
 from .functs import get_budgetid,check,_get_uids,get_notisettings
 from .sendmail import mail
 

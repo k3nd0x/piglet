@@ -96,7 +96,7 @@
             </div>
 
             <a href="#" class="dropdown-toggle link-piglet-nav" data-bs-toggle="dropdown">{{ session.name }} <img
-		src="{{ url_for('static', filename=session.image) }}", alt="Avatar" class="avatar"></a>
+		src="{{ url_for('pictures', filename=session.image) }}", alt="Avatar" class="avatar"></a>
             <div class="dropdown-menu">
                 {% if session.budgets|length > 1 %}
                 {% if session.title != "settings" %}

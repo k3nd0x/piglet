@@ -37,6 +37,7 @@ from .routes.reports import reports
 from .routes.graph import graph 
 from .routes.admin import admin
 from .routes.notifications import notifications
+from .routes.system import system
 
 app.include_router(user,prefix="/user",tags=["User"])
 app.include_router(order,prefix="/order",tags=["Order"])
@@ -47,3 +48,4 @@ app.include_router(reports,prefix="/reports",tags=["Report Generation"])
 app.include_router(graph,prefix="/graph",tags=["Graph Generation"])
 app.include_router(admin,prefix="/admin",tags=["Admin Part"])
 app.include_router(notifications,prefix="/notifications",tags=["Notification generation and supplying"])
+app.include_router(system,prefix="/system",tags=["Monitoring and Testing"])

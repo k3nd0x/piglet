@@ -1,5 +1,5 @@
 from cgitb import text
-from flask import Flask, render_template, url_for, flash, redirect, request, session
+from flask import Flask, render_template, url_for, flash, redirect, request, session, send_from_directory
 from source.app import app
 from werkzeug.utils import secure_filename
 from hashlib import sha256
@@ -392,6 +392,10 @@ def notifications():
         return render_template("notifications.html", notifications=notifications, notilist=notilist, noticount=noticount,all_notifications=all_notifications)
     else:
         return redirect(url_for('login'))
+
+@app.route('/pictures/<path:filename>', methods=["GET"])
+def pictures(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 if __name__ == '__main__':

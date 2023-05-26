@@ -5,7 +5,7 @@ import os
 import redis
 from flask import Flask
 from flask_session import Session
-PROFILE_PICTURES = '/webapp/source/app/static/'
+PROFILE_PICTURES = '/webapp/source/app/pictures'
 
 # Initialize the app
 app = Flask(__name__, instance_relative_config=True)

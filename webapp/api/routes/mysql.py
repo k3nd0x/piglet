@@ -69,7 +69,9 @@ class sql:
         self.cursor.close()
         return data
 
-    def fetchone(self):
+    def fetchone(self,query):
+        self.cursor = self.db.cursor()
+        self.cursor.execute(query)
         data = self.cursor.fetchone()
         self.cursor.close()
         return data
@@ -82,101 +84,3 @@ class sql:
     def close(self):
         self.db.commit()
         self.db.close()
-
-
-
-#def session():
-#    try:
-#        mydb = mysql.connector.connect(
-#            host="db",
-#            user="piglet",
-#            password="FLASK_budget2PW!",
-#            database="piglet"
-#        )
-#    except:
-#        return False, "MYSQL not available"
-#
-#    return mydb
-#
-#def get(query):
-#    mydb = session()
-#    cursor = mydb.cursor(dictionary=True)
-#    cursor.execute(query)
-#
-#    row = cursor.fetchall()
-#
-#    cursor.close()
-#    mydb.close()
-#
-#    return row
-#
-#def post(query,mode=""):
-#    mydb = session()
-#    if mode == "":
-#        try:
-#            cursor = mydb.cursor(dictionary=True)
-#            cursor.execute(query)
-#
-#            mydb.commit()
-#            response = True
-#            cursor.close()
-#            mydb.close()
-#        except: 
-#            response = False
-#
-#        return response
-#
-#    elif mode == "register":
-#        try:
-#            cursor = mydb.cursor(dictionary=True)
-#            cursor.execute(query)
-#            mydb.commit()
-#            
-#            rows = cursor.rowcount
-#
-#            cursor.close()
-#        except mysql.connector.errors.IntegrityError as IntegrityError:
-#            return "duplicated"
-#        except mysql.connector.Error as error:
-#            return { "Connection to mysql": "Failed" }
-#        mydb.close()
-#
-#        if rows > 0:
-#            return "added"
-#        else:
-#            return "failed"
-#    elif mode == "budget_id":
-#        try:
-#            cursor = mydb.cursor(dictionary=True)
-#            cursor.execute(query)
-#            mydb.commit()
-#            
-#            rows = cursor.rowcount
-#            budget_id = cursor.lastrowid
-#
-#            cursor.close()
-#        except mysql.connector.errors.IntegrityError as IntegrityError:
-#            return "duplicated"
-#        except mysql.connector.Error as error:
-#            return { "Connection to mysql": "Failed" }
-#        mydb.close()
-#
-#
-#        if rows > 0:
-#            return str(budget_id)
-#        else:
-#            return "500"
-#
-#def delete(query):
-#    mydb = session()
-#    try:
-#        cursor = mydb.cursor()
-#        cursor.execute(query)
-#        mydb.commit()
-#
-#        row = "Entity deleted"
-#
-#    except:
-#        row = { "Query":"Failed"}
-#
-#    return row
