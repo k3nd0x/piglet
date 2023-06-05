@@ -17,7 +17,8 @@ def sick_condition():
 system.add_api_route("/sys-health", health([healthy_condition, sick_condition]))
 
 @system.get("/env-health")
-async def db_state(current_user = Depends(get_current_user)):
+#async def db_state(current_user = Depends(get_current_user)):
+async def db_state():
     try:
         mysql = sql()
         query = 'select VERSION()'
