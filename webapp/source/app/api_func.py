@@ -288,8 +288,9 @@ def post_data_api(mode, data,debug=False,auth=None):
         budget_id = data["id"]
 
         name = data["newname"]
+        currency = data["newcurrency"]
 
-        dataurl = "{}{}?name={}".format(url,budget_id,name)
+        dataurl = "{}{}?name={}&currency={}".format(url,budget_id,name,currency)
 
         response = put(dataurl)
 

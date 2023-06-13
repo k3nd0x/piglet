@@ -91,6 +91,7 @@ CREATE TABLE `pig_budgets` (
   `name` varchar(255) DEFAULT NULL,
   `retired` tinyint(1) DEFAULT 0,
   `sharecode` varchar(255) DEFAULT NULL,
+  `currency` varchar(255) DEFAULT "USD",
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

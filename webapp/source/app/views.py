@@ -44,9 +44,9 @@ def get_data():
             response = post_data_api("orders", data,auth=auth())
 
             if response == "Order added!":
-                flash_message = {response: "success"}
-            else:
                 flash_message = {response: "danger"}
+            else:
+                flash_message = {response: "success"}
 
             flash(flash_message)
 
@@ -197,12 +197,12 @@ def budget():
         noticount, notilist, notifications = get_notis()
 
         #connected_budgets = get_data_api("connected_budgets",data=budget_id,auth=auth())
-        budget_member = get_data_api("budgetmember", data=budget_id,auth=auth())
+        #budget_member = get_data_api("budgetmember", data=budget_id,auth=auth())
         my_budgets = get_data_api("my_budgets",data=user_id,auth=auth())
 
         session["budgets"] = my_budgets
         if request.method == "GET":
-            return render_template("budget_settings.html", budget_member=budget_member,my_budgets=my_budgets,notifications=notifications, notilist=notilist, noticount=noticount)
+            return render_template("budget_settings.html", my_budgets=my_budgets,notifications=notifications, notilist=notilist, noticount=noticount)
 
     else:
         return redirect(url_for('login'))
@@ -213,6 +213,7 @@ def ubudget():
     if session:
         if request.method == "POST":
             data = request.form.to_dict()
+            print(data,flush=True)
 
             response = post_data_api("ubudget", data=data,auth=auth())
 

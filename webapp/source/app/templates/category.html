@@ -1,145 +1,224 @@
-{% include"navbar.html" %}
-<div class="container"style="margin-top: 10px" >
-    <div class="row">
-        <div class="col-lg-12 offset-lg-0">
-            <div class="card text-center">
-                <div class="card-header">
-                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Categories</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-xl-6 offset-xl-3">
-                            <form method="POST" action="{{ url_for( 'category') }}">
-                                <label class="form-label d-lg-flex justify-content-lg-center" style="margin-left: 15px;margin-top: 5px;">Add new Category</label>
-                                <input class="form-control form-control_piglet" name="cat" type="text" style="margin-top: 0px;text-align: center;" placeholder="Kategorie">
-                                <label class="form-label d-lg-flex justify-content-lg-center" style="margin-left: 15px;margin-top: 5px;">Color:</label>
-                                <input class="form-control form-control_piglet" name="color" type="color" style="margin-top: 0px; text-align: center;" value="#123456">
-                                <button class="btn btn-piglet" type="submit" style="margin-top: 20px;">Add</button>
-                            </form>
-                            {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {% for key,value in msgs.items() %}
-                            <div class="alert alert-{{ value }}" style="border-radius: 40px;text-align: center;">
-                                {{key}}
-                            </div>
-                            {% endfor %} {% endfor %} {% endif %} {% endwith %}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="card-body">
-                            <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
-                                <table id="category" class="table cell-border compact hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Color</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <div class="input-group">
-                                            {% for item in categories %}
-                                            <tr>
-                                                <td> {{ item.name }}</td>
-                                                <td>
-                                                    <svg width="20" height="20">
-							                            <rect width="20" height="20" style="fill:{{ item.color }};stroke-width:3;stroke:rgb(0,0,0)" />
-						                            </svg>
-                                                </td>
-                                                <td>
-
-                                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editCat_{{ item.id }}">
-                                                        <i class="fas fa-edit"></i>
-                                                      </button>
-
-                                                    <!-- Modal -->
-                                                    <div class="modal fade" id="editCat_{{ item.id }}" tabindex="-1" aria-labelledby="catModalLabel" aria-hidden="true">
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="catModalLabel">Change Category</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <form method="post" action="{{ url_for( 'category') }} ">
-                                                                        <label class="form-label" style="margin-left: 15px;">Name:</label>
-                                                                        <input class="form-control form-control_piglet" name="newname" placeholder="{{ item.name }}" style="margin-top: 10px;text-align: center;">
-                                                                        <label class="form-label" style="margin-left: 15px;margin-top: 5px;">Color:</label>
-                                                                        <input class="form-control form-control_piglet" name="color" type="color" style="margin-top: 0px; text-align: center;" value="{{ item.color }}">
-                                                                        <button class="btn btn-piglet" name="id" value="{{ item.id }}" type="submit" style="margin-top: 30px;">Save</button>
-                                                                    </form>
-                                                                </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <a style="text-decoration:none;" href="/delete?name=cat&id={{ item.id }}" class="btn btn-danger">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </a>
-
-                                                    <!--
-                                                    <a style="text-decoration:none;" onclick="openModal('modalCat')" id="modalCat" class="modalOpenBtn btn btn-success"><i class="fas fa-edit"></i></a>
-
-                                                    <div id="modalCat" class="modal">
-                                                        <div class="modalContent">
-                                                            <span class="modalClose">×</span>
-                                                            <div class="col-xl-6 offset-xl-3">
-                                                                <center>
-                                                                    <h2>Budget Name ändern</h2>
-                                                                    <br>
-                                                                </center>
-                                                                <form method="post" action="/ubudget">
-                                                                    <input class="form-control" name="newname" placeholder="{{ item.name }}" style="border-radius: 40px;margin-top: 10px;text-align: center;">
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <a style="text-decoration:none;" href="/delete?name=cat&id={{ item.id }}" class="btn btn-danger">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </a>-->
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </div>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+{% include "navbar.html" %}
+<div class="container" style="margin-top: 10px">
+  <div class="row">
+    <div class="col-lg-12 offset-lg-0">
+      <div class="card text-center">
+        <div class="card-header">
+          <h5
+            style="font-weight: bold; margin-bottom: auto"
+            class="text-piglet"
+          >
+            Categories
+          </h5>
         </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-xl-6 offset-xl-3">
+              <form method="POST" action="{{ url_for( 'category') }}">
+                <label
+                  class="form-label d-lg-flex justify-content-lg-center"
+                  style="margin-left: 15px; margin-top: 5px"
+                  >Add new Category</label
+                >
+                <input
+                  class="form-control form-control_piglet"
+                  name="cat"
+                  type="text"
+                  style="margin-top: 0px; text-align: center"
+                  placeholder="Kategorie"
+                />
+                <label
+                  class="form-label d-lg-flex justify-content-lg-center"
+                  style="margin-left: 15px; margin-top: 5px"
+                  >Color:</label
+                >
+                <input
+                  class="form-control form-control_piglet"
+                  name="color"
+                  type="color"
+                  style="margin-top: 0px; text-align: center"
+                  value="#123456"
+                />
+                <button
+                  class="btn btn-piglet"
+                  type="submit"
+                  style="margin-top: 20px"
+                >
+                  Add
+                </button>
+              </form>
+              {% with messages = get_flashed_messages() %} {% if messages %} {%
+              for msgs in messages %} {% for key,value in msgs.items() %}
+              <div
+                class="alert alert-{{ value }}"
+                style="border-radius: 40px; text-align: center"
+              >
+                {{key}}
+              </div>
+              {% endfor %} {% endfor %} {% endif %} {% endwith %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="card-body">
+              <div
+                class="table-responsive table mt-2"
+                id="dataTable"
+                role="grid"
+                aria-describedby="dataTable_info"
+              >
+                <table id="category" class="table cell-border compact hover">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Color</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <div class="input-group">
+                      {% for item in categories %}
+                      <tr>
+                        <td>{{ item.name }}</td>
+                        <td>
+                          <svg width="20" height="20">
+                            <rect
+                              width="20"
+                              height="20"
+                              style="fill:{{ item.color }};stroke-width:3;stroke:rgb(0,0,0)"
+                            />
+                          </svg>
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editCat_{{ item.id }}"
+                          >
+                            <i class="fas fa-edit"></i>
+                          </button>
+
+                          <div
+                            class="modal fade"
+                            id="editCat_{{ item.id }}"
+                            tabindex="-1"
+                            aria-labelledby="catModalLabel"
+                            aria-hidden="true"
+                          >
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="catModalLabel">
+                                    Change Category
+                                  </h5>
+                                  <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Schließen"
+                                  ></button>
+                                </div>
+                                <div class="modal-body">
+                                  <form
+                                    method="post"
+                                    action="{{ url_for( 'category') }} "
+                                  >
+                                    <label
+                                      class="form-label"
+                                      style="margin-left: 15px"
+                                      >Name:</label
+                                    >
+                                    <input
+                                      class="form-control form-control_piglet"
+                                      name="newname"
+                                      placeholder="{{ item.name }}"
+                                      style="
+                                        margin-top: 10px;
+                                        text-align: center;
+                                      "
+                                    />
+                                    <label
+                                      class="form-label"
+                                      style="margin-left: 15px; margin-top: 5px"
+                                      >Color:</label
+                                    >
+                                    <input
+                                      class="form-control form-control_piglet"
+                                      name="color"
+                                      type="color"
+                                      style="
+                                        margin-top: 0px;
+                                        text-align: center;
+                                      "
+                                      value="{{ item.color }}"
+                                    />
+                                    <button
+                                      class="btn btn-piglet"
+                                      name="id"
+                                      value="{{ item.id }}"
+                                      type="submit"
+                                      style="margin-top: 30px"
+                                    >
+                                      Save
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <a
+                            style="text-decoration: none"
+                            href="/delete?name=cat&id={{ item.id }}"
+                            class="btn btn-danger"
+                          >
+                            <i class="fas fa-trash-alt"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </div>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 <script>
-    $(document).ready(function() {
-        $('#category').dataTable({
-            scrollX: false,
-            scrollY: false,
-            "searching": false,
-            "lengthChange": false,
-            "ordering": false,
-            "paging": false,
-            "bInfo": false,
-            "columnDefs": [{
-                "width": "10%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 1
-            }, {
-                "width": "8%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 0
-            }, {
-                "width": "8%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 2
-            }, ],
-            "language": {
-                "lengthMenu": "Max entries _MENU_",
-                "zeroRecords": "Sorry no categories added yet &#128533",
-            }
-        });
+  $(document).ready(function () {
+    $("#category").dataTable({
+      scrollX: false,
+      scrollY: false,
+      searching: false,
+      lengthChange: false,
+      ordering: false,
+      paging: false,
+      bInfo: false,
+      columnDefs: [
+        {
+          width: "10%",
+          className: "dt-body-center dt-head-center",
+          targets: 1,
+        },
+        {
+          width: "8%",
+          className: "dt-body-center dt-head-center",
+          targets: 0,
+        },
+        {
+          width: "8%",
+          className: "dt-body-center dt-head-center",
+          targets: 2,
+        },
+      ],
+      language: {
+        lengthMenu: "Max entries _MENU_",
+        zeroRecords: "Sorry no categories added yet &#128533",
+      },
     });
+  });
 </script>
 {% extends"footer.html" %}
-
-</html>

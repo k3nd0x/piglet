@@ -62,7 +62,6 @@ class newOrder(BaseModel):
 async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
     mysql = sql()
     try:
-        curr = "USD"
         value = float(newOrder.value)
         category = int(newOrder.category)
         userid = int(newOrder.userid)
@@ -75,6 +74,9 @@ async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="Forbidden")
 
     check(mysql,current_user["bid_mapping"], budget_id)
+
+    currency_query = f"select currency from pig_budgets where id={budget_id}"
+    curr = mysql.get(currency_query)[0]["currency"]
 
 
     if newOrder.month != None and newOrder.year != None:

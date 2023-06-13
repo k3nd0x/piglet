@@ -20,7 +20,7 @@ budget = APIRouter()
 @budget.get("/")
 async def _get(current_user = Depends(get_current_user)):
     mysql = sql()
-    query = '''select CONVERT(pig_budgets.id, CHAR(50)) as id, name,sharecode from pig_budgets inner join pig_bidmapping on pig_bidmapping.b0 = pig_budgets.id or pig_bidmapping.b1 = pig_budgets.id or pig_bidmapping.b2 = pig_budgets.id or pig_bidmapping.b3 = pig_budgets.id where pig_bidmapping.id=(select bid_mapping from registered_user where id="{}")'''.format(current_user["id"])
+    query = '''select CONVERT(pig_budgets.id, CHAR(50)) as id, name,sharecode,currency from pig_budgets inner join pig_bidmapping on pig_bidmapping.b0 = pig_budgets.id or pig_bidmapping.b1 = pig_budgets.id or pig_bidmapping.b2 = pig_budgets.id or pig_bidmapping.b3 = pig_budgets.id where pig_bidmapping.id=(select bid_mapping from registered_user where id="{}")'''.format(current_user["id"])
     response = mysql.get(query)
 
     mysql.close()
@@ -62,12 +62,16 @@ async def _add(name: str, current_user = Depends(get_current_user)):
     return response
 
 @budget.put("/{budgetid}")
-async def _update(budgetid: str, name:str,current_user = Depends(get_current_user)):
+async def _update(budgetid: str, name:str, currency: str, current_user = Depends(get_current_user)):
+    valid_currencies = [ "EUR", "USD", "GBP" ]
+    if currency not in valid_currencies:
+        raise HTTPException(status_code=403, detail="Forbidden - Try valid currency")
+
     mysql = sql()
 
     check(mysql,current_user["bid_mapping"], budgetid)
 
-    query = '''update pig_budgets set name="{}" where id={}'''.format(name, budgetid)
+    query = '''update pig_budgets set name="{}", currency="{}" where id={}'''.format(name,currency, budgetid)
     response = mysql.post(query)
     mysql.close()
 
