@@ -60,7 +60,6 @@ class newOrder(BaseModel):
 
 @order.post("/new", summary="Place new order with payload")
 async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
-    mysql = sql()
     try:
         value = float(newOrder.value)
         category = int(newOrder.category)
@@ -69,6 +68,7 @@ async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
         description = newOrder.description
     except:
         return "Variables not valid"
+    mysql = sql()
 
     if userid != current_user["id"]:
         raise HTTPException(status_code=403, detail="Forbidden")

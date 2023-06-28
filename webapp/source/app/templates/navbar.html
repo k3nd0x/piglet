@@ -34,7 +34,7 @@
     <!-- Custom + Darkmode -->
     <link rel="stylesheet" href="{{ url_for('static', filename='custom.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='slider.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bell.css') }}">
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='bell.css') }}">-->
     <script type="text/javascript" language="javascript" src="{{ url_for('static', filename='nav.js')}}"></script>
 
 
@@ -50,6 +50,8 @@
     <title>Piglet | Budget</title>
     {% elif session.title == "category" %}
     <title>Piglet | Categories</title>
+    {% elif session.title == "futurespends" %}
+    <title>Piglet | Future Spends</title>
     {% elif session.title == "notifications" %}
     <title>Piglet | Notifications</title>
     {% else %}
@@ -137,6 +139,8 @@
                         Budget</a>
                     <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
                             class="nav_name">Analyze</span> </a>
+                    <a href="{{ url_for( 'futurespends') }}" class="nav_link"> <i class='bx bxs-balloon nav_icon '></i> <span
+                            class="nav_name">Future Spends</span> </a>
                     {% elif session.title == "order" %}
                     <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
                         <span class="nav_name">Dashboard</span> </a>
@@ -149,6 +153,8 @@
                         Budget</a>
                     <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
                             class="nav_name">Analyze</span> </a>
+                    <a href="{{ url_for( 'futurespends') }}" class="nav_link"> <i class='bx bxs-balloon nav_icon '></i> <span
+                            class="nav_name">Future Spends</span> </a>
 
                     {% elif session.title == "report" %}
                     <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
@@ -161,6 +167,8 @@
                         Budget</a>
                     <a href="{{ url_for( 'reports') }}" class="nav_link active"> <i class='bx bxs-report nav_icon '></i>
                         <span class="nav_name">Analyze</span> </a>
+                    <a href="{{ url_for( 'futurespends') }}" class="nav_link"> <i class='bx bxs-balloon nav_icon '></i> <span
+                            class="nav_name">Future Spends</span> </a>
 
                     {% elif session.title == "category" %}
                     <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
@@ -173,6 +181,8 @@
                         Budget</a>
                     <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
                             class="nav_name">Analyze</span> </a>
+                    <a href="{{ url_for( 'futurespends') }}" class="nav_link"> <i class='bx bxs-balloon nav_icon '></i> <span
+                            class="nav_name">Future Spends</span> </a>
                     {% elif session.title == "budget" %}
                     <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
                         <span class="nav_name">Dashboard</span> </a>
@@ -184,6 +194,21 @@
                             class='bx bxs-directions nav_icon'></i> Budget</a>
                     <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
                             class="nav_name">Analyze</span> </a>
+                    <a href="{{ url_for( 'futurespends') }}" class="nav_link"> <i class='bx bxs-balloon nav_icon '></i> <span
+                            class="nav_name">Future Spends</span> </a>
+                    {% elif session.title == "futurespends" %}
+                    <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
+                        <span class="nav_name">Dashboard</span> </a>
+                    <a href="{{ url_for( 'get_data') }}" class="nav_link"> <i class='bx bxs-wallet-alt nav_icon '></i>
+                        <span class="nav_name">Add Order</span> </a>
+                    <a href="{{ url_for( 'category') }}" class="nav_link"> <i class='bx bxs-category-alt nav_icon '></i>
+                        <span class="nav_name">Categories</span> </a>
+                    <a href="{{ url_for( 'budget' ) }}" class="nav_link"><i
+                            class='bx bxs-directions nav_icon'></i> Budget</a>
+                    <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
+                            class="nav_name">Analyze</span> </a>
+                    <a href="{{ url_for( 'futurespends') }}" class="nav_link active"> <i class='bx bxs-balloon nav_icon '></i> <span
+                            class="nav_name">Future Spends</span> </a>
                     {% else %}
                     <a href="{{ url_for( 'overview') }}" class="nav_link"> <i class='bx bxs-dashboard nav_icon '></i>
                         <span class="nav_name">Dashboard</span> </a>
@@ -195,6 +220,8 @@
                         Budget</a>
                     <a href="{{ url_for( 'reports') }}" class="nav_link"> <i class='bx bxs-report nav_icon '></i> <span
                             class="nav_name">Analyze</span> </a>
+                    <a href="{{ url_for( 'futurespends') }}" class="nav_link"> <i class='bx bxs-balloon nav_icon '></i> <span
+                            class="nav_name">Future Spends</span> </a>
                     {% endif %}
 
                 </div>

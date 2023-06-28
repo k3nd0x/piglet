@@ -263,6 +263,19 @@ CREATE TABLE `registered_user` (
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `pig_futurespends` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `value` float(255,2) DEFAULT NULL,
+  `currency` varchar(100) DEFAULT NULL,
+  `user_id` int(255) DEFAULT NULL,
+  `category_id` int(255) DEFAULT NULL,
+  `budget_id` int(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

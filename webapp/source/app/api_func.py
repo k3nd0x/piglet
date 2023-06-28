@@ -131,6 +131,18 @@ def get_data_api(mode, data=None,debug=False,auth=None):
         response = get(url)
 
         return response
+    elif mode == "futurespends":
+        headers["Authorization"] = "Bearer {}".format(auth)
+
+        url = baseurl + "futurespends/"
+        budget_id = data["budget_id"]
+
+        url = url + "?budget_id=" + str(budget_id)
+        
+        response = get(url)
+
+        return response
+        
     
 def post_data_api(mode, data,debug=False,auth=None):
     baseurl = "http://127.0.0.1:8080/"
@@ -338,6 +350,11 @@ def post_data_api(mode, data,debug=False,auth=None):
 
         response = post(url)
 
+    if mode == "futurespends":
+        headers["Authorization"] = "Bearer {}".format(auth)
+        url = baseurl + "futurespends/new"
+        response = post(url)
+
 
 
     return response
@@ -394,6 +411,17 @@ def del_data_api(mode, data,auth=None):
         response = delete(dataurl)
 
         return response
+    elif mode == "futurespends":
+        headers["Authorization"] = "Bearer {}".format(auth)
+
+        url = baseurl + "futurespends/"
+
+        dataurl = "{}{}?budget_id={}".format(url,data["id"],data["budget_id"])
+
+        response = delete(dataurl)
+
+        return response
+
 
 def get_token(data):
     baseurl = "http://127.0.0.1:8080/"

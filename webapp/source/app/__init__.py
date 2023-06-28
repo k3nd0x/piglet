@@ -16,6 +16,7 @@ from source.app import views
 from source.app import register
 from source.app import budget_sharing 
 from source.app import reports
+from source.app import future_spends
 app.config['UPLOAD_FOLDER'] = PROFILE_PICTURES
 
 

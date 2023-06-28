@@ -1,15 +1,14 @@
 {% include "navbar.html" %}
-
 <div class="container">
     <div class="row">
         <div class="col-lg-12 col-xxl-6 offset-lg-0" style="margin-top: 10px">
             <div class="card text-center">
                 <div class="card-header">
-                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Spend per User</h5>
+                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Future Spends per Month</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-center">
-                        <canvas id="byUser"></canvas>
+                        <canvas id="futureSpends"></canvas>
                     </div>
                 </div>
             </div>
@@ -17,23 +16,55 @@
         <div class="col-lg-12 col-xxl-6 offset-lg-0" style="margin-top: 10px">
             <div class="card text-center">
                 <div class="card-header">
-                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Spend per Category</h5>
+                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Add Future spend</h5>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex justify-content-center">
-			            <canvas id="byCat"> </canvas>
+                    <div class="row">
+                        <div class="col-xl-6 offset-xl-3">
+                            <form method="post" , action="/new-futurespend">
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-top: 20px;">Enter your future spends</label>
+                                <input class="form-control form-control_piglet" type="number" min="0.01" step="0.01"
+                                    name="value" placeholder="Value" style="margin-top: 10px">
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-top: 30px;">Optional Description:</label>
+                                <input class="form-control form-control_piglet" name="description"
+                                    placeholder="Optional: e.g. Gas, Groceries ..." style="margin-top: 10px">
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-top: 30px;">Select Category:</label>
+                                <select class="form-control form-control_piglet" name="category"
+                                    style="margin-top: 10px" required="">
+                                    {% for c in categorylist %}
+                                    <option value="{{ c['id'] }}">{{ c['name'] }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-top: 30px;">Select date</label>
+				<input class="form-control form-control_piglet" name="timestamp" type="date" value="2023-06-26" />
+                                <button class="btn btn-piglet" type="submit"
+                                    style="width: 100%;margin-top: 30px;">Add future spend</button>
+                            </form>
+
+                            {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {%
+                            for key,value in msgs.items() %}
+                            <div class="alert alert-{{ value }}"
+                                style="border-radius: 40px;margin-top: 30px;text-align: center;">
+                                {{key}}
+                            </div>
+                            {% endfor %} {% endfor %} {% endif %} {% endwith %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="container" style="margin-top: 10px;">
+<div class="container" style="margin-top: 10px">
     <div class="row">
         <div class="col-lg-12 offset-lg-0">
             <div class="card">
                 <div class="card-header text-center">
-                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Last Orders</h5>
+			<h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Future Spends Overview</h5>
                 </div>
                 <div class="card-body">{% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {{msgs}} {% endfor %} {% endif %} {% endwith %}
                     <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
@@ -56,7 +87,7 @@
                                     <td> {{ item.value }} </td>
                                     <td> {{ item.timestamp }} </td>
                                     <td> {{ item.description }} </td>
-                                    <td><a style=text-decoration:none href="/delete-ts/{{ item.timestamp }}" class="btn-sm btn-danger"><i class="far fa-trash-alt"></a></td>
+                                    <td><a style=text-decoration:none href="/fdelete?name=futurespends&id={{ item.id }}" class="btn-sm btn-danger"><i class="far fa-trash-alt"></a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -67,8 +98,6 @@
         </div>
     </div>
 </div>
-
-</body>
 <script type="text/javascript" class="init">
     $(document).ready(function() {
         $('#orders').DataTable({
@@ -119,12 +148,12 @@
     });
 </script>
 <script>
-var xValues = {{ graphdata.user.name |tojson }};
-var yValues = {{ graphdata.user.value|tojson }};
-var barColors = {{ graphdata.user.color|tojson}};
+var xValues = {{ monthlist|tojson }};
+var yValues = {{ valuelist|tojson }};
+var barColors = {{ colorlist|tojson }};
 
-new Chart("byUser", {
-  type: "doughnut",
+new Chart("futureSpends", {
+  type: "bar",
   data: {
     labels: xValues,
     datasets: [{
@@ -132,42 +161,18 @@ new Chart("byUser", {
       data: yValues
     }]
   },
-  options: {
-    legend: {
-	    display: false,
-    title: {
-      display: true,
-      text: "Übersicht Ausgaben"
-    }
-    }
-  }
-});
-</script>
-<script>
-var xValues = {{ graphdata.cat.name |tojson }};
-var yValues = {{ graphdata.cat.value|tojson }};
-var barColors = {{ graphdata.cat.color|tojson}};
 
-new Chart("byCat", {
-  type: "doughnut",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: barColors,
-      data: yValues
-    }]
-  },
   options: {
-    legend: {
+	  scales: {
+	    y: {
+		beginAtZero: true,
+	    }
+	  },
+	  hoverBorderColor: '#5966f3',
+	  legend: {
 	    display: false,
-    title: {
-      display: true,
-      text: "Übersicht nach Kategorie"
-    }
-    }
+	  },
   }
 });
 </script>
 {% extends "footer.html" %}
-
-</html>

@@ -1,31 +1,12 @@
-from cgitb import text
 from flask import Flask, render_template, url_for, flash, redirect, request, session, send_from_directory
 from source.app import app
-from werkzeug.utils import secure_filename
 from hashlib import sha256
 import os
 import json
 
 from .api_func import get_data_api, post_data_api, del_data_api
+from .funcs import get_notis, auth, allowed_exts
 
-def allowed_exts(ext):
-    allowed = [ 'jpeg', 'jpg', 'png']
-    ext = ext.lower()
-    if ext in allowed:
-        return True
-    else:
-        return False
-
-def auth():
-    auth = session["authorization"]
-
-    return auth
-
-def get_notis():
-    userid = session["userid"]
-    noticount, notilist, notifications = get_data_api("notis", data={ "uid": userid, "show_all": False},auth=auth())
-
-    return noticount, notilist, notifications
 
 # Neue Order hinzufügen /new-order
 @app.route('/new-order', methods=["GET", "POST"])
@@ -400,4 +381,4 @@ def pictures(filename):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
