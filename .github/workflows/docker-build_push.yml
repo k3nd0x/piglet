@@ -38,6 +38,7 @@ jobs:
           # Tag and push the Docker image with latest tag
           docker tag $DOCKER_IMAGE_TAG_RELEASE $DOCKER_IMAGE_TAG_LATEST
           docker push $DOCKER_IMAGE_TAG_LATEST
+          docker push $DOCKER_IMAGE_TAG_RELEASE
       
   run-compose:
     needs: build-and-push
