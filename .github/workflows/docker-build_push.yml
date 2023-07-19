@@ -19,7 +19,10 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_KEY }}
     - name: Push the image
-      run: docker push k3nd0x/piglet:latest
+      run: | 
+        export DOCKER_BUILDKIT=0
+        export COMPOSE_DOCKER_CLI_BUILD=0
+        docker push k3nd0x/piglet:latest
 
   run-compose:
     needs: build
