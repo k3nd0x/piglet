@@ -66,3 +66,4 @@ def new_futurespend():
             flash(flash_message)
 
             return redirect(url_for('futurespends'))
+
