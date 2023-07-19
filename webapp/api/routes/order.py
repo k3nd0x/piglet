@@ -117,14 +117,16 @@ async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
                 
                     if notisettings[0]["mail"] == 1:
                         username = '''select name from registered_user where id={}'''.format(userid)
-                        budget_name = '''select name from pig_budgets where id={}'''.format(budget_id)
+                        budget_name = '''select name,currency from pig_budgets where id={}'''.format(budget_id)
                         email = '''select email from registered_user where id={}'''.format(dstuid)
 
                         username = mysql.get(username)[0]["name"]
-                        budget_name = mysql.get(budget_name)[0]["name"]
+                        budget =  mysql.get(budget_name)[0]
+                        budget_name = budget["name"]
+                        budget_currency = budget["currency"]
                         email = mysql.get(email)[0]["email"]
 
-                        mailvalue = '''{} added {} $ to the budget {}'''.format(username, value, budget_name)
+                        mailvalue = '''{} added {} {} to the budget {}'''.format(username, value,currency, budget_name)
 
                         header = '''{} went shopping!'''.format(username)
                         

@@ -23,7 +23,6 @@ async def spends(budget_id: int, max_entries: Optional[int]=30, current_user = D
     check(mysql,current_user["bid_mapping"], budget_id)
 
     query = '''select (select name from registered_user where id=user_id) as user, (select name from pig_category where id=category_id) as category, CONCAT(value,' ',currency) AS value, id, DATE_FORMAT(timestamp, '%Y-%m-%d') as timestamp,description FROM pig_futurespends where budget_id={} order by timestamp DESC'''.format(budget_id)
-    print(query,flush=True)
     response = mysql.get(query)
 
     max_count = 1
@@ -57,7 +56,6 @@ async def spends(budget_id: int, max_entries: Optional[int]=30, current_user = D
                 updated_data.append({'monthnumber': month_number, 'month': month_name,
                                      'value': 0.0, 'currency': response[0]["currency"]})
 
-    print(updated_data,flush=True)
 
     for i in updated_data:
         if i["monthnumber"] >= currentMonth:
@@ -73,7 +71,7 @@ async def spends(budget_id: int, max_entries: Optional[int]=30, current_user = D
 
 class newSpend(BaseModel):
     value: str
-    userid: str
+    userid: int
     category: str
     description: Optional[str] = None
     budget_id: str
@@ -100,7 +98,7 @@ async def spends(newSpend: newSpend,current_user = Depends(get_current_user)):
         description = newSpend.description
         timestamp = newSpend.timestamp
     except:
-        return "Variables not valid"
+        raise HTTPException(status_code=422, detail="Variables not valid")
     mysql = sql()
 
     if userid != current_user["id"]:
@@ -112,7 +110,6 @@ async def spends(newSpend: newSpend,current_user = Depends(get_current_user)):
     curr = mysql.get(currency_query)[0]["currency"]
 
     query = '''insert into pig_futurespends(value,currency,user_id,category_id,budget_id,description,timestamp) VALUES ({},"{}",{},{},{},"{}","{}")'''.format(value,curr,userid,category,budget_id,description,timestamp)
-    print(query)
     insert = mysql.post(query)
     if insert == True:
         output = "Order added".format(userid,value, curr, category,description)

@@ -65,9 +65,21 @@ def connect():
 
             flash(flash_message)
             return redirect(url_for('connect'))
+@app.route('/newbudget',methods=["GET", "POST"])
+def newbudget():
+    if session:
+        noticount, notilist, notifications = get_notis()
+        if request.method == "POST":
+            form_data = request.form.to_dict()
+
+            userid = session["userid"]
+            name = form_data["budgetname"]
+
+            data = { "user_id": userid, "name": name, "currency": currency }
+
+            response = post_data_api("newbudget", data,auth=auth())
 
 
-
-
+        return redirect(url_for('budget'))
 
 

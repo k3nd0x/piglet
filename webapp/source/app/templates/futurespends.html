@@ -15,58 +15,19 @@
         </div>
         <div class="col-lg-12 col-xxl-6 offset-lg-0" style="margin-top: 10px">
             <div class="card text-center">
-                <div class="card-header">
-                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Add Future spend</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-xl-6 offset-xl-3">
-                            <form method="post" , action="/new-futurespend">
-                                <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-top: 20px;">Enter your future spends</label>
-                                <input class="form-control form-control_piglet" type="number" min="0.01" step="0.01"
-                                    name="value" placeholder="Value" style="margin-top: 10px">
-                                <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-top: 30px;">Optional Description:</label>
-                                <input class="form-control form-control_piglet" name="description"
-                                    placeholder="Optional: e.g. Gas, Groceries ..." style="margin-top: 10px">
-                                <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-top: 30px;">Select Category:</label>
-                                <select class="form-control form-control_piglet" name="category"
-                                    style="margin-top: 10px" required="">
-                                    {% for c in categorylist %}
-                                    <option value="{{ c['id'] }}">{{ c['name'] }}</option>
-                                    {% endfor %}
-                                </select>
-                                <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-top: 30px;">Select date</label>
-				<input class="form-control form-control_piglet" name="timestamp" type="date" value="2023-06-26" />
-                                <button class="btn btn-piglet" type="submit"
-                                    style="width: 100%;margin-top: 30px;">Add future spend</button>
-                            </form>
-
-                            {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {%
-                            for key,value in msgs.items() %}
-                            <div class="alert alert-{{ value }}"
-                                style="border-radius: 40px;margin-top: 30px;text-align: center;">
-                                {{key}}
-                            </div>
-                            {% endfor %} {% endfor %} {% endif %} {% endwith %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="container" style="margin-top: 10px">
-    <div class="row">
-        <div class="col-lg-12 offset-lg-0">
-            <div class="card">
                 <div class="card-header text-center">
 			<h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Future Spends Overview</h5>
                 </div>
-                <div class="card-body">{% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {{msgs}} {% endfor %} {% endif %} {% endwith %}
+                <div class="card-body">
+		    {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {%
+		    for key,value in msgs.items() %}
+		    {% if key == "Entity deleted" %}
+		    <div class="alert alert-{{ value }}"
+			style="border-radius: 4px;margin-top: 30px;text-align: center;">
+			{{key}}
+		    </div>
+		    {% endif %}
+		    {% endfor %} {% endfor %} {% endif %} {% endwith %}
                     <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
                         <table id="orders" class="table cell-border compact hover">
                             <thead>
@@ -92,6 +53,56 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container" style="margin-top: 10px">
+    <div class="row">
+        <div class="col-lg-12 offset-lg-0">
+            <div class="card">
+                <div class="card-header">
+                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Add Future spend</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-6 offset-xl-3">
+                            <form method="post" , action="/new-futurespend">
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-top: 20px;">Enter your future spends</label>
+                                <input class="form-control form-control_piglet" type="number" min="0.01" step="0.01"
+                                    name="value" placeholder="Value" style="margin-top: 10px">
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-top: 30px;">Optional Description:</label>
+                                <input class="form-control form-control_piglet" name="description"
+                                    placeholder="Optional: e.g. Gas, Groceries ..." style="margin-top: 10px">
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-top: 30px;">Select Category:</label>
+                                <select class="form-control form-control_piglet" name="category"
+                                    style="margin-top: 10px" required="">
+                                    {% for c in categorylist %}
+                                    <option value="{{ c['id'] }}">{{ c['name'] }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label class="form-label d-lg-flex justify-content-lg-center"
+                                    style="margin-top: 30px;">Select date</label>
+				<input class="form-control form-control_piglet" name="timestamp" type="date" value="{{ today }}" />
+                                <button class="btn btn-piglet" type="submit"
+                                    style="width: 100%;margin-top: 30px;">Add future spend</button>
+                            </form>
+
+                            {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {%
+                            for key,value in msgs.items() %}
+			    {% if key != "Entity deleted" %}
+                            <div class="alert alert-{{ value }}"
+                                style="border-radius: 4px;margin-top: 10px;text-align: center;">
+                                {{key}}
+                            </div>
+			    {% endif %}
+                            {% endfor %} {% endfor %} {% endif %} {% endwith %}
+                        </div>
                     </div>
                 </div>
             </div>

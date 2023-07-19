@@ -35,7 +35,7 @@
                             {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {%
                             for key,value in msgs.items() %}
                             <div class="alert alert-{{ value }}"
-                                style="border-radius: 40px;margin-top: 30px;text-align: center;">
+                                style="border-radius: 4px;margin-top: 30px;text-align: center;">
                                 {{key}}
                             </div>
                             {% endfor %} {% endfor %} {% endif %} {% endwith %}

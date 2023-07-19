@@ -210,7 +210,6 @@ def post_data_api(mode, data,debug=False,auth=None):
     
     elif mode == "register":
         url = baseurl + "user/register_user"        
-        print(url,flush=True)
         response = post(url)
 
 

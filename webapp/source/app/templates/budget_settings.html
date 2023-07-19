@@ -19,6 +19,16 @@
                                     name="budgetname"
                                     placeholder="Budget Name"
                                     style="margin-top: 10px; text-align: center" />
+				<select
+				    class="form-control form-control_piglet"
+				    name="currency"
+				    style="margin-top: 10px"
+				    required>
+				    <option
+					value="USD">USD</option>
+				    <option
+					value="EUR">EUR</option>
+				</select>
                                 <button
                                     class="btn btn-piglet"
                                     type="submit"
@@ -92,6 +102,7 @@
                                                                             class="form-control form-control_piglet"
                                                                             name="newname"
                                                                             placeholder="{{ i.name }}"
+									    value="{{ i.name }}"
                                                                             style="margin-top: 10px;text-align: center;" />
                                                                         <select
                                                                             class="form-control form-control_piglet"
@@ -201,7 +212,7 @@
                                                         class="col-xl-6 offset-xl-3">
                                                         <div
                                                             class="alert alert-{{ value }} d-lg-flex justify-content-lg-center"
-                                                            style="border-radius: 40px; text-align: center">
+                                                            style="border-radius: 4px; text-align: center">
                                                             {{key}}
                                                         </div>
                                                     </div>

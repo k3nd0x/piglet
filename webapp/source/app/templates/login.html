@@ -25,7 +25,7 @@
                         {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {% for key,value in msgs.items() %}
                         <div class="row" style="margin-top: 30px;">
                             <div class="col-lg-10 offset-lg-1">
-                                <div style="border-radius: 40px;" class="alert alert-{{ value }}">
+                                <div style="border-radius: 4px;" class="alert alert-{{ value }}">
                                     {{key}}
                                 </div>
                             </div>

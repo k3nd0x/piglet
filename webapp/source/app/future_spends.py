@@ -1,9 +1,7 @@
 from flask import Flask, render_template, url_for, flash, redirect, request, session, send_from_directory
 from source.app import app
 from werkzeug.utils import secure_filename
-from hashlib import sha256
-import os
-import json
+from datetime import date
 
 from .api_func import get_data_api, post_data_api, del_data_api
 from .funcs import get_notis, auth
@@ -19,6 +17,7 @@ def futurespends():
             session["title"] = "futurespends"
             apidata = get_data_api("futurespends", data=data,auth=auth())
             orderlist = apidata["orders"]
+            today = date.today()
 
             monthlist = apidata["monthlist"]
             valuelist = apidata["valuelist"]
@@ -26,7 +25,7 @@ def futurespends():
 
             categorylist = get_data_api("categorylist",data=budget_id,auth=auth())
 
-            return render_template("futurespends.html",orderlist=orderlist,notifications=notifications, notilist=notilist, noticount=noticount, monthlist=monthlist, valuelist=valuelist, colorlist=colorlist, categorylist=categorylist )
+            return render_template("futurespends.html",orderlist=orderlist,notifications=notifications, notilist=notilist, noticount=noticount, monthlist=monthlist, valuelist=valuelist, colorlist=colorlist, categorylist=categorylist,today=today )
         else:
             return redirect(url_for('login'))
     else:
@@ -40,7 +39,7 @@ def fdelete():
             data = { "id": id, "budget_id": session["budget_id"] }
             return_value = del_data_api("futurespends",data,auth=auth())
             if return_value =="Entity deleted":
-                flash_message = {"Entity deleted": "success"}
+                flash_message = {"Entity deleted": "danger"}
             else:
                 flash_message = {"Error at delete": "danger"}
 
