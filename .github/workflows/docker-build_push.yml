@@ -22,14 +22,11 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          # Extract the latest release version
-          RELEASE_VERSION=$(git describe --tags --abbrev=0)
-          
-          # Set the Docker image tags
+          RELEASE_VERSION=`git describe --tags --abbrev=0`
+
           DOCKER_IMAGE_TAG_RELEASE=k3nd0x/piglet:${RELEASE_VERSION}
           DOCKER_IMAGE_TAG_LATEST=k3nd0x/piglet:latest
           
-          # Build and push the Docker image with release version tag
           docker buildx build \
             --push \
             --tag $DOCKER_IMAGE_TAG_RELEASE \
