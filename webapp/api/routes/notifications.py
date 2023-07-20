@@ -21,9 +21,9 @@ async def notification(show_all: Optional[bool] = False, current_user = Depends(
 
     uid = str(current_user["id"])
     if show_all:
-        query = '''select id, (select name from registered_user where id=srcuid) as srcname, (select name from pig_budgets where id=budgetid) as budget,state,(select message from pig_notiobj where id=messageid) as message ,value, (select type from pig_notitype where id=typeid) as type ,timestamp from pig_notifications where destuid={} order by timestamp desc'''.format(uid)
+        query = '''select id, (select name from registered_user where id=srcuid) as srcname, (select name from pig_budgets where id=budgetid) as budget,state,(select currency from pig_budgets where id=budgetid) as currency,(select message from pig_notiobj where id=messageid) as message ,value, (select type from pig_notitype where id=typeid) as type ,timestamp from pig_notifications where destuid={} order by timestamp desc'''.format(uid)
     else:
-        query = '''select id, (select name from registered_user where id=srcuid) as srcname, (select name from pig_budgets where id=budgetid) as budget,state,(select message from pig_notiobj where id=messageid) as message ,value, (select type from pig_notitype where id=typeid) as type ,timestamp from pig_notifications where destuid={} and state=0 order by timestamp desc'''.format(uid)
+        query = '''select id, (select name from registered_user where id=srcuid) as srcname, (select name from pig_budgets where id=budgetid) as budget,state,(select currency from pig_budgets where id=budgetid) as currency, (select message from pig_notiobj where id=messageid) as message ,value, (select type from pig_notitype where id=typeid) as type ,timestamp from pig_notifications where destuid={} and state=0 order by timestamp desc'''.format(uid)
 
     response = {}
     len_response = 0
@@ -41,7 +41,7 @@ async def notification(show_all: Optional[bool] = False, current_user = Depends(
         if entry["type"] == "order":
             if entry["message"] == "added":
                 id_list.append(str(entry["id"]))
-                message = "{} added {}$ to the budget {}".format(srcname, entry["value"], entry["budget"])
+                message = "{} added {}{}  to the budget {}".format(srcname, entry["value"],entry["currency"], entry["budget"])
 
         elif entry["type"] == "category":
             if entry["message"] == "added":

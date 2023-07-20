@@ -54,8 +54,6 @@ async def report(year: str, month: str, budget_id: int, current_user = Depends(g
 
         lowest_value = stats_month[lowest]
 
-        print(stats_month,flush=True)
-
         for key,value in stats_month.items():
             if key != lowest:
                 diff_value = round(lowest_value - value,3)

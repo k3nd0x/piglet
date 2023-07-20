@@ -20,11 +20,12 @@ from passlib.hash import sha256_crypt as sha256
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import hashlib
 import time
+import logging
 
 
 @admin.on_event("startup")
 async def startup_event():
-    date = datetime.now().strftime("%Y-%m-%d %H:%M:%S,%s")
+    date = datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
     print("{} - Starting Piglet API...".format(date))
     admin_uid = None
     while admin_uid is None:
@@ -55,10 +56,6 @@ async def startup_event():
                 mysql.post(i)
             except:
                 continue
-#@admin.on_event("shutdown"):
-#async def shutdown_event():
-#    print("Stopping Piglet API v2.1")
-#    mysql.close()
 
 
 ### AUTHENTICATION ###

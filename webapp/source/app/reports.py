@@ -41,8 +41,6 @@ def reports():
             session["month"] = data["month"]
             session["year"] = data["year"]
 
-            print(session,flush=True)
-
             #timestamps = get_data_api('timestamp', data)
             graphdata = get_data_api('graph_report',data, auth=auth())
             reports = get_data_api('reports', data, auth=auth())

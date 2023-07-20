@@ -194,7 +194,6 @@ def ubudget():
     if session:
         if request.method == "POST":
             data = request.form.to_dict()
-            print(data,flush=True)
 
             response = post_data_api("ubudget", data=data,auth=auth())
 
