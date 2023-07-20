@@ -10,7 +10,7 @@ redis
 flask_session
 
 fastapi 
-pydantic=1.10.10
+pydantic=1.10.0
 uvicorn 
 mysql-connector
 fastapi-health 
