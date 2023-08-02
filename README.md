@@ -7,6 +7,13 @@ You can easily add, categorize and compare your expenditures, individualize your
 
 ![Dashboard](DOCS/piglet_dashboard.PNG)
 
+# Features
+📌 Privacy and Security: Keep your financial data safe with Piglet self-hosted on your server.
+💵 Expense Tracking: Easily record and categorize expenses to understand your spending habits.
+🔢 Budget Planning: Create custom budgets for various categories and stay within your limits.
+📅 Monthly Reports: Get detailed reports to track your financial progress over time.
+🔐 Secure Authentication: Protect your data with secure user authentication.
+
 # Installation
 #### With Docker
 The Image is available at `k3nd0x/piglet`. \
@@ -87,7 +94,6 @@ Following ENV variables are possible:
 - html/css mobile friendly
 - add some more features to reports
 - password change over webui
-- admin settings page for all users
 
 # Known issues
 - Site is flashing white at reload when darkmode is active https://github.com/k3nd0x/piglet/issues/1
