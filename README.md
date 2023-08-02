@@ -8,11 +8,11 @@ You can easily add, categorize and compare your expenditures, individualize your
 ![Dashboard](DOCS/piglet_dashboard.PNG)
 
 # Features
-📌 Privacy and Security: Keep your financial data safe with Piglet self-hosted on your server.
+📌 Privacy and Security: Keep your financial data safe on your server.
 
 💵 Expense Tracking: Easily record and categorize expenses to understand your spending habits.
 
-🔢 Budget Planning: Create custom budgets for various categories and stay within your limits.
+🔄 Budget Sharing: Collaborate with family or friends by sharing budgets
 
 📅 Monthly Reports: Get detailed reports to track your financial progress over time.
 
