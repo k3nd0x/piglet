@@ -35,12 +35,26 @@ do
 	sleep 5
 done
 
+if [[ -z "${DB_ROOT_PASSWORD}" ]]
+then
+	echo "$DATE You have to create your own user and database if MYSQL_ROOT_PASSWORD is not provided"
+	exit 0
+else
+	echo "$DATE create database $DATABASE if not exist"
+	mysql -u root -p"$DB_ROOT_PASSWORD" -h "$HOST" -e "create database IF NOT EXISTS $DATABASE"
+	if [[ $? != 0 ]]
+	then
+		echo "$DATE provided root password is not correct"
+		exit 128
+	fi
+	mysql -u root -p"$DB_ROOT_PASSWORD" -h "$HOST" -e "create user IF NOT EXISTS '$USER'@'%' identified by '$MYSQL_PASSWORD'"
+	mysql -u root -p"$DB_ROOT_PASSWORD" -h "$HOST" -e "grant all privileges on $DATABASE.* to $USER@'%'"
+fi
+
 TABLES=`mysql -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST -e 'show tables'`
 
 if [ -z "$TABLES" ]
 then
-	echo "$DATA create database $DATABASE if not exist"
-	mysql -u $USER -p$MYSQL_PASSWORD -h $HOST -e 'create database IF NOT EXISTS $DATABASE'
 	echo "$DATE Import schema"
 	mysql -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST < /webapp/config/scripts/piglet-schema.sql
 	exit 0

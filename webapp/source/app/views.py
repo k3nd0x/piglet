@@ -95,7 +95,7 @@ def settings():
                     payload["image"] = session["image"]
                 
                 payload["email"] = session["email"]
-                payload["id"] = session["userid"]
+                payload["id"] = str(session["userid"])
 
                 response = post_data_api("update-user", payload,auth=auth())
                 if response == {}:

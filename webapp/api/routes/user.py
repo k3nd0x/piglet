@@ -284,9 +284,9 @@ async def forgot_password(email: Optional[str]=None ,tmphash: Optional[str]=None
         elif current_state[0]["timestamp"]:
             db_timestamp = current_state[0]["timestamp"]
             if get_timestamp(db_timestamp):
-                return False,"linkExpired"
-            else:
                 return True
+            else:
+                return False,"linkExpired"
     else:
         return False,"NotImplemented"
 
@@ -301,6 +301,10 @@ async def update_pw(passwordhash: str, tmphash: str):
     update_query = '''update registered_user set password="{}" where email="{}"'''.format(passwordhash,email)
 
     value = mysql.post(update_query)
+
+    delete_query = '''delete from pig_pwforgot where hash="{}"'''.format(tmphash)
+
+    mysql.delete(delete_query)
 
     mysql.close()
     return value

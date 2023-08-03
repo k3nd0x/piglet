@@ -1,7 +1,8 @@
 def send_share(user,budget,hashed_url,domain):
-    subject = "{} Has invited you to join the budget {}!".format(user,budget)
-    html_content = '''<!doctype html>
-<html lang="en-US">
+    try:
+        subject = "{} Has invited you to join the budget {}!".format(user,budget)
+        html_content = '''<!doctype html>
+<html laGng="en-US">
 
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
@@ -74,6 +75,8 @@ def send_share(user,budget,hashed_url,domain):
 </body>
 
 </html>'''.format(user=user,hash=hashed_url, budget=budget,domain=domain)
+    except:
+        return False, "failed"
 
     return html_content,subject
 

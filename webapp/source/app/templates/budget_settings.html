@@ -13,6 +13,13 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-xl-6 offset-xl-3">
+                            {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {%
+                            for key,value in msgs.items() %}
+                            <div class="alert alert-{{ value }}"
+                                style="border-radius: 4px;margin-top: 30px;text-align: center;">
+                                {{key}}
+                            </div>
+                            {% endfor %} {% endfor %} {% endif %} {% endwith %}
                             <form method="POST" action="/newbudget">
                                 <input
                                     class="form-control form-control_piglet"
@@ -202,22 +209,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    {% with messages =
-                                                    get_flashed_messages() %} {%
-                                                    if
-                                                    messages %} {% for msgs in
-                                                    messages %} {% for
-                                                    key,value in msgs.items() %}
-                                                    <div
-                                                        class="col-xl-6 offset-xl-3">
-                                                        <div
-                                                            class="alert alert-{{ value }} d-lg-flex justify-content-lg-center"
-                                                            style="border-radius: 4px; text-align: center">
-                                                            {{key}}
-                                                        </div>
-                                                    </div>
-                                                    {% endfor %} {% endfor %} {%
-                                                    endif %} {% endwith %}
                                                 </td>
                                             </tr>
                                             {% endfor %}

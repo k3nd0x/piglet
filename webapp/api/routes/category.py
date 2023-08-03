@@ -81,7 +81,7 @@ async def categories(catname: str, color: str, budget_id: int, current_user = De
 
                     header = '''{} Added a new category!'''.format(username)
                     
-                    payload = { "mode": "noti", "to_address": email, "value": mailvalue, "header": header }
+                    payload = { "mode": "noti", "to_address": email, "value": value, "header": header }
                     mailstate, code, message = mail(payload)
 
     elif existing == 1:

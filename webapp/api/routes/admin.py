@@ -43,7 +43,7 @@ async def startup_event():
 
     inserts = [ """INSERT INTO months VALUES (2,"February"),(3,"March"),(4,"April"),(5,"May"),(6,"June"),(7,"July"),(8,"August"),(9,"September"),(10,"October"),(11,"November"),(12,"December"),(1,"January")""",
             """INSERT INTO pig_bidmapping VALUES (10000,100,NULL,NULL,NULL)""",
-            """INSERT INTO pig_budgets VALUES (100,0,"Default",0,"3ec5d92868964bfbbf223ca88f379ee9")""",
+            """INSERT INTO pig_budgets VALUES (100,0,"Default",0,"3ec5d92868964bfbbf223ca88f379ee9","USD")""",
             """INSERT INTO pig_category VALUES (1,"Groceries",1,1,100,"#123456")""","""INSERT INTO "pig_notiobj" VALUES (1,"added","hinzufügen"),(2,"removed","entfernen"),(3,"joined","Beitritt")""",
             """INSERT INTO pig_notisettings VALUES (1,1,1,1,1),(1,1,2,1,1),(1,2,1,1,1),(1,2,2,1,1)""",
             """INSERT INTO pig_notitype VALUES (1,"order","Money"),(2,"category","Category"),(3,"budget","Budget")""",

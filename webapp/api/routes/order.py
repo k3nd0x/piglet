@@ -83,6 +83,11 @@ async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
         year = newOrder.year
         month = newOrder.month
         date = "{}-{}-01 00:00:00".format(year,month)
+        value = float(value)
+        value = value + value
+
+        value = str(value)
+
         query = """INSERT INTO new_orders (timestamp,value,currency,user_id,category_id,budget_id,description) VALUES ('%s','%s','%s',%s,%s,%s,'%s')"""%(date,value,curr,userid,category,budget_id,description)
         insert = mysql.post(query)
     else:
@@ -133,7 +138,7 @@ async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
                         payload = { "mode": "noti", "to_address": email, "value": mailvalue, "header": header }
                         mailstate, code, message = mail(payload)
                 except:
-                    print("Error sending mail - check your mailserver config")
+                    print("Error sending mail - check your mailserver config",flush=True)
     else:
         output = "Query failed - try again later"
 

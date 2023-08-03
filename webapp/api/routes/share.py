@@ -29,7 +29,6 @@ async def newshare(budget_id: str, shareto: str, current_user = Depends(get_curr
     query_data = mysql.get(query)
 
     sharecode = query_data[0]["sharecode"]
-
     budget_name = query_data[0]["name"]
 
 
@@ -41,15 +40,17 @@ async def newshare(budget_id: str, shareto: str, current_user = Depends(get_curr
 
     set_timestamp = '''insert into pig_urlexpire(url,budget_id) values("{}","{}")'''.format(uri,budget_id)
     mysql.post(set_timestamp)
+    mysql.close()
 
     payload = { "mode": "share", "hashed_url": uri, "budget": budget_name, "to_address": shareto, "user": name } 
     mailstate, code, message = mail(payload)
 
-    mysql.close()
 
     if mailstate:
+        return {"state": "Mail sent", "uri": uri }
         raise HTTPException(status_code=200, detail="OK")
     else:
+        return {"state": "Mail not sent", "uri": uri }
         raise HTTPException(status_code=502, detail="Internal Server Error")
 
 @share.post("/wanttoconn")
@@ -69,7 +70,9 @@ async def wanttoconn(sharecode: str, current_user = Depends(get_current_user)):
 
     budget_id = response[0]["budget_id"]
 
-    if get_timestamp(timestamp,time_expire=120):
+    print(get_timestamp(timestamp))
+
+    if get_timestamp(timestamp):
         query = '''select b0,b1,b2,b3 from pig_bidmapping where id="{}"'''.format(bidmapping)
         response = mysql.get(query)
 

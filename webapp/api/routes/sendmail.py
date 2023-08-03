@@ -9,11 +9,16 @@ from .templates.send_share import send_share
 from .templates.send_notification import send_noti
 
 def mail(payload=None):
-    host = os.environ.get("MAIL_SERVER")
-    user = os.environ.get("MAIL_USER")
-    port = os.environ.get("MAIL_PORT")
-    password = os.environ.get("MAIL_PASSWORD")
-    encryption = os.environ.get("MAIL_ENCRYPTIONPROTOCOL")
+    try:
+        host = os.environ.get("MAIL_SERVER")
+        user = os.environ.get("MAIL_USER")
+        port = os.environ.get("MAIL_PORT")
+        password = os.environ.get("MAIL_PASSWORD")
+        encryption = os.environ.get("MAIL_ENCRYPTIONPROTOCOL")
+    except:
+        return [ False, 404, "Mailconfig not found" ]
+
+
     try:
         domain = os.environ.get("DOMAIN")
     except:
@@ -34,12 +39,16 @@ def mail(payload=None):
         mail_user = payload["user"]
         budget = payload["budget"]
         html, subject = send_share(mail_user,budget,hashed_url,domain)
+
+        if not html:
+            return [ False, 502, "HTML building error" ]
+
     elif mode == "noti":
         value = payload["value"]
         header = payload["header"]
-        html, subject = send_noti(email,value,header,domain)
+        html, subject = send_noti(to_address,value,header,domain)
     else:
-        print("[ERROR] Creating email")
+        print("[ERROR] Creating email",flush=True)
 
 
     msg = EmailMessage()
@@ -58,14 +67,6 @@ def mail(payload=None):
 
         return [ True, 200, "OK" ] 
     except SMTPResponseException as e:
-        error_code = e.smtp_code
-        error_message = e.smtp_error
-
         return [ False, e.smtp_code, e.smtp_error ]
     except:
         return [ False, "Mail", "error" ]
-
-
-
-if __name__ == "__main__":
-    pass

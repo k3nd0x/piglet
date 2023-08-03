@@ -20,10 +20,11 @@ def share():
 
             response = post_data_api("sharewith", data, auth=auth())
 
-            if response["detail"] == "OK":
+            if response["state"] == "Mail sent":
                 flash_message = {"Email sent": "success"}
             else:
-                flash_message = {"Failed to invite": "danger"}
+                string = "Email sending failed: URI {}".format(response["uri"])
+                flash_message = {string: "danger"}
 
             flash(flash_message)
 
@@ -74,6 +75,7 @@ def newbudget():
 
             userid = session["userid"]
             name = form_data["budgetname"]
+            currency = form_data["currency"]
 
             data = { "user_id": userid, "name": name, "currency": currency }
 

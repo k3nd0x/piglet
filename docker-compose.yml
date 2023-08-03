@@ -10,17 +10,19 @@ services:
         - '0.0.0.0:8080:8080' # API
       image: k3nd0x/piglet:latest
       environment:
-        MYSQL_DATABASE: ${MYSQL_DATABASE} # Default 'piglet'
-        MYSQL_USER: ${MYSQL_USER} # Default 'piglet'
-        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-        MYSQL_HOST: ${MYSQL_HOST}
-        MAIL_SERVER: ${MAIL_SERVER}
-        MAIL_USER: ${MAIL_USER}
-        MAIL_PASSWORD: ${MAIL_PASSWORD}
-        MAIL_PORT: ${MAIL_PORT}
-        MAIL_ENCRYPTIONPROTOCOL: ${MAIL_ENCRYPTIONPROTOCOL}
-        DOMAIN: ${DOMAIN}
-        SECURE_COOKIE: ${SECURE_COOKIE}
+        DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+          #MYSQL_DATABASE: ${MYSQL_DATABASE} # Default 'piglet'
+          #MYSQL_USER: ${MYSQL_USER} # Default 'piglet'
+          #MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+          #MYSQL_HOST: ${MYSQL_HOST}
+          #MAIL_SERVER: ${MAIL_SERVER}
+          #MAIL_USER: ${MAIL_USER}
+          #MAIL_PASSWORD: ${MAIL_PASSWORD}
+          #MAIL_PORT: ${MAIL_PORT}
+          #MAIL_ENCRYPTIONPROTOCOL: ${MAIL_ENCRYPTIONPROTOCOL}
+          #DOMAIN: ${DOMAIN} # Default 'localhost'
+          #DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+          #SECURE_COOKIE: ${SECURE_COOKIE}
       volumes:
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
@@ -30,9 +32,6 @@ services:
       volumes:
         - database-data:/var/lib/mysql
       environment:
-        MYSQL_RANDOM_ROOT_PASSWORD: 1
-        MYSQL_DATABASE: ${MYSQL_DATABASE}
-        MYSQL_USER: ${MYSQL_USER}
-        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
 volumes:
   database-data:

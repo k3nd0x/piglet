@@ -45,7 +45,7 @@ def login():
         responsare = get_token(data)
 
         if responsare == {'detail': 'Bad Request'}:
-            flash_message = { "Falsche Email oder Passwort": "danger"}
+            flash_message = { "Wrong Email or Password": "danger"}
             flash(flash_message)
             return render_template("login.html")
         elif responsare == {'detail': 'Not found'}:
@@ -54,38 +54,34 @@ def login():
             return render_template("login.html")
 
         else:
-            email = data["email"]
-            session["authorization"] = responsare["access_token"]
-            response = get_data_api("login", email,auth=responsare["access_token"])
+            try:
+                email = data["email"]
+                session["authorization"] = responsare["access_token"]
+                response = get_data_api("login", email,auth=responsare["access_token"])
 
-            session["userid"] = response["id"]
-            my_budgets = get_data_api("my_budgets",data=response["id"],auth=responsare["access_token"])
-
-
-            session["email"] = response['email']
-            session["image"] = response["image"]
-            session["color"] = response["color"]
-            session["month"] = "None"
-            session["year"] = "None"
-            session["budget_id"] = str(response["budget_id"])
-            session["budgets"] = my_budgets
-            session["verified"] = response["verified"]
-            session["title"] = "blank"
-            
-            x = "test"
-            session["test"] = x
-
-            if response["name"] != None:
-                session["name"] = response["name"]
-            else:
-                session["name"] = email
-
-            if response["surname"] != None:
-                session["surname"] = response["surname"]
-            else:
-                session["surname"] = email
+                session["userid"] = response["id"]
+                session["email"] = response['email']
+                session["image"] = response["image"]
+                session["color"] = response["color"]
+                session["budget_id"] = str(response["budget_id"])
+                session["verified"] = response["verified"]
+                if not response["name"]:
+                    session["name"] = response["name"]
+                else:
+                    session["name"] = email
+                if not response["surname"]:
+                    session["surname"] = response["surname"]
+                else:
+                    session["surname"] = email
+                my_budgets = get_data_api("my_budgets",data=response["id"],auth=responsare["access_token"])
 
 
+                session["month"] = "None"
+                session["year"] = "None"
+                session["budgets"] = my_budgets
+                session["title"] = "blank"
+            except:
+                return render_template("waittillstartup.html")
             try:
                 if session["share"]:
                     return redirect(url_for("connect"))

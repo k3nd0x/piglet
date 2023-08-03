@@ -47,15 +47,15 @@ def _get_uids(mysql,budget_id):
 
 def get_timestamp(db_time,time_expire=15):
     final_time = db_time + timedelta(minutes=time_expire)
-    final_time = final_time.strftime('%Y-%m-%dT%H:%M:%S')
 
     now_timestamp = datetime.now()
-    now_timestamp = now_timestamp.strftime('%Y-%m-%dT%H:%M:%S')
 
-    if final_time < now_timestamp:
-       return False
+    diff = final_time - now_timestamp
+
+    if diff.seconds > 0:
+       return True
     else:
-        return True
+        return False
 
 def get_notisettings(mysql,user_id,notiobj,notitype):
 
