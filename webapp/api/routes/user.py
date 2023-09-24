@@ -60,8 +60,6 @@ async def register_user(registerUser: registerUser):
     if return_value == "duplicated":
         raise HTTPException(status_code=409, detail="User already exists")
 
-    print("################################# DEBUG ############################## {}".format(user_id),flush=True)
-
     noti_queries = [ "INSERT INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1)".format(user_id=user_id) ]
     for i in noti_queries:
         try:
@@ -69,7 +67,10 @@ async def register_user(registerUser: registerUser):
         except:
             continue
     payload = { "mode": "verify", "to_address": email, "hashed_url": hashed_mail }
-    mail(payload)
+    state, code, info = mail(payload)
+    if not state:
+        print(code, info, flush=True)
+
     return_value = "added"
 
     mysql.close()
@@ -246,6 +247,8 @@ async def forgot_password(email: Optional[str]=None ,tmphash: Optional[str]=None
                     response = "timestampSetMailSent"
                     payload = { "mode": "verify", "to_address": email, "hashed_url": tmphash }
                     mailstate, code, message = mail(payload)
+                    if not mailstate:
+                        print(code, message,flush=True)
                 else:
                     response = "MYSQl Query failed"
                 
@@ -262,6 +265,8 @@ async def forgot_password(email: Optional[str]=None ,tmphash: Optional[str]=None
 
                     payload = { "mode": "reset", "to_address": email, "hashed_url": tmphash }
                     mailstate, code, message = mail(payload)
+                    if not mailstate:
+                        print(code, message,flush=True)
 
                     return True, "timestampSetMailSent"
                 else:
@@ -296,6 +301,7 @@ async def update_pw(passwordhash: str, tmphash: str):
 
     email_query = '''select email from pig_pwforgot where hash="{}"'''.format(tmphash)
 
+    print(mysql.get(email_query))
     email = mysql.get(email_query)[0]["email"]
 
     update_query = '''update registered_user set password="{}" where email="{}"'''.format(passwordhash,email)
@@ -324,6 +330,9 @@ async def confirm(hashed_mail: Optional[str]=None, send: Optional[bool]=False,cu
     if send:
         payload = { "mode": "verify", "to_address": email, "hashed_url": hashed_email }
         mailstate, code, message = mail(payload)
+        if not mailstate:
+            print(code, message,flush=True)
+
         value = mailstate
 
     elif not send and hashed_mail:
@@ -339,8 +348,6 @@ async def settings_get(current_user = Depends(get_current_user)):
     user_id = current_user["id"]
 
     mysql = sql()
-
-    #get_settings = '''select (select name from pig_settings where id=setting_id) as setting, value from pig_usersettings where user_id={}'''.format(user_id)
 
     get_settings = '''select (select type from pig_notitype where id=notitype) as type, (select message from pig_notiobj where id=notiobj) as obj, mail, web from pig_notisettings where user_id={}'''.format(user_id)
     response = mysql.get(get_settings)

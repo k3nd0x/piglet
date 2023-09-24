@@ -1,7 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, request, session, send_from_directory
-from source.app import app
+from .api_func import get_data_api
 
-from .api_func import get_data_api, post_data_api, del_data_api
 def allowed_exts(ext):
     allowed = [ 'jpeg', 'jpg', 'png']
     ext = ext.lower()
@@ -14,8 +13,10 @@ def auth():
 
     return auth
 
-def get_notis():
-    userid = session["userid"]
-    noticount, notilist, notifications = get_data_api("notis", data={ "uid": userid, "show_all": False},auth=auth())
+def get_notis(pigapi):
+    s, notis = pigapi.get(f"notifications/?show_all=false")
+    noticount = notis[0]
+    notilist = notis[1]
+    notifications = notis[2]
 
     return noticount, notilist, notifications

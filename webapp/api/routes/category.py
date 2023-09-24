@@ -83,6 +83,8 @@ async def categories(catname: str, color: str, budget_id: int, current_user = De
                     
                     payload = { "mode": "noti", "to_address": email, "value": value, "header": header }
                     mailstate, code, message = mail(payload)
+                    if not mailstate:
+                        print(code, message,flush=True)
 
     elif existing == 1:
         response = "Category already exists"

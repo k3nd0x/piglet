@@ -10,28 +10,30 @@ services:
         - '0.0.0.0:8080:8080' # API
       image: k3nd0x/piglet:latest
       environment:
-        DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-          #MYSQL_DATABASE: ${MYSQL_DATABASE} # Default 'piglet'
-          #MYSQL_USER: ${MYSQL_USER} # Default 'piglet'
-          #MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-          #MYSQL_HOST: ${MYSQL_HOST}
-          #MAIL_SERVER: ${MAIL_SERVER}
-          #MAIL_USER: ${MAIL_USER}
-          #MAIL_PASSWORD: ${MAIL_PASSWORD}
-          #MAIL_PORT: ${MAIL_PORT}
-          #MAIL_ENCRYPTIONPROTOCOL: ${MAIL_ENCRYPTIONPROTOCOL}
-          #DOMAIN: ${DOMAIN} # Default 'localhost'
-          #DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-          #SECURE_COOKIE: ${SECURE_COOKIE}
+        DB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_DATABASE: ${MYSQL_DATABASE} # Default 'piglet'
+        MYSQL_USER: ${MYSQL_USER} # Default 'piglet'
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        MYSQL_HOST: ${MYSQL_HOST}
+        MAIL_SERVER: ${MAIL_SERVER}
+        MAIL_USER: ${MAIL_USER}
+        MAIL_PASSWORD: ${MAIL_PASSWORD}
+        MAIL_PORT: ${MAIL_PORT}
+        MAIL_ENCRYPTIONPROTOCOL: ${MAIL_ENCRYPTIONPROTOCOL}
+        DOMAIN: ${DOMAIN} # Default 'localhost'
+        SECURE_COOKIE: ${SECURE_COOKIE}
       volumes:
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
     database:
-      image: mariadb:latest
+      image: mariadb:11.1.2
       container_name: piglet-db
       volumes:
         - database-data:/var/lib/mysql
       environment:
-        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+        MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MARIADB_DATABASE: ${MYSQL_DATABASE}
+        MARIADB_USER: ${MYSQL_USER}
+        MARIADB_PASSWORD: ${MYSQL_PASSWORD}
 volumes:
   database-data:

@@ -8,6 +8,7 @@ requests
 passlib
 redis
 flask_session
+celery
 
 fastapi 
 pydantic==1.10.10

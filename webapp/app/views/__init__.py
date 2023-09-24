@@ -6,7 +6,7 @@ import redis
 from flask import Flask
 from flask_session import Session
 import logging
-PROFILE_PICTURES = '/webapp/source/app/pictures'
+PROFILE_PICTURES = '/webapp/app/views/pictures'
 
 # Initialize the app
 app = Flask(__name__, instance_relative_config=True)
@@ -19,11 +19,16 @@ hdlr.setFormatter(formatter)
 app.logger.addHandler(hdlr)
 
 # Load the views
-from source.app import views
-from source.app import register
-from source.app import budget_sharing 
-from source.app import reports
-from source.app import future_spends
+#from app.views import view
+from app.views import dashboard
+from app.views import settings
+from app.views import register
+from app.views import budget 
+from app.views import reports
+from app.views import future_spends
+from app.views import orders
+from app.views import category
+from app.views import notifications
 app.config['UPLOAD_FOLDER'] = PROFILE_PICTURES
 
 

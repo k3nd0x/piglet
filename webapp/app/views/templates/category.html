@@ -6,8 +6,7 @@
         <div class="card-header">
           <h5
             style="font-weight: bold; margin-bottom: auto"
-            class="text-piglet"
-          >
+            class="text-piglet">
             Categories
           </h5>
         </div>
@@ -17,33 +16,26 @@
               <form method="POST" action="{{ url_for( 'category') }}">
                 <label
                   class="form-label d-lg-flex justify-content-lg-center"
-                  style="margin-left: 15px; margin-top: 5px"
-                  >Add new Category</label
-                >
+                  style="margin-left: 15px; margin-top: 5px">Add new Category</label>
                 <input
                   class="form-control form-control_piglet"
                   name="cat"
                   type="text"
                   style="margin-top: 0px; text-align: center"
-                  placeholder="Kategorie"
-                />
+                  placeholder="Category name" />
                 <label
                   class="form-label d-lg-flex justify-content-lg-center"
-                  style="margin-left: 15px; margin-top: 5px"
-                  >Color:</label
-                >
+                  style="margin-left: 15px; margin-top: 5px">Color:</label>
                 <input
                   class="form-control form-control_piglet"
                   name="color"
                   type="color"
                   style="margin-top: 0px; text-align: center"
-                  value="#123456"
-                />
+                  value="#123456" />
                 <button
                   class="btn btn-piglet"
                   type="submit"
-                  style="margin-top: 20px"
-                >
+                  style="margin-top: 20px">
                   Add
                 </button>
               </form>
@@ -51,8 +43,7 @@
               for msgs in messages %} {% for key,value in msgs.items() %}
               <div
                 class="alert alert-{{ value }}"
-                style="border-radius: 4px; text-align: center"
-              >
+                style="border-radius: 4px; text-align: center; margin-top: 10px;">
                 {{key}}
               </div>
               {% endfor %} {% endfor %} {% endif %} {% endwith %}
@@ -64,8 +55,7 @@
                 class="table-responsive table mt-2"
                 id="dataTable"
                 role="grid"
-                aria-describedby="dataTable_info"
-              >
+                aria-describedby="dataTable_info">
                 <table id="category" class="table cell-border compact hover">
                   <thead>
                     <tr>
@@ -84,8 +74,7 @@
                             <rect
                               width="20"
                               height="20"
-                              style="fill:{{ item.color }};stroke-width:3;stroke:rgb(0,0,0)"
-                            />
+                              style="fill:{{ item.color }};stroke-width:3;stroke:rgb(0,0,0)" />
                           </svg>
                         </td>
                         <td>
@@ -93,8 +82,7 @@
                             type="button"
                             class="btn btn-success"
                             data-bs-toggle="modal"
-                            data-bs-target="#editCat_{{ item.id }}"
-                          >
+                            data-bs-target="#editCat_{{ item.id }}">
                             <i class="fas fa-edit"></i>
                           </button>
 
@@ -103,8 +91,7 @@
                             id="editCat_{{ item.id }}"
                             tabindex="-1"
                             aria-labelledby="catModalLabel"
-                            aria-hidden="true"
-                          >
+                            aria-hidden="true">
                             <div class="modal-dialog">
                               <div class="modal-content">
                                 <div class="modal-header">
@@ -115,19 +102,15 @@
                                     type="button"
                                     class="btn-close"
                                     data-bs-dismiss="modal"
-                                    aria-label="Schließen"
-                                  ></button>
+                                    aria-label="Schließen"></button>
                                 </div>
                                 <div class="modal-body">
                                   <form
                                     method="post"
-                                    action="{{ url_for( 'category') }} "
-                                  >
+                                    action="{{ url_for( 'category') }} ">
                                     <label
                                       class="form-label"
-                                      style="margin-left: 15px"
-                                      >Name:</label
-                                    >
+                                      style="margin-left: 15px">Name:</label>
                                     <input
                                       class="form-control form-control_piglet"
                                       name="newname"
@@ -135,13 +118,10 @@
                                       style="
                                         margin-top: 10px;
                                         text-align: center;
-                                      "
-                                    />
+                                      " />
                                     <label
                                       class="form-label"
-                                      style="margin-left: 15px; margin-top: 5px"
-                                      >Color:</label
-                                    >
+                                      style="margin-left: 15px; margin-top: 5px">Color:</label>
                                     <input
                                       class="form-control form-control_piglet"
                                       name="color"
@@ -150,15 +130,13 @@
                                         margin-top: 0px;
                                         text-align: center;
                                       "
-                                      value="{{ item.color }}"
-                                    />
+                                      value="{{ item.color }}" />
                                     <button
                                       class="btn btn-piglet"
                                       name="id"
                                       value="{{ item.id }}"
                                       type="submit"
-                                      style="margin-top: 30px"
-                                    >
+                                      style="margin-top: 30px">
                                       Save
                                     </button>
                                   </form>
@@ -169,8 +147,7 @@
                           <a
                             style="text-decoration: none"
                             href="/delete?name=cat&id={{ item.id }}"
-                            class="btn btn-danger"
-                          >
+                            class="btn btn-danger">
                             <i class="fas fa-trash-alt"></i>
                           </a>
                         </td>

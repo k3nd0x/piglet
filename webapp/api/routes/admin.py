@@ -9,6 +9,7 @@ from typing import Union
 import os
 
 from .mysql import sql
+from .sqlite import sql3
 
 admin = APIRouter()
 
@@ -28,6 +29,13 @@ async def startup_event():
     date = datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
     print("{} - Starting Piglet API...".format(date))
     admin_uid = None
+
+    if os.environ.get("DOMAIN"):
+        domain = os.environ.get("DOMAIN")
+    else:
+        domain = "localhost"
+
+
     while admin_uid is None:
         try:
             mysql = sql()
@@ -36,10 +44,6 @@ async def startup_event():
         except:
             time.sleep(15)
 
-    if os.environ.get("DOMAIN"):
-        domain = os.environ.get("DOMAIN")
-    else:
-        domain = "localhost"
 
     inserts = [ """INSERT INTO months VALUES (2,"February"),(3,"March"),(4,"April"),(5,"May"),(6,"June"),(7,"July"),(8,"August"),(9,"September"),(10,"October"),(11,"November"),(12,"December"),(1,"January")""",
             """INSERT INTO pig_bidmapping VALUES (10000,100,NULL,NULL,NULL)""",

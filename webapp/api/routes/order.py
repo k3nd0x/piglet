@@ -137,6 +137,8 @@ async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
                         
                         payload = { "mode": "noti", "to_address": email, "value": mailvalue, "header": header }
                         mailstate, code, message = mail(payload)
+                        if not mailstate:
+                            print(code, message,flush=True)
                 except:
                     print("Error sending mail - check your mailserver config",flush=True)
     else:

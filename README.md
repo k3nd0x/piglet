@@ -18,7 +18,7 @@ You can easily add, categorize and compare your expenditures, individualize your
 
 🔐 Secure Authentication: Protect your data with secure user authentication.
 
-# Installation
+# How to start
 #### With Docker
 The Image is available at `k3nd0x/piglet`. \
 All relevant webapp data is in the container image.
@@ -27,9 +27,10 @@ The mariadb image is the official image from the MariaDB Foundation. \
 To keep the data consistent you only have to store the mariadb data (`/var/lib/mysql`) locally. (See volume config in docker-compose file) \
 In the `.env` file you have to set our private data like mysql_password and mysql_user. 
 
-You can use the `docker-compose.yml` to create both containers: `docker-compose up`
+You can use the `docker-compose.yml` to create both containers: `docker-compose up -d`
 
 At the first startup a database will be created with the data from the `.env` file and some default data will be imported.
+Possible env variables you can see at the .env example file.
 ```
 version: '3.3'
 services:
@@ -43,29 +44,31 @@ services:
         - '0.0.0.0:8080:8080' # API
       image: k3nd0x/piglet:latest
       environment:
-        DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-          #MYSQL_DATABASE: ${MYSQL_DATABASE} # Default 'piglet'
-          #MYSQL_USER: ${MYSQL_USER} # Default 'piglet'
-          #MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-          #MYSQL_HOST: ${MYSQL_HOST}
-          #MAIL_SERVER: ${MAIL_SERVER}
-          #MAIL_USER: ${MAIL_USER}
-          #MAIL_PASSWORD: ${MAIL_PASSWORD}
-          #MAIL_PORT: ${MAIL_PORT}
-          #MAIL_ENCRYPTIONPROTOCOL: ${MAIL_ENCRYPTIONPROTOCOL}
-          #DOMAIN: ${DOMAIN} # Default 'localhost'
-          #DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-          #SECURE_COOKIE: ${SECURE_COOKIE}
+        DB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_DATABASE: ${MYSQL_DATABASE} # Default 'piglet'
+        MYSQL_USER: ${MYSQL_USER} # Default 'piglet'
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        MYSQL_HOST: ${MYSQL_HOST}
+        MAIL_SERVER: ${MAIL_SERVER}
+        MAIL_USER: ${MAIL_USER}
+        MAIL_PASSWORD: ${MAIL_PASSWORD}
+        MAIL_PORT: ${MAIL_PORT}
+        MAIL_ENCRYPTIONPROTOCOL: ${MAIL_ENCRYPTIONPROTOCOL}
+        DOMAIN: ${DOMAIN} # Default 'localhost'
+        SECURE_COOKIE: ${SECURE_COOKIE}
       volumes:
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
     database:
-      image: mariadb:latest
+      image: mariadb:11.1.2
       container_name: piglet-db
       volumes:
         - database-data:/var/lib/mysql
       environment:
-        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+        MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MARIADB_DATABASE: ${MYSQL_DATABASE}
+        MARIADB_USER: ${MYSQL_USER}
+        MARIADB_PASSWORD: ${MYSQL_PASSWORD}
 volumes:
   database-data:
 ```
@@ -74,32 +77,13 @@ Default login
 Username: `admin@$DOMAIN`
 Password: `admin`
 
-
-Following ENV variables are possible:
-| ENV variable  | description | defaults | required |
-| -- | -- | -- | -- |
-| MYSQL_USER  | User for the piglet database | piglet | :x:
-| MYSQL_DATABASE  | Name of the piglet database | piglet | :x:
-| MYSQL_HOST | Hostname or IP Address of the databasehost | database | :x:
-| MYSQL_PASSWORD | Password for the piglet database user | None | :x:
-| MYSQL_ROOT_PASSWORD | Password for the mysql database root user | None | :white_check_mark:
-| DOMAIN | Default domain of the piglet instance | localhost | :x:
-| MAIL_SERVER | Mailserver for email notification | None | :x:
-| MAIL_PORT | Mailserver Port | None | :x:
-| MAIL_USER | Mailserver User | None | :x:
-| MAIL_PASSWORD | Mailserver Password | None | :x:
-| MAIL_ENCRYPTIONPROTOCOL | Mailserver Encryption Protocol | None | :x:
-| SECURE_COOKIE | Setting to allow login over http | False | :x:
-
-*The Mail sending process is currently in beta state
-
 # Roadmap
 - support for different languages
 - few admin settings in the webui (e.g. mailserver config)
 - html/css mobile friendly
 - add some more features to reports
 - password change over webui
-- SQLite as database
+- SQLite as database #10
 
 # Known issues
 - Site is flashing white at reload when darkmode is active https://github.com/k3nd0x/piglet/issues/1

@@ -27,7 +27,7 @@ async def _get(current_user = Depends(get_current_user)):
     return response
 
 @budget.post("/add")
-async def _add(name: str, current_user = Depends(get_current_user)):
+async def _add(name: str,currency: str, current_user = Depends(get_current_user)):
     mysql = sql()
 
     userid = current_user["id"]
@@ -49,7 +49,7 @@ async def _add(name: str, current_user = Depends(get_current_user)):
 
     share_code = uuid.uuid4().hex
 
-    query = '''insert into pig_budgets(mode,name,sharecode) values (0,"{}","{}")'''.format(name,share_code)
+    query = '''insert into pig_budgets(mode,name,sharecode,currency) values (0,"{}","{}","{}")'''.format(name,share_code,currency)
 
     mysql.post(query,close=False)
     budget_id = mysql.lastrowid()

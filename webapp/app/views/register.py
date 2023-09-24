@@ -2,10 +2,10 @@ from flask import render_template, flash, request, session, url_for, redirect, M
 from passlib.hash import sha256_crypt as sha256
 import hashlib
 import uuid
-from source.app import app
 
-from .api_func import post_data_api,get_data_api,get_token
-
+from app.views import app
+from app.funcs import get_notis, auth, allowed_exts
+from app.piglet_api import api
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -26,15 +26,18 @@ def register():
         create_dict = {}
         create_dict["email"] = email
         create_dict["password"] = password
-        
-        response = post_data_api("register",create_dict)
 
-        if response == {'detail': 'User already exists'}:
-            flash_message = { Markup('User {email} is already existing <a href="/login?email={email}">Login here</a>'.format(email=email)): "danger" }
-            flash(flash_message)
-            return render_template("register.html")
-        else:
-            return redirect(url_for('login'))
+        pigapi = api()
+
+        s, response = pigapi.post(url="user/register_user",data=create_dict)
+        pigapi.close()
+        if s:
+            if response == {'detail': 'User already exists'}:
+                flash_message = { Markup('User {email} is already existing <a href="/login?email={email}">Login here</a>'.format(email=email)): "danger" }
+                flash(flash_message)
+                return render_template("register.html")
+            else:
+                return redirect(url_for('login'))
     elif request.method == "GET":
         return render_template("register.html")
 
@@ -42,7 +45,10 @@ def register():
 def login():
     if request.method == "POST":
         data = request.form.to_dict()
-        responsare = get_token(data)
+
+        #responsare = get_token(data)
+        pigapi = api()
+        code,responsare = pigapi.get_token(payload=data)
 
         if responsare == {'detail': 'Bad Request'}:
             flash_message = { "Wrong Email or Password": "danger"}
@@ -52,43 +58,52 @@ def login():
             flash_message = { Markup("User {} not found <a href='/register'>Sign Up</a>".format(data["email"])): "danger"}
             flash(flash_message)
             return render_template("login.html")
-
+        elif code != 200:
+            flash_message = { "Something went wrong - try again later": "danger"}
+            flash(flash_message)
+            return render_template("login.html")
         else:
+            session["authorization"] = responsare["access_token"]
+            pigapi = api(auth=session["authorization"])
             try:
                 email = data["email"]
-                session["authorization"] = responsare["access_token"]
-                response = get_data_api("login", email,auth=responsare["access_token"])
+                s, response = pigapi.get(url="user/login-user",data=email)
 
-                session["userid"] = response["id"]
-                session["email"] = response['email']
-                session["image"] = response["image"]
-                session["color"] = response["color"]
-                session["budget_id"] = str(response["budget_id"])
-                session["verified"] = response["verified"]
-                if not response["name"]:
-                    session["name"] = response["name"]
-                else:
-                    session["name"] = email
-                if not response["surname"]:
-                    session["surname"] = response["surname"]
-                else:
-                    session["surname"] = email
-                my_budgets = get_data_api("my_budgets",data=response["id"],auth=responsare["access_token"])
-
-
-                session["month"] = "None"
-                session["year"] = "None"
-                session["budgets"] = my_budgets
-                session["title"] = "blank"
+                if s:
+                    session["email"] = response['email']
+                    session["image"] = response["image"]
+                    session["color"] = response["color"]
+                    session["budget_id"] = str(response["budget_id"])
+                    session["verified"] = response["verified"]
+                    session["userid"] = response["id"]
+                    if response["name"]:
+                        session["name"] = response["name"]
+                    else:
+                        session["name"] = email
+                    if response["surname"]:
+                        session["surname"] = response["surname"]
+                    else:
+                        session["surname"] = email
+                s, my_budgets = pigapi.get(url="budget/",data=response["id"])
+                if s:
+                    session["month"] = "None"
+                    session["year"] = "None"
+                    session["budgets"] = my_budgets
+                    session["title"] = "blank"
+                pigapi.close()
             except:
+                pigapi.close()
                 return render_template("waittillstartup.html")
             try:
+                pigapi.close()
                 if session["share"]:
                     return redirect(url_for("connect"))
             except KeyError:
+                pigapi.close()
                 return redirect(url_for('overview'))
 
             return redirect(url_for('overview'))
+
 
     else:
         return render_template("login.html")
@@ -101,8 +116,12 @@ def passwordlost():
         return render_template("passwordlost.html")
     elif request.method == "POST":
         data = request.form.to_dict()
-        data["tmphash"] = ""
-        response = post_data_api("forgot",data)
+        email = data["email"]
+        pigapi = api()
+
+        s, response = pigapi.post(url=f'user/forgot-request?email={email}')
+
+        pigapi.close()
 
         if response[0] == True:
             return render_template("passwordlostsuccess.html")
@@ -123,9 +142,11 @@ def passwordreset():
     userhash = request.args.get("u")
     session["tmp"] = userhash
     if request.method == "GET":
-        data = { "tmphash": userhash, "email": "" }
 
-        response = post_data_api("forgot", data)
+        pigapi = api()
+
+        s, response = pigapi.post(url=f'user/forgot-request?tmphash={userhash}')
+        pigapi.close()
 
         if response == True:
             return redirect(url_for("newpw"))
@@ -133,6 +154,7 @@ def passwordreset():
             flash_message = { "Link expired": "danger"}
             flash(flash_message)
             return render_template("resetpassword.html")
+
 
 @app.route('/newpw', methods=['GET', 'POST'])
 def newpw():
@@ -150,9 +172,9 @@ def newpw():
                 salt = uuid.uuid4().hex
                 password = hashlib.sha256(salt.encode() + data["password1"].encode()).hexdigest() + ':' + salt
 
-                data = { "tmphash": tmphash, "passwordhash": password }
-
-                response = post_data_api("reset", data)
+                pigapi = api()
+                s, response = pigapi.put(url=f'user/update-pw?passwordhash={password}&tmphash={tmphash}')
+                pigapi.close()
 
                 session.clear()
                 if response:
@@ -165,6 +187,40 @@ def newpw():
     else: 
         return redirect(url_for('login'))
 
+
+# Confirm a Email Adresse per Shamail Variable -> Überedenken 
+@app.route('/confirm')
+def confirm():
+    if session:
+        mailhash = request.args.get("u")
+        send = False
+
+        pigapi = api(auth=session["authorization"])
+        s, response = pigapi.put(f"user/confirm?hashed_mail={mailhash}&send={send}")
+        pigapi.close()
+
+        if response == True:
+            session["verified"] = "1"
+            return render_template("confirm.html")
+        else:
+            return render_template("something502.html")
+    else:
+        return redirect(url_for('login'))
+
+
+# Resend the email Verification Email
+@app.route('/resend')
+def resend():
+    send = True
+
+    pigapi = api(auth=session["authorization"])
+    s, response = pigapi.put(f"user/confirm?send={send}")
+    pigapi.close()
+
+    if response == True:
+        return redirect(url_for('overview'))
+    else: 
+        return redirect(url_for('overview'))
 
 @app.route('/logout', methods=['GET'])
 def logout():

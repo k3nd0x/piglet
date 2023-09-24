@@ -15,6 +15,9 @@ def mail(payload=None):
         port = os.environ.get("MAIL_PORT")
         password = os.environ.get("MAIL_PASSWORD")
         encryption = os.environ.get("MAIL_ENCRYPTIONPROTOCOL")
+
+        if not host:
+            return [ False, 404, "Mailconfig not found" ]
     except:
         return [ False, 404, "Mailconfig not found" ]
 
@@ -66,7 +69,7 @@ def mail(payload=None):
         s.quit()
 
         return [ True, 200, "OK" ] 
-    except SMTPResponseException as e:
-        return [ False, e.smtp_code, e.smtp_error ]
+    #except SMTPResponseException as e:
+    #    return [ False, e.smtp_code, e.smtp_error ]
     except:
         return [ False, "Mail", "error" ]
