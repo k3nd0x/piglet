@@ -35,7 +35,7 @@ def notifications():
         pigapi = api(auth=session["authorization"])
         noticount, notilist, notifications = get_notis(pigapi)
 
-        s, notis = pigapi.get(f"notifications/?show_all=false")
+        s, notis = pigapi.get(f"notifications/?show_all=true")
         all_noticount = notis[0]
         all_notilist = notis[1]
         all_notifications = notis[2]
