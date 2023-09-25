@@ -2,6 +2,8 @@ name: Docker_build_ubuntu
 
 on:
   push:
+    branches:
+    - main
     paths:
     - 'webapp/**'
     - 'dockerfile'
