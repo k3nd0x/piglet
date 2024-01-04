@@ -35,9 +35,12 @@ def settings():
 
                         filename = str(filename.hexdigest()) + '.' + extension
 
-                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                        file.save(os.path.join(app.config['PROFILE_PICTURES'], filename))
 
                         payload['image'] = filename
+                    else:
+                        flash_message = {"Error: Upload a .jpeg .png or .jpg file": "danger" }
+                        flash(flash_message)
                 else:
                     payload["image"] = session["image"]
                 
@@ -105,4 +108,4 @@ def settings():
 
 @app.route('/pictures/<path:filename>', methods=["GET"])
 def pictures(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory(app.config['PROFILE_PICTURES'], filename)

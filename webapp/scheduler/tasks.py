@@ -1,0 +1,1 @@
+from scheduler.celery_config import celery

@@ -104,10 +104,11 @@ def budget():
         noticount, notilist, notifications = get_notis(pigapi)
 
         s, my_budgets = pigapi.get(url="budget/")
+        s, users = pigapi.get(url=f'share/availusers/{budget_id}')
 
         session["budgets"] = my_budgets
         if request.method == "GET":
-            return render_template("budget_settings.html", my_budgets=my_budgets,notifications=notifications, notilist=notilist, noticount=noticount)
+            return render_template("budget_settings.html", my_budgets=my_budgets,availusers=users,notifications=notifications, notilist=notilist, noticount=noticount)
 
     else:
         return redirect(url_for('login'))

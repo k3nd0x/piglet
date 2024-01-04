@@ -10,7 +10,7 @@ import uuid
 import hashlib
 
 from .mysql import sql
-from .functs import get_budgetid, check, get_timestamp
+from .functs import get_budgetid, check, get_timestamp,get_notisettings
 
 from .sendmail import mail
 
@@ -23,6 +23,7 @@ async def newshare(budget_id: str, shareto: str, current_user = Depends(get_curr
     check(mysql,current_user["bid_mapping"], budget_id)
 
     name = current_user["name"].capitalize()
+    userid = current_user["id"]
 
     query = '''select sharecode,name from pig_budgets where id="{}"'''.format(budget_id)
 
@@ -40,11 +41,19 @@ async def newshare(budget_id: str, shareto: str, current_user = Depends(get_curr
 
     set_timestamp = '''insert into pig_urlexpire(url,budget_id) values("{}","{}")'''.format(uri,budget_id)
     mysql.post(set_timestamp)
-    mysql.close()
 
     payload = { "mode": "share", "hashed_url": uri, "budget": budget_name, "to_address": shareto, "user": name } 
     mailstate, code, message = mail(payload)
 
+    notisettings = get_notisettings(mysql,shareto,"4","3")
+    print(shareto, flush=True)
+
+    if notisettings[0]["web"] == 1:
+        noti_query = '''insert into pig_notifications (srcuid, budgetid,value,destuid,state,messageid,typeid) values ({},{},"{}",{},0,4,3)'''.format(userid,budget_id,budget_name,shareto)
+        print(noti_query,flush=True)
+
+        mysql.post(noti_query)
+    mysql.close()
 
     if mailstate:
         return {"state": "Mail sent", "uri": uri }
@@ -107,3 +116,22 @@ async def connect(budget_id: str, current_user = Depends(get_current_user)):
     mysql.close()
 
     return response
+
+@share.get("/availusers/{budget_id}", summary="Get all users")
+async def users(budget_id: str, current_user = Depends(get_current_user)):
+
+    mysql = sql()
+
+    check(mysql,current_user["bid_mapping"], budget_id)
+    user_id = current_user["id"]
+
+    users_query = f'''select id,name,surname,email from registered_user where not id={user_id}'''
+
+    response = mysql.get(users_query)
+
+    mysql.close()
+
+    if not response:
+        raise HTTPException(status_code=502, detail="Internal Server Error")
+    else:
+        return response

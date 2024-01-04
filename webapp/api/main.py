@@ -6,6 +6,7 @@
 from typing import Optional,Union
 from fastapi import FastAPI, status, Request,HTTPException,Depends
 from fastapi.responses import JSONResponse
+from scheduler.celery_config import celery
 
 tags_metadata = [
     {

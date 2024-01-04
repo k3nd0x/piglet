@@ -18,9 +18,12 @@ COPY webapp/config/python/requirements.txt /tmp/requirements.txt
 
 RUN pip3 install --quiet --upgrade pip && pip3 install --quiet --upgrade setuptools && pip3 install --quiet -r /tmp/requirements.txt
 
+COPY webapp/config/python/sessions.py /usr/lib/python3.10/site-packages/flask_session/
+
 COPY webapp /webapp
 WORKDIR /webapp
 
-EXPOSE 8080 80
+
+EXPOSE 8080 80 5566
 
 ENTRYPOINT ["supervisord", "--nodaemon", "--configuration", "/webapp/config/supervisor/supervisord.conf"]

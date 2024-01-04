@@ -6,8 +6,9 @@ services:
       depends_on:
         - database
       ports:
-        - '0.0.0.0:80:80' # Piglet
-        - '0.0.0.0:8080:8080' # API
+        - '10.10.0.5:80:80' # Piglet
+        - '10.10.0.5:8080:8080' # API
+        - '10.10.0.5:5566:5555' # API
       image: k3nd0x/piglet:latest
       environment:
         DB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}

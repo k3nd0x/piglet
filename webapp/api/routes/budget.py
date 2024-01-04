@@ -96,7 +96,7 @@ async def _leave(budgetid: str, force: bool, current_user = Depends(get_current_
             empty += 1
 
     if empty <= 1:
-        return False, "cannot leave"
+        return False, "You cannot leave your last budget"
     else:
         query = '''update pig_bidmapping set b0=NULL where b0={budgetid} and id={bid}'''.format(budgetid=budgetid,bid=bid_mapping)
         query1 = '''update pig_bidmapping set b1=NULL where b1={budgetid} and id={bid}'''.format(budgetid=budgetid,bid=bid_mapping)

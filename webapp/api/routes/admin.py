@@ -51,7 +51,7 @@ async def startup_event():
             """INSERT INTO pig_category VALUES (1,"Groceries",1,1,100,"#123456")""","""INSERT INTO "pig_notiobj" VALUES (1,"added","hinzufügen"),(2,"removed","entfernen"),(3,"joined","Beitritt")""",
             """INSERT INTO pig_notisettings VALUES (1,1,1,1,1),(1,1,2,1,1),(1,2,1,1,1),(1,2,2,1,1)""",
             """INSERT INTO pig_notitype VALUES (1,"order","Money"),(2,"category","Category"),(3,"budget","Budget")""",
-            """INSERT INTO pig_notiobj VALUES (1,'added','added'),(2,'removed','removed'),(3,'joined','joined')""",
+            """INSERT INTO pig_notiobj VALUES (1,'added','added'),(2,'removed','removed'),(3,'joined','joined'),(4,'shared','shared')""",
             '''INSERT INTO registered_user VALUES (1,"admin@{}",1,"864fd3978f508ef03a3e9c24aef43b639d7725c15e08eeaf961a9b81c3adc097:0b108f78bca548fa8fa2721e46d83150","admin","admin","default.png",NULL,"#8a40d0","7eb304283ead5f6",100,10000,1)'''.format(domain)]
 
     if not admin_uid:
@@ -60,6 +60,16 @@ async def startup_event():
                 mysql.post(i)
             except:
                 continue
+
+    
+    update_inserts = [ "INSERT INTO pig_notiobj VALUES (4,'shared','shared')"]
+
+    for i in update_inserts:
+        try:
+            mysql.post(i)
+        except:
+            continue
+    mysql.close()
 
 
 ### AUTHENTICATION ###
@@ -91,12 +101,11 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     mysql = sql()
     query = '''select email,password from registered_user where email="{}"'''.format(form_data.username)
     user_dict = mysql.get(query)
+    mysql.close()
 
     if not user_dict:
-        mysql.close()
         raise HTTPException(status_code=404, detail="Not found")
     else:
-        mysql.close()
         password = user_dict[0]["password"]
         user = user_dict[0]["email"]
 
@@ -130,10 +139,10 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         mysql.close()
         raise credentials_exception
     user = mysql.get('''select id,email,name,bid_mapping from registered_user where email="{}"'''.format(username))
+    mysql.close()
     if user is None:
         raise credentials_exception
     
-    mysql.close()
     return user[0]
 
 

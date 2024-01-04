@@ -128,3 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+webapp/api/uploads
+webapp/todo

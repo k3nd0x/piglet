@@ -58,6 +58,7 @@ async def register_user(registerUser: registerUser):
     user_id = mysql.lastrowid()
 
     if return_value == "duplicated":
+        mysql.close()
         raise HTTPException(status_code=409, detail="User already exists")
 
     noti_queries = [ "INSERT INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1)".format(user_id=user_id) ]
@@ -423,5 +424,3 @@ async def settings_patch(patchSettings: patchSettings, current_user = Depends(ge
 
 
     return return_list
-
-    

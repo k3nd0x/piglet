@@ -29,7 +29,7 @@ from app.views import future_spends
 from app.views import orders
 from app.views import category
 from app.views import notifications
-app.config['UPLOAD_FOLDER'] = PROFILE_PICTURES
+app.config['PROFILE_PICTURES'] = PROFILE_PICTURES
 
 
 app.config['SESSION_COOKIE_SAMESITE'] = "None"

@@ -56,3 +56,41 @@ def delete_ts(timestamp):
         return redirect(url_for('overview'))
     else:
         return redirect(url_for('login'))
+
+
+@app.route('/orderupload', methods=["GET", "POST"])
+def order_upload():
+    if not session:
+        return redirect(url_for('login'))
+
+    if request.method == "POST":
+        file = request.files['image']
+        
+        budget_id = session["budget_id"]
+        pigapi = api(auth=session["authorization"])
+
+        files = {'file': (file.filename, file.stream, file.content_type)}
+
+        s, return_value = pigapi.file(url=f"order/uploadfile?budget_id={budget_id}",files=files)
+        x, categorylist = pigapi.get(url=f"category/{budget_id}")
+
+        if s:
+            noticount, notilist, notifications = get_notis(pigapi)
+            return_value = return_value['file']
+            _first = return_value[0]
+            return_value.pop(0)
+            _data = return_value
+            pigapi.close()
+            return render_template("verifyfile.html", firstline = _first, data=_data,notifications=notifications, notilist=notilist, noticount=noticount,categorylist=categorylist)
+
+        return redirect(url_for('get_data'))
+@app.route('/orderimport', methods=['POST'])
+def order_import():
+    if not session:
+        return redirect(url_for('login'))
+
+    if request.method == "POST":
+        data = request.form.to_dict()
+        print(data,flush=True)
+    return data
+

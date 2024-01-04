@@ -20,7 +20,7 @@ def readNotis():
             if ids != ['']:
                 payload = { "uid": str(session["userid"]), "notilist": ids }
 
-                s, data = pigapi.post('notifications/read',data=data)
+                s, data = pigapi.post('notifications/read',data=payload)
                 pigapi.close()
 
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}

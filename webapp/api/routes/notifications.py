@@ -47,6 +47,11 @@ async def notification(show_all: Optional[bool] = False, current_user = Depends(
             if entry["message"] == "added":
                 id_list.append(str(entry["id"]))
                 message = "{} added a new category {}".format(srcname, entry["budget"])
+        elif entry["type"] == "budget":
+            if entry["message"] == "shared":
+                id_list.append(str(entry["id"]))
+                message = "{} shared a budget with you called '{}'".format(srcname, entry["value"])
+
 
         timestamp = entry["timestamp"]
 

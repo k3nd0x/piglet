@@ -2,19 +2,28 @@
 # -*- coding: utf-8 -*-
 # vim: showmatch ts=4 sts=4 sw=4 autoindent smartindent smarttab expandtab
 
-from fastapi import APIRouter, Path, Depends,HTTPException
+from fastapi import APIRouter, Path, Depends,HTTPException, File, UploadFile
 from enum import Enum
 import json
 from pydantic import BaseModel
 from typing import Optional
+from hashlib import md5
+from pdfquery import PDFQuery
 
 from .mysql import sql
 from .functs import get_budgetid,check,_get_uids,get_notisettings
 from .sendmail import mail
 
 from .admin import oauth2_scheme,get_current_user
+import csv
+import uuid
+from detect_delimiter import detect
+import re
 
 order = APIRouter()
+
+
+
 
 @order.get("/", summary="Get all orders by userid or budget_id")
 async def orders(budget_id: int, max_entries: Optional[int]=30, current_user = Depends(get_current_user)):
@@ -146,6 +155,66 @@ async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
 
     mysql.close()
     return output
+
+
+@order.post('/uploadfile')
+async def upload(file: UploadFile,budget_id: str, current_user = Depends(get_current_user)):
+    mysql = sql()
+
+    userid = current_user["id"]
+    check(mysql,current_user["bid_mapping"], budget_id)
+
+    filename = file.filename
+    if "." in filename:
+        filename = filename.split(".")
+        extention = filename[1]
+        filename = filename[0]
+    random = uuid.uuid4()
+
+    hashed_filename = md5(f"{filename}_{current_user['id']}_{random}".encode('utf-8')).hexdigest() + "." + extention
+    upload_dir = f"api/uploads/{hashed_filename}"
+
+    date_matcher = [ "datum", "date", "timestamp"]
+    dest_matcher = [ "empfaenger"]
+
+    if extention == "csv":
+        def fix_nulls(s):
+            for line in s:
+                yield line.replace('\0', '')
+        
+        def normalize_key(input_key):
+            input_key = str(input_key.lower())
+            date_list = [ "date","datum", "timestamp"]
+            value_list = [ 'value','betrag']
+            usage_list = [ 'description','verwendungszweck' ]
+
+
+        with open(upload_dir, "wb") as f:
+            firstline = file.file.readline().decode('utf-8').strip('\n')
+            f.write(file.file.read())
+        data_dict_list = []
+
+        delimiter = detect(firstline)
+
+        if delimiter in firstline:
+            firstline = firstline.split(delimiter)
+
+            for i in firstline:
+                normalized_key = normalize_key(i)
+                if normalized_key:
+                    print(normalized_key,flush=True)
+
+
+        data_dict_list.append(firstline)
+
+        with open(upload_dir, 'r', newline='', errors='replace', encoding='utf-8') as file:
+            reader = csv.reader(fix_nulls(file), delimiter=delimiter)
+
+            for row in reader:
+                data_dict_list.append(row)
+ 
+    return { 'file': data_dict_list } 
+
 
 @order.delete("/{timestamp}", summary="Delete order by timestamp")
 async def orders(timestamp: str, budget_id: str,current_user = Depends(get_current_user)):

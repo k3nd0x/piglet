@@ -1,4 +1,4 @@
-from flask import render_template, flash, request, session, url_for, redirect, Markup
+from flask import render_template, flash, request, session, url_for, redirect
 from passlib.hash import sha256_crypt as sha256
 import hashlib
 import uuid
@@ -33,7 +33,7 @@ def register():
         pigapi.close()
         if s:
             if response == {'detail': 'User already exists'}:
-                flash_message = { Markup('User {email} is already existing <a href="/login?email={email}">Login here</a>'.format(email=email)): "danger" }
+                flash_message = { 'User {email} is already existing <a href="/login?email={email}">Login here</a>'.format(email=email): "danger" }
                 flash(flash_message)
                 return render_template("register.html")
             else:
@@ -55,7 +55,7 @@ def login():
             flash(flash_message)
             return render_template("login.html")
         elif responsare == {'detail': 'Not found'}:
-            flash_message = { Markup("User {} not found <a href='/register'>Sign Up</a>".format(data["email"])): "danger"}
+            flash_message = { "User {} not found <a href='/register'>Sign Up</a>".format(data["email"]): "danger"}
             flash(flash_message)
             return render_template("login.html")
         elif code != 200:
