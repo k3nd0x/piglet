@@ -188,7 +188,7 @@ async def delete_account(userid: str,budget_id: str, force: bool=False, dict = D
             query2 = '''delete from pig_bidmapping where b0={}'''.format(budget_id)
             for i in query,query1,query2:
                 response.append(mysql.delete(i))
-        query = '''delete from new_orders where user_id={}'''.format(userid)
+        query = '''delete from pig_orders where user_id={}'''.format(userid)
         query1 = '''delete from registered_user where id={}'''.format(userid)
 
         for i in query,query1:
@@ -196,7 +196,7 @@ async def delete_account(userid: str,budget_id: str, force: bool=False, dict = D
 
 
     elif force == False:
-        query = '''select value from new_orders where user_id={}'''.format(userid)
+        query = '''select value from pig_orders where user_id={}'''.format(userid)
         orders = mysql.get(query)
         if orders == []:
             mode = mysql.get('''select mode from pig_budgets where id={}'''.format(budget_id))

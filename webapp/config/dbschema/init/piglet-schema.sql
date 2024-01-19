@@ -44,20 +44,22 @@ CREATE TABLE `months` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `new_orders`
+-- Table structure for table `pig_orders`
 --
 
-DROP TABLE IF EXISTS `new_orders`;
+DROP TABLE IF EXISTS `pig_orders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `new_orders` (
+CREATE TABLE `pig_orders` (
+  `id` int NOT Null AUTO_INCREMENT,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
   `value` float(255,2) DEFAULT NULL,
   `currency` varchar(100) DEFAULT NULL,
   `user_id` int(255) DEFAULT NULL,
   `category_id` int(255) DEFAULT NULL,
   `budget_id` int(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

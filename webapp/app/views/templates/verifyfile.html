@@ -34,10 +34,11 @@
                                         </thead>
                                         <tbody>
                                             {% for i in data %}
+                                            {% set outer_loop = loop %}
                                             <tr>
-                                                {% for x in i %}
-                                                <td>
-                                                    {{ x }}
+                                                {% for x,y in i.items() %}
+                                                <td> 
+                                                    <input class="form-control form-control_piglet" type="text" name="{{ x }}_{{ outer_loop.index }}" value="{{ y }}" readonly />
                                                 </td>
                                                 {% endfor %}
                                                 <td>

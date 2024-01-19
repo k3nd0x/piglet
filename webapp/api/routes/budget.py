@@ -119,7 +119,7 @@ async def _leave(budgetid: str, force: bool, current_user = Depends(get_current_
                 response = mysql.post(query)
                 return True, "Budget deleted"
             else:
-                query = '''select budget_id from new_orders where budget_id={}'''.format(budgetid)
+                query = '''select budget_id from pig_orders where budget_id={}'''.format(budgetid)
                 if mysql.get(query) == []:
                     query = '''select budget_id from pig_category where budget_id={}'''.format(budgetid)
                     if mysql.get(query) == []:

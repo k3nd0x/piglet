@@ -109,7 +109,7 @@ async def connect(budget_id: str, current_user = Depends(get_current_user)):
 
     check(mysql,current_user["bid_mapping"], budget_id)
 
-    query = '''select id,name,surname,email,(select sum(value) from new_orders where user_id=id group by user_id)as value from registered_user where budget_id={} order by value DESC'''.format(budget_id)
+    query = '''select id,name,surname,email,(select sum(value) from pig_orders where user_id=id group by user_id)as value from registered_user where budget_id={} order by value DESC'''.format(budget_id)
 
     response = mysql.get(query)
 
@@ -127,11 +127,14 @@ async def users(budget_id: str, current_user = Depends(get_current_user)):
 
     users_query = f'''select id,name,surname,email from registered_user where not id={user_id}'''
 
-    response = mysql.get(users_query)
+    try:
+        response = mysql.get(users_query)
 
-    mysql.close()
+        print(response)
 
-    if not response:
-        raise HTTPException(status_code=502, detail="Internal Server Error")
-    else:
-        return response
+        mysql.close()
+
+    except:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+    return response
