@@ -56,7 +56,7 @@ TABLES=`mysql -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST -e 'show tables'`
 if [ -z "$TABLES" ]
 then
 	echo "$DATE Import schema"
-	mysql -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST < /webapp/config/scripts/piglet-schema.sql
+	mysql -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST < /webapp/config/dbschema/init/piglet-schema.sql
 	exit 0
 else
 	echo "$DATE Database schema is already set - not overwriting"

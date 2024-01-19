@@ -53,13 +53,6 @@
                                 <input name="image" value="image" style="margin-top: 5px;" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
                                 <button class="btn btn-piglet" type="submit" style="width: 100%;margin-top: 30px;">Upload</button>
                             </form>
-
-                            {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {%
-                            for key,value in msgs.items() %}
-                            <div class="alert alert-{{ value }}" style="border-radius: 4px;margin-top: 30px;text-align: center;">
-                                {{key}}
-                            </div>
-                            {% endfor %} {% endfor %} {% endif %} {% endwith %}
                         </div>
                     </div>
                 </div>

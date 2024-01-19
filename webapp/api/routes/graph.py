@@ -56,7 +56,7 @@ async def _get(budget_id: str,month: Optional[str] = None, year: Optional[str]=N
     time_from = str(mfrom_ms)
     time_to = str(mto_ms)
 
-    query = '''select (select name from registered_user where id=user_id) as user, (select color from registered_user where id=user_id) as color, sum(value) as value, currency from new_orders where budget_id={} and timestamp between FROM_UNIXTIME({}) and FROM_UNIXTIME({}) group by user order by user'''.format(budget_id,time_from,time_to)
+    query = '''select (select name from registered_user where id=user_id) as user, (select color from registered_user where id=user_id) as color, sum(value) as value, currency from pig_orders where budget_id={} and timestamp between FROM_UNIXTIME({}) and FROM_UNIXTIME({}) group by user order by user'''.format(budget_id,time_from,time_to)
 
     user = mysql.get(query)
 
@@ -68,7 +68,7 @@ async def _get(budget_id: str,month: Optional[str] = None, year: Optional[str]=N
         return_dict["user"]["color"].append(str(i["color"]))
         return_dict["user"]["value"].append(str(i["value"]))
 
-    query = '''select sum(value) as value, (select name from pig_category where id=category_id) as name,(select color from pig_category where id=category_id) as color from new_orders where timestamp between FROM_UNIXTIME({}) and FROM_UNIXTIME({}) and budget_id={} GROUP BY name order by name'''.format(time_from,time_to,budget_id)
+    query = '''select sum(value) as value, (select name from pig_category where id=category_id) as name,(select color from pig_category where id=category_id) as color from pig_orders where timestamp between FROM_UNIXTIME({}) and FROM_UNIXTIME({}) and budget_id={} GROUP BY name order by name'''.format(time_from,time_to,budget_id)
 
     category = mysql.get(query)
 

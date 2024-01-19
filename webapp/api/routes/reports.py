@@ -19,7 +19,7 @@ async def report(year: str, month: str, budget_id: int, current_user = Depends(g
     check(mysql,current_user["bid_mapping"], budget_id)
 
     if has_numbers(month) == True:
-        query = '''select (select name from registered_user where user_id=id) as user,value from new_orders where MONTH(TIMESTAMP)= "{month}" and YEAR(TIMESTAMP) = "{year}" and budget_id="{budget_id}"'''.format(
+        query = '''select (select name from registered_user where user_id=id) as user,value from pig_orders where MONTH(TIMESTAMP)= "{month}" and YEAR(TIMESTAMP) = "{year}" and budget_id="{budget_id}"'''.format(
                 month=month,
                 year=year,
                 budget_id=budget_id
@@ -27,7 +27,7 @@ async def report(year: str, month: str, budget_id: int, current_user = Depends(g
 
         response = mysql.get(query)
     else:
-        query = '''select (select name from registered_user where user_id=id) as user,value from new_orders where MONTHNAME(TIMESTAMP) = "{month}" and YEAR(TIMESTAMP) = "{year}" and budget_id="{budget_id}"'''.format(
+        query = '''select (select name from registered_user where user_id=id) as user,value from pig_orders where MONTHNAME(TIMESTAMP) = "{month}" and YEAR(TIMESTAMP) = "{year}" and budget_id="{budget_id}"'''.format(
                 month=month,
                 year=year,
                 budget_id=budget_id
@@ -84,10 +84,10 @@ async def months(budget_id: str, current_user = Depends(get_current_user)):
 
     check(mysql,current_user["bid_mapping"], budget_id)
 
-    query = """select distinct YEAR(new_orders.timestamp) as year, CONVERT(months.id, INT) as id, months.name from months inner join new_orders on MONTHNAME(new_orders.timestamp)=months.name where budget_id={}""".format(budget_id)
+    query = """select distinct YEAR(pig_orders.timestamp) as year, CONVERT(months.id, INT) as id, months.name from months inner join pig_orders on MONTHNAME(pig_orders.timestamp)=months.name where budget_id={}""".format(budget_id)
 
     response = mysql.get(query)
-    #response = mysql.get("""select distinct CONVERT(YEAR(new_orders.timestamp),CHAR(50)) as year where budget_id={} order by year desc""".format(budget_id))
+    #response = mysql.get("""select distinct CONVERT(YEAR(pig_orders.timestamp),CHAR(50)) as year where budget_id={} order by year desc""".format(budget_id))
     return_dict = {}
 
     year_list = []

@@ -21,8 +21,8 @@ RUN pip3 install --quiet --upgrade pip && pip3 install --quiet --upgrade setupto
 COPY webapp/config/python/sessions.py /usr/lib/python3.10/site-packages/flask_session/
 
 COPY webapp /webapp
+RUN mkdir -p /webapp/log/{api,app,scheduler}
 WORKDIR /webapp
-
 
 EXPOSE 8080 80 5566
 

@@ -42,13 +42,12 @@ def get_data():
     else:
         return redirect(url_for('login'))
 
-# Delete Order by Timestamp -> nicht umbedingt perfekt wenn 2x gleichen Timestamp
-@app.route('/delete-ts/<timestamp>')
-def delete_ts(timestamp):
+@app.route('/delete-ts/<id>')
+def delete_ts(id):
     if session:
         budget_id = session["budget_id"]
         pigapi = api(auth=session["authorization"])
-        s, return_value = pigapi.delete(url=f"order/{timestamp}?budget_id={budget_id}")
+        s, return_value = pigapi.delete(url=f"order/{id}?budget_id={budget_id}")
 
         flash(return_value)
         pigapi.close()
@@ -83,6 +82,7 @@ def order_upload():
             pigapi.close()
             return render_template("verifyfile.html", firstline = _first, data=_data,notifications=notifications, notilist=notilist, noticount=noticount,categorylist=categorylist)
 
+        pigapi.close()
         return redirect(url_for('get_data'))
 @app.route('/orderimport', methods=['POST'])
 def order_import():
@@ -91,6 +91,58 @@ def order_import():
 
     if request.method == "POST":
         data = request.form.to_dict()
-        print(data,flush=True)
-    return data
+        result_list = []
+
+        numbers = set(int(key.split('_')[1]) for key in data.keys() if key.startswith('value'))
+
+        # Iterating through unique numbers
+        for number in numbers:
+            checked_key = f'checked_{number}'
+            if checked_key in data and data[checked_key] == 'on':
+                value = data[f'value_{number}']
+                if "-" in value:
+                    value = value.replace("-",'').replace(",",".")
+                entry_dict = {
+                    'value': value,
+                    'date': data[f'date_{number}'],
+                    'category': data[f'category_{number}'],
+                    'description': data[f'description_{number}'],
+                    'budget_id': session["budget_id"],
+                    'userid': session["userid"]
+                }
+
+                try:
+                    if data[f'currency_{number}']:
+                        entry_dict["currency"] = data[f'currency_{number}']
+                    else:
+                        entry_dict["currency"] = None
+                except:
+                    entry_dict["currency"] = None
+                
+                result_list.append(entry_dict)
+
+        print(result_list,flush=True)
+        pigapi = api(auth=session["authorization"])
+
+        try:
+            for x in result_list:
+                s, response = pigapi.post(url="order/new", data=x)
+
+                if s:
+                    continue
+            pigapi.close()
+        except:
+            flash_message = {"Error occured in import" "danger"}
+            flash(flash_message)
+            pigapi.close()
+        
+        return redirect(url_for('get_data'))
+
+
+    else:
+        return redirect(url_for('login'))
+
+
+
+    return result_list
 

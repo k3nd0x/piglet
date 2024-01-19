@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from colour import Color
 import random as random
 from datetime import datetime, timedelta
+from dateutil import parser
 def get_budgetid(user_id):
     mysql = sql()
     query = '''select budget_id from registered_user where id="{}"'''.format(user_id)
@@ -64,3 +65,17 @@ def get_notisettings(mysql,user_id,notiobj,notitype):
     notisettings = mysql.get(get_settings)
 
     return notisettings
+
+def normalize_date(date_string):
+    try:
+        # Parse the date using dateutil.parser
+        parsed_date = parser.parse(date_string)
+
+        # Format the parsed date to the desired format
+        normalized_date = parsed_date.strftime("%Y-%m-%d %H:%M:%S")
+
+        return normalized_date
+    except ValueError:
+        # Handle invalid date formats
+        print(f"Error: Could not parse date string '{date_string}'")
+        return None

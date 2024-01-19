@@ -27,7 +27,7 @@ import logging
 @admin.on_event("startup")
 async def startup_event():
     date = datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
-    print("{} - Starting Piglet API...".format(date))
+    print("{} - Starting Piglet API...".format(date),flush=True)
     admin_uid = None
 
     if os.environ.get("DOMAIN"):
@@ -69,6 +69,25 @@ async def startup_event():
             mysql.post(i)
         except:
             continue
+    
+
+
+    try:
+        version = mysql.get("""select value from pig_meta where `key` = 'version'""")[0]["value"]
+        print(f"Piglet Schema Version: {version}",flush=True)
+
+    except:
+        v1_2inserts = ["""RENAME table new_orders to pig_orders""",
+                       """alter table pig_orders add column id int auto_increment primary key first""",
+                       """CREATE TABLE `pig_meta` (`key` VARCHAR(255),`value` VARCHAR(255), PRIMARY KEY (`key`))""",
+                       """INSERT INTO `pig_meta` (`key`, `value`) VALUES ('version', '1.2')"""
+                       ]
+        for i in v1_2inserts:
+            try:
+                mysql.post(i)
+            except:
+                continue
+    
     mysql.close()
 
 
