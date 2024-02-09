@@ -98,11 +98,19 @@
                                                                     <form method="post" action="/sharewith">
                                                                         <label class="form-label d-lg-flex justify-content-lg-center">Who do you want to share the budget with?</label>
                                                                         <!--<input class="form-control form-control_piglet" name="shareto" id="shareto" placeholder="Email Address" style="margin-top: 10px;text-align: center;" />-->
+                                                                        <input class="form-control form-control_piglet" list="users" id="shareto" name="shareto" />
+                                                                        <datalist id="users">
+                                                                            {% for c in availusers %}
+                                                                            <option value="{{ c['email'] }}">{{ c['email'] }}</option>
+                                                                            {% endfor %}
+                                                                        </datalist>
+                                                                        <!--
                                                                         <select class="form-control form-control_piglet" name="shareto" id="shareto" placeholder="Email Address" style="margin-top: 10px; text-align: center;">
                                                                             {% for c in availusers %}
                                                                             <option value="{{ c['id'] }}">{{ c['email'] }}</option>
                                                                             {% endfor %}
                                                                         </select>
+                                                                    --->
                                                                         <button class="btn btn-piglet" name="id" value="{{ i.id }}" type="submit" style="width: 100%; margin-top: 30px">
                                                                             Send
                                                                         </button>

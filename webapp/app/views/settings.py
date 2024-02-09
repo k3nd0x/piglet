@@ -66,7 +66,7 @@ def settings():
 
                 data_to_api = { "settings": {}}
 
-                for setting in [ "category_removed", "order_added", "order_removed", "category_added" ]:
+                for setting in [ "category_removed", "order_added", "order_removed", "category_added", "budget_joined", "budget_shared" ]:
                     payload = request.form.getlist(setting)
 
                     if len(payload) == 0:
@@ -103,7 +103,6 @@ def settings():
 
                 return redirect(url_for('settings'))
     else:
-        pigapi.close()
         return redirect(url_for('login'))
 
 @app.route('/pictures/<path:filename>', methods=["GET"])

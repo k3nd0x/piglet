@@ -29,38 +29,46 @@ async def newshare(budget_id: str, shareto: str, current_user = Depends(get_curr
 
     query_data = mysql.get(query)
 
-    sharecode = query_data[0]["sharecode"]
+    query = '''select id from registered_user where email="{}"'''.format(shareto)
     budget_name = query_data[0]["name"]
 
+    shareto_uid = mysql.get(query)
+    print(shareto_uid,flush=True)
 
-    tmpuuid = uuid.uuid4()
-    tmpuuid = str(tmpuuid) + sharecode
-    tmphash = hashlib.sha256(str(tmpuuid).encode('utf-8')).hexdigest()
+    if shareto_uid:
+        # only if the share to user is registered
+        shareto_uid = shareto_uid[0]['id']
+        notisettings = get_notisettings(mysql,shareto_uid,"4","3")
+        print(notisettings,flush=True)
 
-    uri = sharecode + "!" + tmphash
+        if notisettings[0]["web"] == 1:
+            noti_query = '''insert into pig_notifications (srcuid, budgetid,value,destuid,state,messageid,typeid) values ({},{},"{}",{},0,4,3)'''.format(userid,budget_id,budget_name,shareto_uid)
+            print(noti_query,flush=True)
 
-    set_timestamp = '''insert into pig_urlexpire(url,budget_id) values("{}","{}")'''.format(uri,budget_id)
-    mysql.post(set_timestamp)
+            mysql.post(noti_query)
+    else:
+        # Only if user has not a registered email
+        sharecode = query_data[0]["sharecode"]
+        shareto_uid = "NoID"
+        tmpuuid = uuid.uuid4()
+        tmpuuid = str(tmpuuid) + sharecode
+        tmphash = hashlib.sha256(str(tmpuuid).encode('utf-8')).hexdigest()
+        uri = sharecode + "!" + tmphash
+        set_timestamp = '''insert into pig_urlexpire(url,budget_id) values("{}","{}")'''.format(uri,budget_id)
+        mysql.post(set_timestamp)
+        payload = { "mode": "share", "hashed_url": uri, "budget": budget_name, "to_address": shareto, "user": name } 
+        mailstate, code, message = mail(payload)
+        if mailstate:
+            return {"state": "Mail sent", "uri": uri }
+            raise HTTPException(status_code=200, detail="OK")
+        else:
+            return {"state": "Mail not sent", "uri": uri }
+            raise HTTPException(status_code=502, detail="Internal Server Error")
 
-    payload = { "mode": "share", "hashed_url": uri, "budget": budget_name, "to_address": shareto, "user": name } 
-    mailstate, code, message = mail(payload)
 
-    notisettings = get_notisettings(mysql,shareto,"4","3")
-    print(shareto, flush=True)
 
-    if notisettings[0]["web"] == 1:
-        noti_query = '''insert into pig_notifications (srcuid, budgetid,value,destuid,state,messageid,typeid) values ({},{},"{}",{},0,4,3)'''.format(userid,budget_id,budget_name,shareto)
-        print(noti_query,flush=True)
-
-        mysql.post(noti_query)
     mysql.close()
 
-    if mailstate:
-        return {"state": "Mail sent", "uri": uri }
-        raise HTTPException(status_code=200, detail="OK")
-    else:
-        return {"state": "Mail not sent", "uri": uri }
-        raise HTTPException(status_code=502, detail="Internal Server Error")
 
 @share.post("/wanttoconn")
 async def wanttoconn(sharecode: str, current_user = Depends(get_current_user)):
@@ -129,8 +137,6 @@ async def users(budget_id: str, current_user = Depends(get_current_user)):
 
     try:
         response = mysql.get(users_query)
-
-        print(response)
 
         mysql.close()
 

@@ -17,11 +17,14 @@ def share():
         if request.method == "POST":
             _data = request.form.to_dict()
 
+            print(_data,flush=True)
+
             #data = { "shareto": _data["shareto"], "budget_id": _data["id"]}
             budget_id = _data["id"]
             shareto = _data["shareto"]
 
             s, response = pigapi.post(url=f"share/newshare?budget_id={budget_id}&shareto={shareto}")
+            print(response,flush=True)
 
             if response["state"] == "Mail sent":
                 flash_message = {"Email sent": "success"}

@@ -62,6 +62,14 @@ body {
     background: var(--piglet-color);
     color: var(--pagination-text);
 }
+.btn-piglet-outline {
+    background: var(--pagination-text);
+    border-color: var(--piglet-color);
+    color: var(--piglet-color);
+}
+.btn-piglet-outline:hover {
+    color: var(--piglet-color);
+}
 
 .btn-piglet:hover {
     color: var(--pagination-text);
@@ -196,4 +204,8 @@ input:checked+.slider:before {
 }
 .modal-body {
 	background-color: var(--bkg-color);
+}
+
+.hidden {
+    display: none;
 }

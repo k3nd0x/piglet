@@ -2,6 +2,7 @@ from flask import Flask, render_template, url_for, flash, redirect, request, ses
 from hashlib import sha256
 import os
 import json
+from datetime import date
 
 from app.views import app
 from app.funcs import get_notis, auth, allowed_exts
@@ -14,20 +15,35 @@ def get_data():
     if session:
         session["title"] = "order"
         bid = session["budget_id"]
+        userid = session["userid"]
         pigapi = api(auth=session["authorization"])
         noticount, notilist, notifications = get_notis(pigapi)
         if request.method == "POST":
             data = request.form.to_dict()
+
+            print(data,flush=True)
             data["budget_id"] = bid
+            data["userid"] = userid
+            
+            if data["ordertype"] == "future":
 
-            s, categorylist = pigapi.get(url=f"category/{bid}")
+                data.pop("ordertype")
+                s, response = pigapi.post(url="futurespends/new", data=data)
+                if response == "Future spend added!":
+                    flash_message = {response: "danger"}
+                else:
+                    flash_message = {response: "success"}
 
-            s, response = pigapi.post(url="order/new", data=data)
-
-            if response == "Order added!":
-                flash_message = {response: "danger"}
-            else:
-                flash_message = {response: "success"}
+            elif data["ordertype"] == "normal":
+                data.pop("ordertype")
+                s, response = pigapi.post(url="order/new", data=data)
+                if response == "Order added!":
+                    flash_message = {response: "danger"}
+                else:
+                    flash_message = {response: "success"}
+            elif data["ordertype"] == "recurring":
+                print("skip")
+                flash_message = {False: "danger"}
 
             flash(flash_message)
             pigapi.close()
@@ -37,8 +53,9 @@ def get_data():
         elif request.method == "GET":
             s, categorylist = pigapi.get(url=f"category/{bid}")
             pigapi.close()
+            today = date.today()
 
-            return render_template("new-order.html", categorylist=categorylist,notifications=notifications, notilist=notilist, noticount=noticount)
+            return render_template("new-order.html", categorylist=categorylist,notifications=notifications, notilist=notilist, noticount=noticount, today=today)
     else:
         return redirect(url_for('login'))
 

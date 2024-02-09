@@ -15,7 +15,7 @@ from .admin import oauth2_scheme,get_current_user
 
 notifications = APIRouter()
 
-@notifications.get("/", summary="Get all notificatins which a relevant for this user")
+@notifications.get("/", summary="Get all notifications which are relevant for this user")
 async def notification(show_all: Optional[bool] = False, current_user = Depends(get_current_user)):
     mysql = sql()
 

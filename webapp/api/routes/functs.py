@@ -4,6 +4,7 @@ from colour import Color
 import random as random
 from datetime import datetime, timedelta
 from dateutil import parser
+import random
 def get_budgetid(user_id):
     mysql = sql()
     query = '''select budget_id from registered_user where id="{}"'''.format(user_id)
@@ -64,6 +65,12 @@ def get_notisettings(mysql,user_id,notiobj,notitype):
 
     notisettings = mysql.get(get_settings)
 
+    if not notisettings:
+        insert_query = '''insert into pig_notisettings VALUES({},{},{},1,1)'''.format(user_id,notiobj, notitype)
+        mysql.post(insert_query)
+
+        notisettings = mysql.get(get_settings)
+
     return notisettings
 
 def normalize_date(date_string):
@@ -79,3 +86,10 @@ def normalize_date(date_string):
         # Handle invalid date formats
         print(f"Error: Could not parse date string '{date_string}'")
         return None
+
+def random_name():
+    names = ['Lara', 'Geralt', 'Ezio', 'Aloy', 'Nathan', 'Ellie', 'Kratos', 'Cortana', 'Joel', 'Trevor', 'Claire', 'Dante', 'Clementine', 'Niko', 'Faith', 'Max', 'Tifa', 'Ciri', 'Marcus', 'Chloe']
+    surnames = ['Croft', 'Rivia', 'Auditore', 'Horizon', 'Drake', 'Williams', 'Kratoson', 'Chief', 'Miller', 'Philips', 'Redfield', 'Sparda', 'Everett', 'Bellic', 'Connors', 'Caulfield', 'Lockhart', 'Forden', 'Fenix', 'Price']
+    random_name = random.choice(names)
+    random_surname = random.choice(surnames)
+    return random_name, random_surname

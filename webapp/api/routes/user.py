@@ -13,7 +13,7 @@ import uuid
 
 from .mysql import sql
 from .sendmail import mail
-from .functs import hex_color, get_timestamp
+from .functs import hex_color, get_timestamp, random_name
 from .admin import oauth2_scheme,get_current_user
 
 user = APIRouter()
@@ -52,16 +52,22 @@ async def register_user(registerUser: registerUser):
 
     color = hex_color()
 
-    query = '''insert into registered_user( id, email,password,color, shamail,budget_id,bid_mapping ) select max( id ) + 1, "{}", "{}", "{}", "{}","{}","{}" from registered_user'''.format(email,password,color,shamail,budget_id,bid_mapping)
+    name, surname = random_name()
+
+    query = '''insert into registered_user( id, email,name, surname, password,color, shamail,budget_id,bid_mapping ) select max( id ) + 1, "{}", "{}", "{}", "{}", "{}", "{}","{}","{}" from registered_user'''.format(email, name,surname, password,color,shamail,budget_id,bid_mapping)
 
     return_value = mysql.post(query)
     user_id = mysql.lastrowid()
 
+
     if return_value == "duplicated":
         mysql.close()
         raise HTTPException(status_code=409, detail="User already exists")
+    query_category = f"""INSERT INTO pig_category (name,user_id,displayed, budget_id, color) VALUES ("Groceries",{user_id},1,{budget_id},"#fff888")"""
 
-    noti_queries = [ "INSERT INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1)".format(user_id=user_id) ]
+    return_value = mysql.post(query_category)
+
+    noti_queries = [ "INSERT INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1),({user_id},3,3,1,1),({user_id},4,3,1,1)".format(user_id=user_id) ]
     for i in noti_queries:
         try:
             mysql.post(i)
@@ -302,7 +308,6 @@ async def update_pw(passwordhash: str, tmphash: str):
 
     email_query = '''select email from pig_pwforgot where hash="{}"'''.format(tmphash)
 
-    print(mysql.get(email_query))
     email = mysql.get(email_query)[0]["email"]
 
     update_query = '''update registered_user set password="{}" where email="{}"'''.format(passwordhash,email)
