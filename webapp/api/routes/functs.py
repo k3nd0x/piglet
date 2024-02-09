@@ -4,7 +4,10 @@ from colour import Color
 import random as random
 from datetime import datetime, timedelta
 from dateutil import parser
+<<<<<<< HEAD
 import random
+=======
+>>>>>>> f2d78accaaf7afb74e947ec7f6428429cdac70cb
 def get_budgetid(user_id):
     mysql = sql()
     query = '''select budget_id from registered_user where id="{}"'''.format(user_id)
@@ -85,6 +88,7 @@ def normalize_date(date_string):
     except ValueError:
         # Handle invalid date formats
         print(f"Error: Could not parse date string '{date_string}'")
+HEAD
         return None
 
 def random_name():
@@ -93,3 +97,5 @@ def random_name():
     random_name = random.choice(names)
     random_surname = random.choice(surnames)
     return random_name, random_surname
+
+f2d78accaaf7afb74e947ec7f6428429cdac70cb
