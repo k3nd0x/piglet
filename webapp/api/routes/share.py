@@ -138,6 +138,8 @@ async def users(budget_id: str, current_user = Depends(get_current_user)):
     try:
         response = mysql.get(users_query)
 
+        print(response)
+
         mysql.close()
 
     except:
