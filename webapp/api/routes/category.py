@@ -20,7 +20,7 @@ category = APIRouter()
 async def categories(budget_id: int,current_user = Depends(get_current_user)):
     mysql = sql()
 
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     query = '''select id,name,color from pig_category where displayed=1 and budget_id="{}"'''.format(budget_id)
     row = mysql.get(query)
@@ -34,7 +34,7 @@ async def categories(catname: str, color: str, budget_id: int, current_user = De
     mysql = sql()
     user_id = current_user["id"]
 
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     #data = get("""select exists(select name from pig_category where name='%s')"""%(catname))
     query = '''select exists(select name from pig_category where name="{}" and budget_id="{}")'''.format(catname,budget_id)
@@ -100,7 +100,7 @@ async def categories(catname: str, color: str, budget_id: int, current_user = De
 async def categories(budget_id: str, catid: str,current_user = Depends(get_current_user) ):
     mysql = sql()
 
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     query = '''select id from pig_category where id="{}" and budget_id="{}"'''.format(catid,budget_id)
 
@@ -124,7 +124,7 @@ async def categories(budget_id: str, catid: str,current_user = Depends(get_curre
 async def _update_category(budget_id: str, catid: str, name: Optional[str]=None, color: Optional[str]=None,current_user = Depends(get_current_user)):
     mysql = sql()
 
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     if name and not color:
         query = '''update pig_category set name="{}" where id={} and budget_id={}'''.format(name,catid,budget_id)

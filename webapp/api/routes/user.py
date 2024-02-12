@@ -64,8 +64,11 @@ async def register_user(registerUser: registerUser):
         mysql.close()
         raise HTTPException(status_code=409, detail="User already exists")
     query_category = f"""INSERT INTO pig_category (name,user_id,displayed, budget_id, color) VALUES ("Groceries",{user_id},1,{budget_id},"#fff888")"""
+    budgetmapping = f"""INSERT into pig_userbudgets values ({user_id},{budget_id},1)"""
 
     return_value = mysql.post(query_category)
+
+    return_value = mysql.post(budgetmapping)
 
     noti_queries = [ "INSERT INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1),({user_id},3,3,1,1),({user_id},4,3,1,1)".format(user_id=user_id) ]
     for i in noti_queries:

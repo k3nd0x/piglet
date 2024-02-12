@@ -16,7 +16,7 @@ reports = APIRouter()
 async def report(year: str, month: str, budget_id: int, current_user = Depends(get_current_user)):
     mysql = sql()
 
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     if has_numbers(month) == True:
         query = '''select (select name from registered_user where user_id=id) as user,value from pig_orders where MONTH(TIMESTAMP)= "{month}" and YEAR(TIMESTAMP) = "{year}" and budget_id="{budget_id}"'''.format(
@@ -82,7 +82,7 @@ async def report(year: str, month: str, budget_id: int, current_user = Depends(g
 async def months(budget_id: str, current_user = Depends(get_current_user)):
     mysql = sql()
 
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     query = """select distinct YEAR(pig_orders.timestamp) as year, CONVERT(months.id, INT) as id, months.name from months inner join pig_orders on MONTHNAME(pig_orders.timestamp)=months.name where budget_id={}""".format(budget_id)
 

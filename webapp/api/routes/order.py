@@ -30,7 +30,7 @@ order = APIRouter()
 @order.get("/", summary="Get all orders by userid or budget_id")
 async def orders(budget_id: int, max_entries: Optional[int]=30, current_user = Depends(get_current_user)):
     mysql = sql()
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     query = '''select id,(select name from registered_user where id=user_id) as user, (select name from pig_category where id=category_id) as category, CONCAT(value,' ',currency) AS value, timestamp,description FROM pig_orders where budget_id={} order by timestamp DESC'''.format(budget_id)
     response = mysql.get(query)
@@ -90,7 +90,7 @@ async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
     if userid != current_user["id"]:
         raise HTTPException(status_code=403, detail="Forbidden")
 
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     if not newOrder.currency:
         currency_query = f"select currency from pig_budgets where id={budget_id}"
@@ -175,7 +175,7 @@ async def upload(file: UploadFile,budget_id: str, current_user = Depends(get_cur
     mysql = sql()
 
     userid = current_user["id"]
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
     mysql.close()
 
     filename = file.filename
@@ -285,7 +285,7 @@ async def orders(id: str, budget_id: str,current_user = Depends(get_current_user
     mysql = sql()
 
     userid = current_user["id"]
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     query = '''delete from pig_orders where id="{}" and budget_id={}'''.format(id,budget_id,userid)
 

@@ -20,50 +20,58 @@ share = APIRouter()
 @share.post("/newshare")
 async def newshare(budget_id: str, shareto: str, current_user = Depends(get_current_user)):
     mysql = sql()
-    check(mysql,current_user["bid_mapping"], budget_id)
-
-    name = current_user["name"].capitalize()
-    userid = current_user["id"]
-
-    query = '''select sharecode,name from pig_budgets where id="{}"'''.format(budget_id)
-
-    query_data = mysql.get(query)
+    check(mysql,budget_id,current_user["id"])
 
     query = '''select id from registered_user where email="{}"'''.format(shareto)
-    budget_name = query_data[0]["name"]
+    shareto_uid = mysql.get(query)[0]["id"]
 
-    shareto_uid = mysql.get(query)
-    print(shareto_uid,flush=True)
+    query = f'''insert into pig_userbudgets values ({shareto_uid}, {budget_id}, 0)'''
 
-    if shareto_uid:
-        # only if the share to user is registered
-        shareto_uid = shareto_uid[0]['id']
-        notisettings = get_notisettings(mysql,shareto_uid,"4","3")
-        print(notisettings,flush=True)
+    print(query,flush=True)
 
-        if notisettings[0]["web"] == 1:
-            noti_query = '''insert into pig_notifications (srcuid, budgetid,value,destuid,state,messageid,typeid) values ({},{},"{}",{},0,4,3)'''.format(userid,budget_id,budget_name,shareto_uid)
-            print(noti_query,flush=True)
+    mysql.post(query)
 
-            mysql.post(noti_query)
-    else:
-        # Only if user has not a registered email
-        sharecode = query_data[0]["sharecode"]
-        shareto_uid = "NoID"
-        tmpuuid = uuid.uuid4()
-        tmpuuid = str(tmpuuid) + sharecode
-        tmphash = hashlib.sha256(str(tmpuuid).encode('utf-8')).hexdigest()
-        uri = sharecode + "!" + tmphash
-        set_timestamp = '''insert into pig_urlexpire(url,budget_id) values("{}","{}")'''.format(uri,budget_id)
-        mysql.post(set_timestamp)
-        payload = { "mode": "share", "hashed_url": uri, "budget": budget_name, "to_address": shareto, "user": name } 
-        mailstate, code, message = mail(payload)
-        if mailstate:
-            return {"state": "Mail sent", "uri": uri }
-            raise HTTPException(status_code=200, detail="OK")
-        else:
-            return {"state": "Mail not sent", "uri": uri }
-            raise HTTPException(status_code=502, detail="Internal Server Error")
+    #name = current_user["name"].capitalize()
+    #userid = current_user["id"]
+
+    #query = '''select sharecode,name from pig_budgets where id="{}"'''.format(budget_id)
+
+    #query_data = mysql.get(query)
+
+    #query = '''select id from registered_user where email="{}"'''.format(shareto)
+    #budget_name = query_data[0]["name"]
+
+    #shareto_uid = mysql.get(query)
+
+    #if shareto_uid:
+    #    # only if the share to user is registered
+    #    shareto_uid = shareto_uid[0]['id']
+    #    notisettings = get_notisettings(mysql,shareto_uid,"4","3")
+    #    print(notisettings,flush=True)
+
+    #    if notisettings[0]["web"] == 1:
+    #        noti_query = '''insert into pig_notifications (srcuid, budgetid,value,destuid,state,messageid,typeid) values ({},{},"{}",{},0,4,3)'''.format(userid,budget_id,budget_name,shareto_uid)
+    #        print(noti_query,flush=True)
+
+    #        mysql.post(noti_query)
+    #else:
+    #    # Only if user has not a registered email
+    #    sharecode = query_data[0]["sharecode"]
+    #    shareto_uid = "NoID"
+    #    tmpuuid = uuid.uuid4()
+    #    tmpuuid = str(tmpuuid) + sharecode
+    #    tmphash = hashlib.sha256(str(tmpuuid).encode('utf-8')).hexdigest()
+    #    uri = sharecode + "!" + tmphash
+    #    set_timestamp = '''insert into pig_urlexpire(url,budget_id) values("{}","{}")'''.format(uri,budget_id)
+    #    mysql.post(set_timestamp)
+    #    payload = { "mode": "share", "hashed_url": uri, "budget": budget_name, "to_address": shareto, "user": name } 
+    #    mailstate, code, message = mail(payload)
+    #    if mailstate:
+    #        return {"state": "Mail sent", "uri": uri }
+    #        raise HTTPException(status_code=200, detail="OK")
+    #    else:
+    #        return {"state": "Mail not sent", "uri": uri }
+    #        raise HTTPException(status_code=502, detail="Internal Server Error")
 
 
 
@@ -115,7 +123,7 @@ async def wanttoconn(sharecode: str, current_user = Depends(get_current_user)):
 async def connect(budget_id: str, current_user = Depends(get_current_user)):
     mysql = sql()
 
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     query = '''select id,name,surname,email,(select sum(value) from pig_orders where user_id=id group by user_id)as value from registered_user where budget_id={} order by value DESC'''.format(budget_id)
 
@@ -130,7 +138,7 @@ async def users(budget_id: str, current_user = Depends(get_current_user)):
 
     mysql = sql()
 
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
     user_id = current_user["id"]
 
     users_query = f'''select id,name,surname,email from registered_user where not id={user_id}'''

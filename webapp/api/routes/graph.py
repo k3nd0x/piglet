@@ -19,7 +19,7 @@ async def _get(budget_id: str,month: Optional[str] = None, year: Optional[str]=N
     mysql = sql()
     timestamps = {}
 
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     from calendar import monthrange
     from datetime import datetime

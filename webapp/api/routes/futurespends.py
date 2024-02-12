@@ -19,7 +19,7 @@ futurespends = APIRouter()
 @futurespends.get("/", summary="Get all future spends by userid or budget_id")
 async def spends(budget_id: int, max_entries: Optional[int]=30, current_user = Depends(get_current_user)):
     mysql = sql()
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     query = '''select (select name from registered_user where id=user_id) as user, (select name from pig_category where id=category_id) as category, CONCAT(value,' ',currency) AS value, id, DATE_FORMAT(timestamp, '%Y-%m-%d') as timestamp,description FROM pig_futurespends where budget_id={} order by timestamp DESC'''.format(budget_id)
     response = mysql.get(query)
@@ -103,7 +103,7 @@ async def spends(newSpend: newSpend,current_user = Depends(get_current_user)):
     if userid != current_user["id"]:
         raise HTTPException(status_code=403, detail="Forbidden")
 
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     currency_query = f"select currency from pig_budgets where id={budget_id}"
     curr = mysql.get(currency_query)[0]["currency"]
@@ -121,7 +121,7 @@ async def spends(id: str, budget_id: str,current_user = Depends(get_current_user
     mysql = sql()
 
     userid = current_user["id"]
-    check(mysql,current_user["bid_mapping"], budget_id)
+    check(mysql,budget_id,current_user["id"])
 
     query = '''delete from pig_futurespends where id="{}" and budget_id={}'''.format(id,budget_id)
 
