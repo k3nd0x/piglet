@@ -19,17 +19,56 @@ share = APIRouter()
 
 @share.post("/newshare")
 async def newshare(budget_id: str, shareto: str, current_user = Depends(get_current_user)):
-    mysql = sql()
-    check(mysql,budget_id,current_user["id"])
+    try:
+        mysql = sql()
+        check(mysql,budget_id,current_user["id"])
 
-    query = '''select id from registered_user where email="{}"'''.format(shareto)
-    shareto_uid = mysql.get(query)[0]["id"]
+        query = '''select id from registered_user where email="{}"'''.format(shareto)
+        shareto_uid = mysql.get(query)[0]["id"]
 
-    query = f'''insert into pig_userbudgets values ({shareto_uid}, {budget_id}, 0)'''
+        query = f'''insert into pig_userbudgets values ({shareto_uid}, {budget_id}, 0)'''
+        result = mysql.post(query)
+        result = False
 
-    print(query,flush=True)
 
-    mysql.post(query)
+        try:
+            query = '''select name from pig_budgets where id="{}"'''.format(budget_id)
+            query_data = mysql.get(query)
+            budget_name = query_data[0]["name"]
+
+            query = '''select id from registered_user where email="{}"'''.format(shareto)
+            shareto_uid = mysql.get(query)
+
+            if shareto_uid:
+                # only if the share to user is registered
+                shareto_uid = shareto_uid[0]['id']
+
+                ### Test if user already member of budget
+                query = f'select joined from pig_userbudgets where user_id={shareto_uid} and budget_id={budget_id} and joined=1'
+                exists = mysql.get(query)
+
+                if exists:
+                    mysql.close()
+                    return "User already joined"
+
+                notisettings = get_notisettings(mysql,shareto_uid,"4","3")
+                print(notisettings,flush=True)
+
+                if notisettings[0]["web"] == 1:
+                    noti_query = '''insert into pig_notifications (srcuid, budgetid,value,destuid,state,messageid,typeid) values ({},{},"{}",{},0,4,3)'''.format(current_user["id"],budget_id,budget_name,shareto_uid)
+                    print(noti_query,flush=True)
+
+                    mysql.post(noti_query)
+        except:
+            print("Share notification not sent",flush=True)
+
+        mysql.close()
+        if result:
+            return "Share complete" 
+        else:
+            raise HTTPException(status_code=500, detail="Share failed")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Share failed")
 
     #name = current_user["name"].capitalize()
     #userid = current_user["id"]
@@ -74,64 +113,81 @@ async def newshare(budget_id: str, shareto: str, current_user = Depends(get_curr
     #        raise HTTPException(status_code=502, detail="Internal Server Error")
 
 
+@share.post("/updatejoin")
+async def acceptshare(budget_id: str, join: bool, current_user = Depends(get_current_user)):
+    try:
+        mysql = sql()
 
-    mysql.close()
+        userid = current_user["id"]
 
-
-@share.post("/wanttoconn")
-async def wanttoconn(sharecode: str, current_user = Depends(get_current_user)):
-    bidmapping = current_user["bid_mapping"]
-
-    mysql = sql()
-    timestamp = '''select budget_id,timestamp from pig_urlexpire where url="{}"'''.format(sharecode)
-
-    response = mysql.get(timestamp)
-
-    if response == []:
-        mysql.close()
-        raise HTTPException(status_code=404, detail="Not found")
-
-    timestamp = response[0]["timestamp"]
-
-    budget_id = response[0]["budget_id"]
-
-    print(get_timestamp(timestamp))
-
-    if get_timestamp(timestamp):
-        query = '''select b0,b1,b2,b3 from pig_bidmapping where id="{}"'''.format(bidmapping)
-        response = mysql.get(query)
-
-        for key,value in response[0].items():
-            if not value:
-                insert_budget_id = '''update pig_bidmapping set {} = {} where id={}'''.format(key,budget_id,bidmapping)
-                mysql.post(insert_budget_id)
-                delete_key = '''delete from pig_urlexpire where url="{}"'''.format(sharecode)
-                mysql.post(delete_key)
-                mysql.close()
-                return HTTPException(status_code=200, detail="OK")
-            else:
-                continue
+        if join:
+            updatejoin = f'''update pig_userbudgets set joined = 1 where budget_id={budget_id} and user_id={userid}'''
         else:
-            mysql.close()
-            return HTTPException(status_code=402, detail="Payment required")
-    else:
-        mysql.close()
-        raise HTTPException(status_code=419, detail="Token expired")
+            updatejoin = f'''delete from pig_userbudgets where budget_id={budget_id} and user_id={userid} and joined=0'''
+        
+        data = mysql.post(updatejoin)
+
+        return data, "Updated join"
+            
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Join failed")
 
 
-@share.get("/budget_conns")
-async def connect(budget_id: str, current_user = Depends(get_current_user)):
-    mysql = sql()
 
-    check(mysql,budget_id,current_user["id"])
-
-    query = '''select id,name,surname,email,(select sum(value) from pig_orders where user_id=id group by user_id)as value from registered_user where budget_id={} order by value DESC'''.format(budget_id)
-
-    response = mysql.get(query)
-
-    mysql.close()
-
-    return response
+#@share.post("/wanttoconn")
+#async def wanttoconn(sharecode: str, current_user = Depends(get_current_user)):
+#    bidmapping = current_user["bid_mapping"]
+#
+#    mysql = sql()
+#    timestamp = '''select budget_id,timestamp from pig_urlexpire where url="{}"'''.format(sharecode)
+#
+#    response = mysql.get(timestamp)
+#
+#    if response == []:
+#        mysql.close()
+#        raise HTTPException(status_code=404, detail="Not found")
+#
+#    timestamp = response[0]["timestamp"]
+#
+#    budget_id = response[0]["budget_id"]
+#
+#    print(get_timestamp(timestamp))
+#
+#    if get_timestamp(timestamp):
+#        query = '''select b0,b1,b2,b3 from pig_bidmapping where id="{}"'''.format(bidmapping)
+#        response = mysql.get(query)
+#
+#        for key,value in response[0].items():
+#            if not value:
+#                insert_budget_id = '''update pig_bidmapping set {} = {} where id={}'''.format(key,budget_id,bidmapping)
+#                mysql.post(insert_budget_id)
+#                delete_key = '''delete from pig_urlexpire where url="{}"'''.format(sharecode)
+#                mysql.post(delete_key)
+#                mysql.close()
+#                return HTTPException(status_code=200, detail="OK")
+#            else:
+#                continue
+#        else:
+#            mysql.close()
+#            return HTTPException(status_code=402, detail="Payment required")
+#    else:
+#        mysql.close()
+#        raise HTTPException(status_code=419, detail="Token expired")
+#
+#
+#@share.get("/budget_conns")
+#async def connect(budget_id: str, current_user = Depends(get_current_user)):
+#    mysql = sql()
+#
+#    check(mysql,budget_id,current_user["id"])
+#
+#    query = '''select id,name,surname,email,(select sum(value) from pig_orders where user_id=id group by user_id)as value from registered_user where budget_id={} order by value DESC'''.format(budget_id)
+#
+#    response = mysql.get(query)
+#
+#    mysql.close()
+#
+#    return response
 
 @share.get("/availusers/{budget_id}", summary="Get all users")
 async def users(budget_id: str, current_user = Depends(get_current_user)):

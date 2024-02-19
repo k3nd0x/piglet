@@ -1,4 +1,6 @@
 #!/bin/ash
+
+sleep 1
 DATE=`date '+%Y-%m-%d %H:%m:%S'`
 
 if [[ -z "$MYSQL_USER" ]]

@@ -9,7 +9,7 @@ from app.piglet_api import api
 import json
 
 
-# FUnktion sendet eine Mail an den User der zum neuen Budget eingeladen wurde
+# Function sends a notification to the destination user
 @app.route('/sharewith', methods=["GET","POST"])
 def share():
     if session:
@@ -17,63 +17,29 @@ def share():
         if request.method == "POST":
             _data = request.form.to_dict()
 
-            print(_data,flush=True)
-
-            #data = { "shareto": _data["shareto"], "budget_id": _data["id"]}
             budget_id = _data["id"]
             shareto = _data["shareto"]
 
-            s, response = pigapi.post(url=f"share/newshare?budget_id={budget_id}&shareto={shareto}")
-            print(response,flush=True)
+            try:
+                s, response = pigapi.post(url=f"share/newshare?budget_id={budget_id}&shareto={shareto}")
 
-            if response["state"] == "Mail sent":
-                flash_message = {"Email sent": "success"}
-            else:
-                string = "Email sending failed: URI {}".format(response["uri"])
+                print(s,response,flush=True)
+                if s:
+                    flash_message = {response: "success"}
+                else:
+                    string = "Budget sharing failed"
+                    flash_message = {string: "danger"}
+            except:
+                string = "Budget sharing failed"
                 flash_message = {string: "danger"}
+
 
             flash(flash_message)
             pigapi.close()
 
             return redirect(url_for('budget'))
 
-
-
-@app.route('/link')
-def link():
-    session.clear()
-    connect_id = request.args.get("u")
-
-    session["share"] = connect_id
-
-    return redirect(url_for('login'))
-
-@app.route('/connect', methods=["GET","POST"])
-def connect():
-    if session:
-        pigapi = api(auth=session["authorization"])
-        noticount, notilist, notifications = get_notis(pigapi)
-        if request.method == "GET":
-            return render_template("connect.html",notifications=notifications, notilist=notilist, noticount=noticount)
-        elif request.method == "POST":
-            data = session["share"]
-
-            s,response = pigapi.post(url=f'share/wanttoconn?sharecode={data}')
-
-            if response["detail"] == "OK":
-                s,my_budgets = pigapi.get(url="budget/")
-                session["budgets"] = my_budgets
-                flash_message = {"Join completed": "success"}
-            elif response["detail"] == "Payment required":
-                flash_message = {"Max budgets per user reached (currently 4)" : "danger"}
-            elif response["detail"] == "Not found":
-                flash_message = {"Link expired" : "danger"}
-            else:
-                flash_message = {"Failed to join" : "danger"}
-
-            flash(flash_message)
-            pigapi.close()
-            return redirect(url_for('connect'))
+# Adds a new budget to the user
 @app.route('/newbudget',methods=["GET", "POST"])
 def newbudget():
     if session:
@@ -116,7 +82,7 @@ def budget():
     else:
         return redirect(url_for('login'))
 
-# Update Budget -> eventuell auf /budget umbauen
+# Change budget color/name/currency
 @app.route('/ubudget', methods=["POST"])
 def ubudget():
     if session:
@@ -160,7 +126,7 @@ def leave():
     else:
         return redirect(url_for('login'))
 
-# Update the budget (color, name)
+# Change the current active budget over navbar / ajax
 @app.route("/updateBudget",methods=["GET","POST"])
 def updateBudget():
     if request.method == "POST":
@@ -168,3 +134,54 @@ def updateBudget():
         session["budget_id"] = str(bid)
 
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+
+
+@app.route("/joinBudget", methods=["GET","POST"])
+def joinBudget():
+    if session:
+        bid = request.args['id']
+        join = "true"
+
+        pigapi = api(auth=session["authorization"])
+
+        s, response = pigapi.post(url=f'share/updatejoin?budget_id={bid}&join={join}')
+
+        pigapi.close()
+
+        if s:
+            string = "You joined a budget"
+            flash_message = {string: "success"}
+        else:
+            string = "Budget joining failed"
+            flash_message = {string: "danger"}
+        
+        flash(flash_message)
+        return redirect(url_for('budget'))
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route("/discardBudget", methods=["GET","POST"])
+def discardBudget():
+    if session:
+        bid = request.args['id']
+        join = "false"
+
+        pigapi = api(auth=session["authorization"])
+
+        s, response = pigapi.post(url=f'share/updatejoin?budget_id={bid}&join={join}')
+
+        pigapi.close()
+
+        if s:
+            string = "You discarded a budget join request"
+            flash_message = {string: "success"}
+        else:
+            string = "Discarding join request failed"
+            flash_message = {string: "danger"}
+        
+        flash(flash_message)
+        return redirect(url_for('budget'))
+    else:
+        return redirect(url_for('login'))

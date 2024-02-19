@@ -93,10 +93,28 @@ async def login_user(current_user = Depends(get_current_user)):
 
     email = current_user["email"]
 
+    userid = current_user["id"]
+
     query = '''select r.id,r.email,r.verified,r.name,r.surname,r.color,r.image,r.budget_id,r.bid_mapping,pig_bidmapping.b0,pig_bidmapping.b1,pig_bidmapping.b2,pig_bidmapping.b3 from registered_user as r join pig_bidmapping on pig_bidmapping.id = r.bid_mapping where r.email="{}"'''.format(email)
 
+    query1 = f'''select id,email,verified,name,surname,color,image,budget_id from registered_user where id={userid}'''
 
-    response = mysql.get(query)
+    query2 = f'''select budget_id from pig_userbudgets where user_id={userid} and joined=1'''
+
+    user_data = mysql.get(query1)[0]
+    budget_ids = mysql.get(query2)
+
+    budgets = []
+    for i in budget_ids:
+        budgets.append(i["budget_id"])
+
+
+    user_data["budgetids"] = budgets
+
+    response = user_data
+
+
+    #response = mysql.get(query)
 
     mysql.close()
 
@@ -104,7 +122,7 @@ async def login_user(current_user = Depends(get_current_user)):
         if response == []:
             return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content="NoSuchUser")
         else:
-            return response[0]
+            return response
     except:
         raise HTTPException(status_code=400, detail="Bad Request")
 

@@ -43,11 +43,13 @@
                                     <tbody>
                                         <div class="input-group">
                                             {% for i in my_budgets %}
+                                            {% if i.joined == 1 %}
                                             <tr>
                                                 <td>{{ i.name }}</td>
                                                 <td>{{ i.currency }}</td>
                                                 <td>
-                                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editBudget_{{ i.id }}">
+
+                                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editBudget_{{ i.id }}" title="Edit Budget">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
 
@@ -77,12 +79,12 @@
                                                         </div>
                                                     </div>
 
-                                                    <a style="text-decoration: none" href="{{ url_for( 'leave') }}?bid={{ i.id }}" class="btn btn-danger">
-                                                        <i class="fas fa-sign-out-alt"></i>
-                                                    </a>
-                                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#shareBudget_{{ i.id }}">
+                                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#shareBudget_{{ i.id }}" title="Share Budget">
                                                         <i class="fas fa-share-alt"></i>
                                                     </button>
+                                                    <a style="text-decoration: none" href="{{ url_for( 'leave') }}?bid={{ i.id }}" class="btn btn-danger" title="Leave Budget">
+                                                        <i class="fas fa-sign-out-alt"></i>
+                                                    </a>
 
                                                     <div class="modal fade" id="shareBudget_{{ i.id }}" tabindex="-1" aria-labelledby="budgetModalLabel" aria-hidden="true">
                                                         <div class="modal-dialog">
@@ -121,6 +123,22 @@
                                                     </div>
                                                 </td>
                                             </tr>
+                                            {% else %}
+                                            <tr class="trflashgreen-bg">
+                                                <td> {{ i.name }}</td>
+                                                <td> {{ i.currency }}</td>
+                                                <td>
+                                                    <a style="text-decoration: none" href="{{ url_for( 'joinBudget') }}?id={{ i.id }}" class="btn btn-success" title="Join Budget">
+                                                        <i class="fas fa-check-square"></i>
+                                                    </a>
+                                                    <a style="text-decoration: none" href="{{ url_for( 'discardBudget') }}?id={{ i.id }}" class="btn btn-danger" title="Discard join request">
+                                                        <i class="fas fa-times-circle"></i>
+                                                    </a>
+
+                                                </td>
+
+                                            </tr>
+                                            {% endif %}
                                             {% endfor %}
                                         </div>
                                     </tbody>
@@ -166,5 +184,12 @@
         });
         $('.select2').select2()
     });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var tr = document.querySelector('.trflashgreen-bg');
+    setTimeout(function() {
+      tr.classList.remove('trflashgreen-bg'); // Remove the green background class after 3 seconds
+    }, 3000); // Wait for 3 seconds before removing the green background class
+  });
 </script>
 {% extends "footer.html" %}

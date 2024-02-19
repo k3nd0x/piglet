@@ -21,7 +21,6 @@ def get_data():
         if request.method == "POST":
             data = request.form.to_dict()
 
-            print(data,flush=True)
             data["budget_id"] = bid
             data["userid"] = userid
             
@@ -138,7 +137,6 @@ def order_import():
                 
                 result_list.append(entry_dict)
 
-        print(result_list,flush=True)
         pigapi = api(auth=session["authorization"])
 
         try:

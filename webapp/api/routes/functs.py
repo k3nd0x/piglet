@@ -32,8 +32,6 @@ def check(mysql,budget_id,user_id):
 
     response = mysql.get(query)
 
-    print(response,flush=True)
-
     if response:
         return True
     else:

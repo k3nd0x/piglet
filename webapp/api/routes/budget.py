@@ -21,7 +21,7 @@ budget = APIRouter()
 async def _get(current_user = Depends(get_current_user)):
     mysql = sql()
     #query = '''select CONVERT(pig_budgets.id, CHAR(50)) as id, name,sharecode,currency from pig_budgets inner join pig_bidmapping on pig_bidmapping.b0 = pig_budgets.id or pig_bidmapping.b1 = pig_budgets.id or pig_bidmapping.b2 = pig_budgets.id or pig_bidmapping.b3 = pig_budgets.id where pig_bidmapping.id=(select bid_mapping from registered_user where id="{}")'''.format(current_user["id"])
-    query = f'''select pig_budgets.*, pig_userbudgets.joined from pig_budgets JOIN pig_userbudgets on pig_budgets.id = pig_userbudgets.budget_id where pig_userbudgets.user_id = {current_user["id"]}'''
+    query = f'''select pig_budgets.*, pig_userbudgets.joined from pig_budgets JOIN pig_userbudgets on pig_budgets.id = pig_userbudgets.budget_id where pig_userbudgets.user_id = {current_user["id"]} order by joined'''
     response = mysql.get(query)
 
     mysql.close()
