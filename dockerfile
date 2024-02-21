@@ -19,7 +19,7 @@ COPY webapp/config/python/requirements.txt /tmp/requirements.txt
 RUN pip3 install --quiet -r /tmp/requirements.txt --break-system-packages
 
 COPY webapp /webapp
-RUN mkdir -p /webapp/log/{api,app,scheduler}
+RUN mkdir -p /webapp/log/api /webapp/log/app /webapp/log/scheduler
 WORKDIR /webapp
 
 EXPOSE 8080 80 5566
