@@ -23,7 +23,6 @@ def share():
             try:
                 s, response = pigapi.post(url=f"share/newshare?budget_id={budget_id}&shareto={shareto}")
 
-                print(s,response,flush=True)
                 if s:
                     flash_message = {response: "success"}
                 else:

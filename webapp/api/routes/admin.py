@@ -48,15 +48,13 @@ async def startup_event():
 
     name, surname = random_name()
 
-    inserts = [ """INSERT INTO months VALUES (2,"February"),(3,"March"),(4,"April"),(5,"May"),(6,"June"),(7,"July"),(8,"August"),(9,"September"),(10,"October"),(11,"November"),(12,"December"),(1,"January")""",
-            """INSERT INTO pig_bidmapping VALUES (10000,100,NULL,NULL,NULL)""",
-            """INSERT INTO pig_budgets VALUES (100,0,"Default",0,"3ec5d92868964bfbbf223ca88f379ee9","USD")""",
-            f"""INSERT INTO pig_category VALUES (1,"Groceries",1,1,100,"{hex_color()}")""",
-            """INSERT INTO pig_notisettings VALUES (1,1,1,1,1),(1,1,2,1,1),(1,2,1,1,1),(1,2,2,1,1),(1,3,3,1,1),(1,4,3,1,1)""",
-            """INSERT INTO pig_notitype VALUES (1,"order","Money"),(2,"category","Category"),(3,"budget","Budget")""",
-            """INSERT INTO pig_notiobj VALUES (1,'added','added'),(2,'removed','removed'),(3,'joined','joined'),(4,'shared','shared')""",
-            f'''INSERT INTO registered_user VALUES (1,"admin@{domain}",1,"864fd3978f508ef03a3e9c24aef43b639d7725c15e08eeaf961a9b81c3adc097:0b108f78bca548fa8fa2721e46d83150","{name}","{surname}","default.png",NULL,"{hex_color()}","7eb304283ead5f6",100,10000,1)''',
-            """INSERT into pig_userbudgets values (1,100,1)""",
+    inserts = [ """INSERT IGNORE INTO months VALUES (2,"February"),(3,"March"),(4,"April"),(5,"May"),(6,"June"),(7,"July"),(8,"August"),(9,"September"),(10,"October"),(11,"November"),(12,"December"),(1,"January")""",
+            """INSERT IGNORE INTO pig_budgets VALUES (100,0,"Default",0,"3ec5d92868964bfbbf223ca88f379ee9","USD")""",
+            f"""INSERT IGNORE INTO pig_category VALUES (1,"Groceries",1,1,100,"{hex_color()}")""",
+            """INSERT IGNORE INTO pig_notitype VALUES (1,"order","Money"),(2,"category","Category"),(3,"budget","Budget")""",
+            """INSERT IGNORE INTO pig_notiobj VALUES (1,'added','added'),(2,'removed','removed'),(3,'joined','joined'),(4,'shared','shared')""",
+            f'''INSERT IGNORE INTO registered_user VALUES (1,"admin@{domain}",1,"864fd3978f508ef03a3e9c24aef43b639d7725c15e08eeaf961a9b81c3adc097:0b108f78bca548fa8fa2721e46d83150","{name}","{surname}","default.png",NULL,"{hex_color()}","7eb304283ead5f6",100,10000,1)''',
+            """INSERT IGNORE into pig_userbudgets values (1,100,1)""",
     ]
 
     if not admin_uid:
@@ -85,8 +83,11 @@ async def startup_event():
         v1_2inserts = ["""RENAME table new_orders to pig_orders""",
                        """alter table pig_orders add column id int auto_increment primary key first""",
                        """CREATE TABLE `pig_meta` (`key` VARCHAR(255),`value` VARCHAR(255), PRIMARY KEY (`key`))""",
-                       """INSERT INTO `pig_meta` (`key`, `value`) VALUES ('version', '1.2')""",
-                       """CREATE TABLE IF NOT EXISTS `pig_userbudgets` (`user_id` int(11) NOT NULL,`budget_id` int(11) NOT NULL,`joined` tinyint(4) DEFAULT NULL,PRIMARY KEY (`user_id`,`budget_id`),KEY `budget_id` (`budget_id`),CONSTRAINT `budget_id` FOREIGN KEY (`budget_id`) REFERENCES `pig_budgets` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION, CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `registered_user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION)"""
+                       """INSERT IGNORE INTO `pig_meta` (`key`, `value`) VALUES ('version', '1.2')""",
+                       """CREATE TABLE IF NOT EXISTS `pig_userbudgets` (`user_id` int(11) NOT NULL,`budget_id` int(11) NOT NULL,`joined` tinyint(4) DEFAULT NULL,PRIMARY KEY (`user_id`,`budget_id`),KEY `budget_id` (`budget_id`),CONSTRAINT `budget_id` FOREIGN KEY (`budget_id`) REFERENCES `pig_budgets` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION, CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `registered_user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION)""",
+                       """INSERT IGNORE INTO pig_notitype VALUES (3,"budget","Budget")""",
+                       """INSERT IGNORE INTO pig_notiobj VALUES (3,'joined','joined'),(4,'shared','shared')""",
+                       """ALTER TABLE pig_notisettings ADD CONSTRAINT unique_line_constraint UNIQUE (user_id, notiobj, notitype, mail, web)"""
                        ]
         for i in v1_2inserts:
             try:
@@ -107,6 +108,10 @@ async def startup_event():
                 for i in "b0", "b1", "b2", "b3":
                     if bidmapping[i]:
                         mysql.post(f'''insert into pig_userbudgets values ({user["id"]},{bidmapping[i]},1)''')
+        
+        noti_queries = "INSERT IGNORE INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1),({user_id},3,3,1,1),({user_id},1,3,1,1),({user_id},2,3,1,1),({user_id},4,3,1,1)".format(user_id=user["id"])
+        mysql.post(noti_queries)
+
     mysql.close()
 
 

@@ -64,13 +64,3 @@ else
 	echo "$DATE Database schema is already set - not overwriting"
 	exit 0
 fi
-	
-#DATA=`mysql -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -h database -e 'select id from registered_user where id=1'`
-#echo $DATA
-#if [ -f "/var/lib/mysql/installed"  ]
-#then
-#	echo "Database already initialized"
-#else
-#	mysql -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < /opt/scripts/piglet.sql
-#	touch "/var/lib/mysql/installed"
-#fi

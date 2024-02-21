@@ -1,24 +1,12 @@
-# app/__init__.py
-
 import os
 
 import redis
 from flask import Flask
 from flask_session import Session
-#import logging
 
 # Initialize the app
 app = Flask(__name__, instance_relative_config=True)
 
-#hdlr = logging.FileHandler('/webapp/log/access.log')
-#formatter = logging.Formatter('[%(asctime)s] %(levelname)s %(message)s')
-#hdlr.setLevel(logging.INFO)
-#hdlr.setFormatter(formatter)
-#
-#app.logger.addHandler(hdlr)
-
-# Load the views
-#from app.views import view
 from app.views import dashboard
 from app.views import settings
 from app.views import register

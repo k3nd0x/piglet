@@ -1,4 +1,4 @@
-FROM alpine:3.17.1
+FROM alpine:latest
 RUN apk add --update \
     build-base \
     python3-dev \
@@ -16,9 +16,7 @@ ENV MYSQL_PASSWORD=9vaGPf8fXzdexm5DM2 MYSQL_USER=piglet MYSQL_DATABASE=piglet MY
 
 COPY webapp/config/python/requirements.txt /tmp/requirements.txt
 
-RUN pip3 install --quiet --upgrade pip && pip3 install --quiet --upgrade setuptools && pip3 install --quiet -r /tmp/requirements.txt
-
-COPY webapp/config/python/sessions.py /usr/lib/python3.10/site-packages/flask_session/
+RUN pip3 install --quiet -r /tmp/requirements.txt --break-system-packages
 
 COPY webapp /webapp
 RUN mkdir -p /webapp/log/{api,app,scheduler}

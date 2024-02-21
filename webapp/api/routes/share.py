@@ -28,8 +28,6 @@ async def newshare(budget_id: str, shareto: str, current_user = Depends(get_curr
 
         query = f'''insert into pig_userbudgets values ({shareto_uid}, {budget_id}, 0)'''
         result = mysql.post(query)
-        result = False
-
 
         try:
             query = '''select name from pig_budgets where id="{}"'''.format(budget_id)
@@ -52,11 +50,9 @@ async def newshare(budget_id: str, shareto: str, current_user = Depends(get_curr
                     return "User already joined"
 
                 notisettings = get_notisettings(mysql,shareto_uid,"4","3")
-                print(notisettings,flush=True)
 
                 if notisettings[0]["web"] == 1:
                     noti_query = '''insert into pig_notifications (srcuid, budgetid,value,destuid,state,messageid,typeid) values ({},{},"{}",{},0,4,3)'''.format(current_user["id"],budget_id,budget_name,shareto_uid)
-                    print(noti_query,flush=True)
 
                     mysql.post(noti_query)
         except:
@@ -126,11 +122,12 @@ async def acceptshare(budget_id: str, join: bool, current_user = Depends(get_cur
             updatejoin = f'''delete from pig_userbudgets where budget_id={budget_id} and user_id={userid} and joined=0'''
         
         data = mysql.post(updatejoin)
+        mysql.close()
 
         return data, "Updated join"
             
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Join failed")
+        raise HTTPException(status_code=500, detail="Join update failed")
 
 
 
@@ -201,12 +198,10 @@ async def users(budget_id: str, current_user = Depends(get_current_user)):
 
     try:
         response = mysql.get(users_query)
-
-        print(response)
-
-        mysql.close()
-
     except:
+        mysql.close()
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+    mysql.close()
 
     return response

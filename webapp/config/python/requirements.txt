@@ -9,8 +9,8 @@ requests
 passlib
 redis
 celery
-flower
 detect_delimiter
+Werkzeug
 
 fastapi 
 pydantic==1.10.10

@@ -5,6 +5,8 @@ import os
 from app.views import app
 from app.funcs import get_notis, auth, allowed_exts
 from app.piglet_api import api
+
+from werkzeug.utils import secure_filename
 # Settings Site 
 @app.route('/settings', methods=["GET", "POST"])
 def settings():
@@ -30,7 +32,7 @@ def settings():
                     extension = value[1]
 
                     if allowed_exts(extension) == True:
-                        filename = value[0]
+                        filename = secure_filename(value[0])
                         filename = sha256(str(filename).encode('utf-8'))
 
                         filename = str(filename.hexdigest()) + '.' + extension
@@ -41,6 +43,8 @@ def settings():
                     else:
                         flash_message = {"Error: Upload a .jpeg .png or .jpg file": "danger" }
                         flash(flash_message)
+                        return redirect(url_for('settings'))
+
                 else:
                     payload["image"] = session["image"]
                 
