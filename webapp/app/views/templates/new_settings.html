@@ -12,33 +12,24 @@
                         <div class="row">
                             <div class="col-lg-5 text-center" style="margin-top: 38px;">
                                 <div class="row">
-					<div class="col test">
-						<img class="img-circle" src="{{ url_for('pictures', filename=session.image) }}" style="width: 200px;height: 200px;">
-					</div>
+                                    <div class="col test">
+                                        <img class="img-circle" src="{{ url_for('pictures', filename=session.image) }}" style="width: 200px;height: 200px;">
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col" style="margin-top: 15px;">
-                                        <input name="image" value="image" style="margin-top: 5px;" type="file"
-                                            accept="image/*">
+                                        <input name="image" value="image" style="margin-top: 5px;" type="file" accept="image/*">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-5 offset-lg-1 justify-content-center align-items-center align-content-center"
-                                style="margin-top: 30px">
-                                <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-left: 15px; margin-top: 5px;">Name</label>
-                                <input class="form-control form-control_piglet" name="name" type="text"
-                                    style="margin-top: 5px;" value="{{ session.name }}">
-                                <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-left: 15px;margin-top: 5px;">Surname</label>
-                                <input class="form-control form-control_piglet" name="surname" type="text"
-                                    style="margin-top: 0px;" value="{{ session.surname }}">
-                                <label class="form-label d-lg-flex justify-content-lg-center"
-                                    style="margin-left: 15px;margin-top: 5px;">Color</label>
-                                <input class="form-control form-control_piglet" name="color" type="color"
-                                    style="margin-top: 0px;" value="{{ session.color }}">
-                                <button class="btn btn-piglet" type="submit"
-                                    style="width: 100%;margin-top: 30px;">Save</button>
+                            <div class="col-lg-5 offset-lg-1 justify-content-center align-items-center align-content-center" style="margin-top: 30px">
+                                <label class="form-label d-lg-flex justify-content-lg-center" style="margin-left: 15px; margin-top: 5px;">Name</label>
+                                <input class="form-control form-control_piglet" name="name" type="text" style="margin-top: 5px;" value="{{ session.name }}">
+                                <label class="form-label d-lg-flex justify-content-lg-center" style="margin-left: 15px;margin-top: 5px;">Surname</label>
+                                <input class="form-control form-control_piglet" name="surname" type="text" style="margin-top: 0px;" value="{{ session.surname }}">
+                                <label class="form-label d-lg-flex justify-content-lg-center" style="margin-left: 15px;margin-top: 5px;">Color</label>
+                                <input class="form-control form-control_piglet" name="color" type="color" style="margin-top: 0px;" value="{{ session.color }}">
+                                <button class="btn btn-piglet" type="submit" style="width: 100%;margin-top: 30px;">Save</button>
                             </div>
                         </div>
                     </form>
@@ -47,62 +38,59 @@
         </div>
     </div>
 </div>
-    <div class="container" style="margin-top: 60px;">
-        <div class="row">
-            <div class="col-lg-12 offset-lg-0">
-                <div class="card">
-                    <div class="card-header text-center">
-                        <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Notification Settings</h5>
-                    </div>
-                    <div class="card-body">
-                        <form method="post" action="/settings">
-                            <div class="row">
-                                <div class="col-lg-8 offset-xl-2">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Notification Type</th>
-                                                <th scope="col">Email</th>
-                                                <th scope="col">Bell</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+<div class="container" style="margin-top: 60px;">
+    <div class="row">
+        <div class="col-lg-12 offset-lg-0">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5 style="font-weight: bold; margin-bottom: auto;" class="text-piglet">Notification Settings</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/settings">
+                        <div class="row">
+                            <div class="col-lg-8 offset-xl-2">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Notification Type</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Bell</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
 
-                                            {% for listobj in noti_settings %}
-                                                {% for setting, settinglist in listobj.items() %}
-                                            <tr>
-                                                <td>{{ settinglist[1].display_name }}</td>
-                                                {% for key, mailweb in settinglist[0].items() %}
-                                                {% if mailweb == 1 %}
-                                                <td>
-                                                    <input class="form-check-input" type="checkbox" checked
-                                                        name="{{ setting }}" value="{{ key }}_1">
-                                                </td>
-                                                {% else %}
-                                                <td><input class="form-check-input" type="checkbox" name="{{ setting }}"
-                                                        value="{{ key }}_1"></td>
-                                                {% endif %}
-                                                {% endfor %}
-                                                {% endfor %}
-                                            </tr>
+                                        {% for listobj in noti_settings %}
+                                        {% for setting, settinglist in listobj.items() %}
+                                        <tr>
+                                            <td>{{ settinglist[1].display_name }}</td>
+                                            {% for key, mailweb in settinglist[0].items() %}
+                                            {% if mailweb == 1 %}
+                                            <td>
+                                                <input class="form-check-input" type="checkbox" checked name="{{ setting }}" value="{{ key }}_1">
+                                            </td>
+                                            {% else %}
+                                            <td><input class="form-check-input" type="checkbox" name="{{ setting }}" value="{{ key }}_1"></td>
+                                            {% endif %}
                                             {% endfor %}
-                                        </tbody>
-                                    </table>
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 offset-xl-4">
+                                    <button class="btn btn-piglet" type="submit" style="width: 100%;margin-top: 30px;">Save</button>
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-4 offset-xl-4">
-                                        <button class="btn btn-piglet" type="submit"
-                                            style="width: 100%;margin-top: 30px;">Save</button>
-                                    </div>
-                                </div>
-                        </form>
-                    </div>
+                            </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    </body>
-    {% extends "footer.html" %}
+</body>
+{% extends "footer.html" %}
 
-    </html>
+</html>

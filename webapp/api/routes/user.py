@@ -13,7 +13,7 @@ import uuid
 
 from .mysql import sql
 from .sendmail import mail
-from .functs import hex_color, get_timestamp
+from .functs import hex_color, get_timestamp, random_name
 from .admin import oauth2_scheme,get_current_user
 
 user = APIRouter()
@@ -52,15 +52,28 @@ async def register_user(registerUser: registerUser):
 
     color = hex_color()
 
-    query = '''insert into registered_user( id, email,password,color, shamail,budget_id,bid_mapping ) select max( id ) + 1, "{}", "{}", "{}", "{}","{}","{}" from registered_user'''.format(email,password,color,shamail,budget_id,bid_mapping)
+    name, surname = random_name()
+
+    query = '''insert into registered_user( id, email,name, surname, password,color, shamail,budget_id,bid_mapping ) select max( id ) + 1, "{}", "{}", "{}", "{}", "{}", "{}","{}","{}" from registered_user'''.format(email, name,surname, password,color,shamail,budget_id,bid_mapping)
 
     return_value = mysql.post(query)
     user_id = mysql.lastrowid()
 
+
     if return_value == "duplicated":
+        mysql.close()
         raise HTTPException(status_code=409, detail="User already exists")
 
-    noti_queries = [ "INSERT INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1)".format(user_id=user_id) ]
+    cat_color = hex_color()
+    query_category = f"""INSERT INTO pig_category (name,user_id,displayed, budget_id, color) VALUES ("Groceries",{user_id},1,{budget_id}, {cat_color})"""
+    budgetmapping = f"""INSERT into pig_userbudgets values ({user_id},{budget_id},1)"""
+
+    return_value = mysql.post(query_category)
+
+    return_value = mysql.post(budgetmapping)
+
+    noti_queries = ["INSERT IGNORE INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1),({user_id},3,3,1,1),({user_id},1,3,1,1),({user_id},2,3,1,1),({user_id},4,3,1,1)".format(user_id=user["id"]) ]
+    
     for i in noti_queries:
         try:
             mysql.post(i)
@@ -83,10 +96,28 @@ async def login_user(current_user = Depends(get_current_user)):
 
     email = current_user["email"]
 
+    userid = current_user["id"]
+
     query = '''select r.id,r.email,r.verified,r.name,r.surname,r.color,r.image,r.budget_id,r.bid_mapping,pig_bidmapping.b0,pig_bidmapping.b1,pig_bidmapping.b2,pig_bidmapping.b3 from registered_user as r join pig_bidmapping on pig_bidmapping.id = r.bid_mapping where r.email="{}"'''.format(email)
 
+    query1 = f'''select id,email,verified,name,surname,color,image,budget_id from registered_user where id={userid}'''
 
-    response = mysql.get(query)
+    query2 = f'''select budget_id from pig_userbudgets where user_id={userid} and joined=1'''
+
+    user_data = mysql.get(query1)[0]
+    budget_ids = mysql.get(query2)
+
+    budgets = []
+    for i in budget_ids:
+        budgets.append(i["budget_id"])
+
+
+    user_data["budgetids"] = budgets
+
+    response = user_data
+
+
+    #response = mysql.get(query)
 
     mysql.close()
 
@@ -94,7 +125,7 @@ async def login_user(current_user = Depends(get_current_user)):
         if response == []:
             return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content="NoSuchUser")
         else:
-            return response[0]
+            return response
     except:
         raise HTTPException(status_code=400, detail="Bad Request")
 
@@ -187,7 +218,7 @@ async def delete_account(userid: str,budget_id: str, force: bool=False, dict = D
             query2 = '''delete from pig_bidmapping where b0={}'''.format(budget_id)
             for i in query,query1,query2:
                 response.append(mysql.delete(i))
-        query = '''delete from new_orders where user_id={}'''.format(userid)
+        query = '''delete from pig_orders where user_id={}'''.format(userid)
         query1 = '''delete from registered_user where id={}'''.format(userid)
 
         for i in query,query1:
@@ -195,7 +226,7 @@ async def delete_account(userid: str,budget_id: str, force: bool=False, dict = D
 
 
     elif force == False:
-        query = '''select value from new_orders where user_id={}'''.format(userid)
+        query = '''select value from pig_orders where user_id={}'''.format(userid)
         orders = mysql.get(query)
         if orders == []:
             mode = mysql.get('''select mode from pig_budgets where id={}'''.format(budget_id))
@@ -301,7 +332,6 @@ async def update_pw(passwordhash: str, tmphash: str):
 
     email_query = '''select email from pig_pwforgot where hash="{}"'''.format(tmphash)
 
-    print(mysql.get(email_query))
     email = mysql.get(email_query)[0]["email"]
 
     update_query = '''update registered_user set password="{}" where email="{}"'''.format(passwordhash,email)
@@ -423,5 +453,3 @@ async def settings_patch(patchSettings: patchSettings, current_user = Depends(ge
 
 
     return return_list
-
-    

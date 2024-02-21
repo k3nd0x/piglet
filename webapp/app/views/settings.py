@@ -5,6 +5,8 @@ import os
 from app.views import app
 from app.funcs import get_notis, auth, allowed_exts
 from app.piglet_api import api
+
+from werkzeug.utils import secure_filename
 # Settings Site 
 @app.route('/settings', methods=["GET", "POST"])
 def settings():
@@ -30,14 +32,19 @@ def settings():
                     extension = value[1]
 
                     if allowed_exts(extension) == True:
-                        filename = value[0]
+                        filename = secure_filename(value[0])
                         filename = sha256(str(filename).encode('utf-8'))
 
                         filename = str(filename.hexdigest()) + '.' + extension
 
-                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                        file.save(os.path.join(app.config['PROFILE_PICTURES'], filename))
 
                         payload['image'] = filename
+                    else:
+                        flash_message = {"Error: Upload a .jpeg .png or .jpg file": "danger" }
+                        flash(flash_message)
+                        return redirect(url_for('settings'))
+
                 else:
                     payload["image"] = session["image"]
                 
@@ -63,7 +70,7 @@ def settings():
 
                 data_to_api = { "settings": {}}
 
-                for setting in [ "category_removed", "order_added", "order_removed", "category_added" ]:
+                for setting in [ "category_removed", "order_added", "order_removed", "category_added", "budget_joined", "budget_shared" ]:
                     payload = request.form.getlist(setting)
 
                     if len(payload) == 0:
@@ -100,9 +107,8 @@ def settings():
 
                 return redirect(url_for('settings'))
     else:
-        pigapi.close()
         return redirect(url_for('login'))
 
 @app.route('/pictures/<path:filename>', methods=["GET"])
 def pictures(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory(app.config['PROFILE_PICTURES'], filename)

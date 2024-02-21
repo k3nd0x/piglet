@@ -3,12 +3,14 @@ wtforms
 flask-caching
 flask-Bootstrap
 flask-WTF
+Flask-Session
 gunicorn
 requests
 passlib
 redis
-flask_session
 celery
+detect_delimiter
+Werkzeug
 
 fastapi 
 pydantic==1.10.10
@@ -21,3 +23,4 @@ python-multipart
 passlib 
 jose 
 python-jose
+pdfquery

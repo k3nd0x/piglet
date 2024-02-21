@@ -96,6 +96,17 @@ class api:
 
         return state, r
     
+    def file(self, url, files=None):
+        url = self.apihost + url
+        try:
+            r = self.session.post(url, headers=self.headers, files=files).json()
+            state = True
+        except:
+            state = False
+            r = None
+        
+        return state, r
+    
     def close(self):
         self.session.close()
 
@@ -103,11 +114,5 @@ class api:
 		
 
 if __name__ == '__main__':
-    pig_api = api()
-    token = pig_api.get_token(user="admin@localhost", password="admin")
-
-    print(token)
-    #pig_api = api(user="admin@localhost",password="admin")
-
-    #print(pig_api.get("order/?budget_id=100"))
+    pass
 

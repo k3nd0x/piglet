@@ -52,27 +52,3 @@ def fdelete():
             flash(flash_message)
             pigapi.close()
             return futurespends()
-
-@app.route('/new-futurespend', methods=["GET", "POST"])
-def new_futurespend():
-    if session:
-        budget_id = session["budget_id"]
-        userid = session["userid"]
-        if request.method == "POST":
-            pigapi = api(auth=session["authorization"])
-            data = request.form.to_dict()
-            data["userid"] = userid
-            data["budget_id"] = budget_id
-
-            s, response = pigapi.post(url="futurespends/new", data=data)
-            if response == "Future spend added!":
-                flash_message = {response: "danger"}
-            else:
-                flash_message = {response: "success"}
-
-            flash(flash_message)
-
-            pigapi.close()
-
-            return redirect(url_for('futurespends'))
-

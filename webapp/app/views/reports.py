@@ -54,7 +54,7 @@ def reports():
             pigapi.close()
 
             if reports == {'detail': 'Not found!'}:
-                flash_message = {"Keine Einträge in diesem Monat": "danger" }
+                flash_message = {"No entries in this month": "danger" }
                 flash(flash_message)
                 return render_template("reports_get.html", years=years, months=months, notifications=notifications, noticount=noticount, notilist=notilist)
 

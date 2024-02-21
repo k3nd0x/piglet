@@ -30,6 +30,8 @@ services:
       container_name: piglet-db
       volumes:
         - database-data:/var/lib/mysql
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
       environment:
         MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         MARIADB_DATABASE: ${MYSQL_DATABASE}

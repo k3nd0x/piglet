@@ -6,6 +6,9 @@
 from typing import Optional,Union
 from fastapi import FastAPI, status, Request,HTTPException,Depends
 from fastapi.responses import JSONResponse
+from scheduler.celery_config import celery
+import logging
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 tags_metadata = [
     {
@@ -27,6 +30,25 @@ tags_metadata = [
 ]
 
 app = FastAPI(description="piglet-api", version="2.0",root_path="/api/v2", title="Piglet API",openapi_tags=tags_metadata)
+
+logging.basicConfig(
+    filename="/webapp/log/api/access.log",  # Specify the log file
+    level=logging.INFO,  # Set the logging level to INFO or your preferred level
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
+class AccessLoggerMiddleware:
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+
+        path = scope.get("path", "unknown path")
+        client = scope.get("client", ("unknown client"))
+        logging.info(f"{path} - {client}")
+
+        await self.app(scope, receive, send)
+app.add_middleware(AccessLoggerMiddleware)
 
 from .routes.user import user
 from .routes.order import order

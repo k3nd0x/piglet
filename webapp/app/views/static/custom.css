@@ -158,3 +158,6 @@ embed {
   background: var(--bs-danger);
   color: white;
 }
+.trflashgreen-bg {
+    background-color: rgb(119, 245, 119); /* Sets the background color of the table row to green */
+}

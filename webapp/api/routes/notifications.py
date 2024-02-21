@@ -15,7 +15,7 @@ from .admin import oauth2_scheme,get_current_user
 
 notifications = APIRouter()
 
-@notifications.get("/", summary="Get all notificatins which a relevant for this user")
+@notifications.get("/", summary="Get all notifications which are relevant for this user")
 async def notification(show_all: Optional[bool] = False, current_user = Depends(get_current_user)):
     mysql = sql()
 
@@ -47,6 +47,11 @@ async def notification(show_all: Optional[bool] = False, current_user = Depends(
             if entry["message"] == "added":
                 id_list.append(str(entry["id"]))
                 message = "{} added a new category {}".format(srcname, entry["budget"])
+        elif entry["type"] == "budget":
+            if entry["message"] == "shared":
+                id_list.append(str(entry["id"]))
+                message = "{} shared a budget with you called '{}'".format(srcname, entry["value"])
+
 
         timestamp = entry["timestamp"]
 

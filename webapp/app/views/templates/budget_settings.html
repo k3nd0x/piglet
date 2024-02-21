@@ -4,9 +4,7 @@
         <div class="col-lg-12 offset-lg-0">
             <div class="card text-center">
                 <div class="card-header">
-                    <h5
-                        style="font-weight: bold; margin-bottom: auto"
-                        class="text-piglet">
+                    <h5 style="font-weight: bold; margin-bottom: auto" class="text-piglet">
                         My Budgets
                     </h5>
                 </div>
@@ -15,31 +13,17 @@
                         <div class="col-xl-6 offset-xl-3">
                             {% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {%
                             for key,value in msgs.items() %}
-                            <div class="alert alert-{{ value }}"
-                                style="border-radius: 4px;margin-top: 30px;text-align: center;">
+                            <div class="alert alert-{{ value }}" style="border-radius: 4px;margin-top: 30px;text-align: center;">
                                 {{key}}
                             </div>
                             {% endfor %} {% endfor %} {% endif %} {% endwith %}
                             <form method="POST" action="/newbudget">
-                                <input
-                                    class="form-control form-control_piglet"
-                                    name="budgetname"
-                                    placeholder="Budget Name"
-                                    style="margin-top: 10px; text-align: center" />
-				<select
-				    class="form-control form-control_piglet"
-				    name="currency"
-				    style="margin-top: 10px"
-				    required>
-				    <option
-					value="USD">USD</option>
-				    <option
-					value="EUR">EUR</option>
-				</select>
-                                <button
-                                    class="btn btn-piglet"
-                                    type="submit"
-                                    style="width: 100%; margin-top: 10px">
+                                <input class="form-control form-control_piglet" name="budgetname" placeholder="Budget Name" style="margin-top: 10px; text-align: center" />
+                                <select class="form-control form-control_piglet" name="currency" style="margin-top: 10px" required>
+                                    <option value="USD">USD</option>
+                                    <option value="EUR">EUR</option>
+                                </select>
+                                <button class="btn btn-piglet" type="submit" style="width: 100%; margin-top: 10px">
                                     Add Budget
                                 </button>
                             </form>
@@ -47,13 +31,8 @@
                     </div>
                     <div class="row">
                         <div class="card-body">
-                            <div
-                                class="table-responsive table mt-2"
-                                id="dataTable"
-                                role="grid"
-                                aria-describedby="dataTable_info">
-                                <table id="budget"
-                                    class="table cell-border compact hover">
+                            <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                <table id="budget" class="table cell-border compact hover">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
@@ -64,69 +43,34 @@
                                     <tbody>
                                         <div class="input-group">
                                             {% for i in my_budgets %}
+                                            {% if i.joined == 1 %}
                                             <tr>
                                                 <td>{{ i.name }}</td>
                                                 <td>{{ i.currency }}</td>
                                                 <td>
-                                                    <button
-                                                        type="button"
-                                                        class="btn btn-success"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#editBudget_{{ i.id }}">
+
+                                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editBudget_{{ i.id }}" title="Edit Budget">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
 
-                                                    <div
-                                                        class="modal fade"
-                                                        id="editBudget_{{ i.id }}"
-                                                        tabindex="-1"
-                                                        aria-labelledby="budgetModalLabel"
-                                                        aria-hidden="true">
-                                                        <div
-                                                            class="modal-dialog">
-                                                            <div
-                                                                class="modal-content">
-                                                                <div
-                                                                    class="modal-header">
-                                                                    <h5
-                                                                        class="modal-title"
-                                                                        id="budgetModalLabel">
+                                                    <div class="modal fade" id="editBudget_{{ i.id }}" tabindex="-1" aria-labelledby="budgetModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="budgetModalLabel">
                                                                         Change
                                                                         Budget
                                                                     </h5>
-                                                                    <button
-                                                                        type="button"
-                                                                        class="btn-close"
-                                                                        data-bs-dismiss="modal"
-                                                                        aria-label="Schließen"></button>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
                                                                 </div>
-                                                                <div
-                                                                    class="modal-body">
-                                                                    <form
-                                                                        method="POST"
-                                                                        action="/ubudget">
-                                                                        <input
-                                                                            class="form-control form-control_piglet"
-                                                                            name="newname"
-                                                                            placeholder="{{ i.name }}"
-									    value="{{ i.name }}"
-                                                                            style="margin-top: 10px;text-align: center;" />
-                                                                        <select
-                                                                            class="form-control form-control_piglet"
-                                                                            name="newcurrency"
-                                                                            style="margin-top: 10px"
-                                                                            required>
-                                                                            <option
-                                                                                value="USD">USD</option>
-                                                                            <option
-                                                                                value="EUR">EUR</option>
+                                                                <div class="modal-body">
+                                                                    <form method="POST" action="/ubudget">
+                                                                        <input class="form-control form-control_piglet" name="newname" placeholder="{{ i.name }}" value="{{ i.name }}" style="margin-top: 10px;text-align: center;" />
+                                                                        <select class="form-control form-control_piglet" name="newcurrency" style="margin-top: 10px" required>
+                                                                            <option value="USD">USD</option>
+                                                                            <option value="EUR">EUR</option>
                                                                         </select>
-                                                                        <button
-                                                                            class="btn btn-piglet"
-                                                                            name="id"
-                                                                            value="{{ i.id }}"
-                                                                            type="submit"
-                                                                            style="width: 100%; margin-top: 30px">
+                                                                        <button class="btn btn-piglet" name="id" value="{{ i.id }}" type="submit" style="width: 100%; margin-top: 30px">
                                                                             Speichern
                                                                         </button>
                                                                     </form>
@@ -135,73 +79,41 @@
                                                         </div>
                                                     </div>
 
-                                                    <a
-                                                        style="text-decoration: none"
-                                                        href="{{ url_for( 'leave') }}?bid={{ i.id }}"
-                                                        class="btn btn-danger">
-                                                        <i
-                                                            class="fas fa-sign-out-alt"></i>
-                                                    </a>
-                                                    <button
-                                                        type="button"
-                                                        class="btn btn-secondary"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#shareBudget_{{ i.id }}">
-                                                        <i
-                                                            class="fas fa-share-alt"></i>
+                                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#shareBudget_{{ i.id }}" title="Share Budget">
+                                                        <i class="fas fa-share-alt"></i>
                                                     </button>
+                                                    <a style="text-decoration: none" href="{{ url_for( 'leave') }}?bid={{ i.id }}" class="btn btn-danger" title="Leave Budget">
+                                                        <i class="fas fa-sign-out-alt"></i>
+                                                    </a>
 
-                                                    <div
-                                                        class="modal fade"
-                                                        id="shareBudget_{{ i.id }}"
-                                                        tabindex="-1"
-                                                        aria-labelledby="budgetModalLabel"
-                                                        aria-hidden="true">
-                                                        <div
-                                                            class="modal-dialog">
-                                                            <div
-                                                                class="modal-content">
-                                                                <div
-                                                                    class="modal-header">
-                                                                    <h5
-                                                                        class="modal-title"
-                                                                        id="budgetModalLabel">
+                                                    <div class="modal fade" id="shareBudget_{{ i.id }}" tabindex="-1" aria-labelledby="budgetModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="budgetModalLabel">
                                                                         Share
                                                                         Budget
                                                                     </h5>
-                                                                    <button
-                                                                        type="button"
-                                                                        class="btn-close"
-                                                                        data-bs-dismiss="modal"
-                                                                        aria-label="Schließen"></button>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
                                                                 </div>
-                                                                <div
-                                                                    class="modal-body">
-                                                                    <form
-                                                                        method="post"
-                                                                        action="/sharewith">
-                                                                        <label
-                                                                            class="form-label d-lg-flex justify-content-lg-center">Who
-                                                                            do
-                                                                            you
-                                                                            want
-                                                                            to
-                                                                            share
-                                                                            the
-                                                                            budget
-                                                                            with?</label>
-                                                                        <input
-                                                                            class="form-control form-control_piglet"
-                                                                            name="shareto"
-                                                                            id="shareto"
-                                                                            placeholder="Email Addresse"
-                                                                            style="margin-top: 10px;text-align: center;" />
-                                                                        <button
-                                                                            class="btn btn-piglet"
-                                                                            name="id"
-                                                                            value="{{ i.id }}"
-                                                                            type="submit"
-                                                                            style="width: 100%; margin-top: 30px">
+                                                                <div class="modal-body">
+                                                                    <form method="post" action="/sharewith">
+                                                                        <label class="form-label d-lg-flex justify-content-lg-center">Who do you want to share the budget with?</label>
+                                                                        <!--<input class="form-control form-control_piglet" name="shareto" id="shareto" placeholder="Email Address" style="margin-top: 10px;text-align: center;" />-->
+                                                                        <input class="form-control form-control_piglet" list="users" id="shareto" name="shareto" />
+                                                                        <datalist id="users">
+                                                                            {% for c in availusers %}
+                                                                            <option value="{{ c['email'] }}">{{ c['email'] }}</option>
+                                                                            {% endfor %}
+                                                                        </datalist>
+                                                                        <!--
+                                                                        <select class="form-control form-control_piglet" name="shareto" id="shareto" placeholder="Email Address" style="margin-top: 10px; text-align: center;">
+                                                                            {% for c in availusers %}
+                                                                            <option value="{{ c['id'] }}">{{ c['email'] }}</option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    --->
+                                                                        <button class="btn btn-piglet" name="id" value="{{ i.id }}" type="submit" style="width: 100%; margin-top: 30px">
                                                                             Send
                                                                         </button>
                                                                     </form>
@@ -211,6 +123,22 @@
                                                     </div>
                                                 </td>
                                             </tr>
+                                            {% else %}
+                                            <tr class="trflashgreen-bg">
+                                                <td> {{ i.name }}</td>
+                                                <td> {{ i.currency }}</td>
+                                                <td>
+                                                    <a style="text-decoration: none" href="{{ url_for( 'joinBudget') }}?id={{ i.id }}" class="btn btn-success" title="Join Budget">
+                                                        <i class="fas fa-check-square"></i>
+                                                    </a>
+                                                    <a style="text-decoration: none" href="{{ url_for( 'discardBudget') }}?id={{ i.id }}" class="btn btn-danger" title="Discard join request">
+                                                        <i class="fas fa-times-circle"></i>
+                                                    </a>
+
+                                                </td>
+
+                                            </tr>
+                                            {% endif %}
                                             {% endfor %}
                                         </div>
                                     </tbody>
@@ -224,37 +152,44 @@
     </div>
 </div>
 <script type="text/javascript" class="init">
-      $(document).ready(function () {
+    $(document).ready(function() {
         $("#budget").dataTable({
-          scrollX: false,
-          scrollY: false,
-          searching: false,
-          lengthChange: false,
-          ordering: false,
-          paging: false,
-          bInfo: false,
-          columnDefs: [
-            {
-              width: "10%",
-              className: "dt-body-center dt-head-center",
-              targets: 1,
+            scrollX: false,
+            scrollY: false,
+            searching: false,
+            lengthChange: false,
+            ordering: false,
+            paging: false,
+            bInfo: false,
+            columnDefs: [{
+                    width: "10%",
+                    className: "dt-body-center dt-head-center",
+                    targets: 1,
+                },
+                {
+                    width: "8%",
+                    className: "dt-body-center dt-head-center",
+                    targets: 0,
+                },
+                {
+                    width: "8%",
+                    className: "dt-body-center dt-head-center",
+                    targets: 2,
+                },
+            ],
+            language: {
+                lengthMenu: "Max entries _MENU_",
+                zeroRecords: "Sorry no budgets yet &#128533",
             },
-            {
-              width: "8%",
-              className: "dt-body-center dt-head-center",
-              targets: 0,
-            },
-        {
-          width: "8%",
-          className: "dt-body-center dt-head-center",
-          targets: 2,
-        },
-        ],
-      language: {
-        lengthMenu: "Max entries _MENU_",
-        zeroRecords: "Sorry no budgets yet &#128533",
-      },
         });
-      });
-    </script>
+        $('.select2').select2()
+    });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var tr = document.querySelector('.trflashgreen-bg');
+    setTimeout(function() {
+      tr.classList.remove('trflashgreen-bg'); // Remove the green background class after 3 seconds
+    }, 3000); // Wait for 3 seconds before removing the green background class
+  });
+</script>
 {% extends "footer.html" %}
