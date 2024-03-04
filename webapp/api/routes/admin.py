@@ -189,27 +189,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     return user[0]
 
 
-#@admin.delete("/{userid}")
-#async def del_user(userid: int):
-#    mysql = sql()
-#
-#    query = '''delete from registered_user where id={}'''.format(userid)
-#
-#    response = mysql.post(query)
-#
-#    mysql.close()
-#
-#    return response
-
 @admin.get("/users")
 async def get_user(dict = Depends(oauth2_scheme)):
     mysql = sql()
 
-    #query = '''select id,email from registered_user'''
-
     query = '''select id,email,budget_id from registered_user'''
-
-
     budget_id = mysql.get(query)
 
     mysql.close()
