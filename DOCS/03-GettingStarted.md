@@ -15,4 +15,6 @@ Upon initial setup, each user is provided with a default budget named `MyBudget`
 
 To collaborate on budgets with friends, check out the [Budgets](04-Budgets.md) section.
 
+If you want to add and modify you categories just visit [http://127.0.0.1/category](http://127.0.0.1/category) or in the navbar `Categories`.
+
 Let's embark on your financial journey with Piglet! 🚀
