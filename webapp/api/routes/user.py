@@ -39,11 +39,6 @@ async def register_user(registerUser: registerUser):
     mysql.post(query,close=False)
     budget_id = mysql.lastrowid()
 
-    query = '''insert into pig_bidmapping(b0) values ({})'''.format(budget_id)
-    mysql.post(query,close=False)
-    bid_mapping = mysql.lastrowid()
-
-
     email = str(registerUser.email)
     password = str(registerUser.password)
     hashed_mail = str(hashlib.sha256(email.encode()).hexdigest())
@@ -54,7 +49,8 @@ async def register_user(registerUser: registerUser):
 
     name, surname = random_name()
 
-    query = '''insert into registered_user( id, email,name, surname, password,color, shamail,budget_id,bid_mapping ) select max( id ) + 1, "{}", "{}", "{}", "{}", "{}", "{}","{}","{}" from registered_user'''.format(email, name,surname, password,color,shamail,budget_id,bid_mapping)
+    query = '''insert into registered_user( id, email,name, surname, password,color, shamail,budget_id) select max( id ) + 1, "{}", "{}", "{}", "{}", "{}", "{}","{}" from registered_user'''.format(email, name,surname, password,color,shamail,budget_id)
+    print(query,flush=True)
 
     return_value = mysql.post(query)
     user_id = mysql.lastrowid()
@@ -65,14 +61,13 @@ async def register_user(registerUser: registerUser):
         raise HTTPException(status_code=409, detail="User already exists")
 
     cat_color = hex_color()
-    query_category = f"""INSERT INTO pig_category (name,user_id,displayed, budget_id, color) VALUES ("Groceries",{user_id},1,{budget_id}, {cat_color})"""
-    budgetmapping = f"""INSERT into pig_userbudgets values ({user_id},{budget_id},1)"""
+    query_category = f"""INSERT INTO pig_category (name,user_id,displayed, budget_id, color) VALUES ("Groceries",{user_id},1,{budget_id},"{cat_color}")"""
 
+    budgetmapping = f"""INSERT into pig_userbudgets values ({user_id},{budget_id},1)"""
+    return_value = mysql.post(budgetmapping)
     return_value = mysql.post(query_category)
 
-    return_value = mysql.post(budgetmapping)
-
-    noti_queries = ["INSERT IGNORE INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1),({user_id},3,3,1,1),({user_id},1,3,1,1),({user_id},2,3,1,1),({user_id},4,3,1,1)".format(user_id=user["id"]) ]
+    noti_queries = ["INSERT IGNORE INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1),({user_id},3,3,1,1),({user_id},1,3,1,1),({user_id},2,3,1,1),({user_id},4,3,1,1)".format(user_id=user_id) ]
     
     for i in noti_queries:
         try:
