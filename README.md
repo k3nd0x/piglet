@@ -1,5 +1,6 @@
 # piglet :pig:
 [![Docker_build_ubuntu](https://github.com/k3nd0x/piglet/actions/workflows/docker-build_push.yml/badge.svg)](https://github.com/k3nd0x/piglet/actions/workflows/docker-build_push.yml)
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/k3nd0x)
 
 A simple Webapp to manage and budgets in a household. \
 It comes with an lightweight webinterface and an api.
