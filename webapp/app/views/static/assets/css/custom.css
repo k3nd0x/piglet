@@ -1,0 +1,87 @@
+:root {
+  --header-height: 3rem;
+  --nav-width: 68px;
+  --first-color: #4c5af7;
+  --first-color-light: #7984fd;
+  --second-color: #ff9edf;
+  --white-color: #F7F6FB;
+  --black-color: #212529;
+  --black-color-lighter: #949494af;
+  --body-font: 'Nunito', sans-serif;
+  --normal-font-size: 1rem;
+  --z-fixed: 100;
+  --form-control-color: #b3b3b3af;
+}
+.hidden {
+    display: none;
+}
+.text-piglet {
+    color: var(--first-color);
+}
+
+.btn-piglet {
+    background-color: var(--first-color);
+    color: #fff;
+    border-radius: 4px;
+    width: 100%;
+    height: 45px;
+}
+.btn-outline-piglet {
+    background-color: var(--bkg-color);
+    color: var(--font-color);
+    border-color: var(--first-color);
+    --bs-btn-color: var(--font-color);
+    --bs-btn-border-color: var(--first-color);
+    --bs-btn-hover-bg: var(--first-color-light);
+    --bs-btn-hover-border-color: var(--first-color);
+    --bs-btn-active-bg: var(--bkg-color);
+    --bs-btn-active-border-color: var(--first-color);
+}
+
+.btn-check:checked+.btn {
+    background-color: var(--first-color);
+    border: none;
+}
+.btn-piglet:hover {
+    background-color: var(--first-color-light);
+    color: #fff
+}
+
+.form-control_piglet {
+    background-color: var(--form-control-color);
+    text-align: center;
+    color: var(--font-color);
+    border: none;
+}
+
+
+body.dark {
+    --bkg-color: var(--black-color);
+    --font-color: var(--white-color);
+    --font-color-placeholder: var(--black-color-lighter);
+    background-color: var(--bkg-color);
+    --form-control-color: #6d6d6daf;
+}
+
+body.light {
+    --bkg-color: var(--white-color);
+    --font-color: #000;
+    background-color: var(--bkg-color);
+    --font-color-placeholder: var(--black-color-lighter);
+
+}
+
+.header {
+    background-color: var(--bkg-color);
+
+}
+
+.card {
+    background-color: var(--bkg-color);
+    color: var(--font-color);
+}
+
+.table-piglet {
+    table-layout: fixed;
+    text-align: center;
+}

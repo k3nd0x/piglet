@@ -15,7 +15,7 @@
                                 <input class="form-control form-control_piglet" type="number" min="0.01" step="0.01" name="value" placeholder="Value" style="margin-top: 10px">
                                 <label class="form-label d-lg-flex justify-content-lg-center" style="margin-top: 30px;">Optional Description</label>
                                 <input class="form-control form-control_piglet" name="description" placeholder="Optional: e.g. Gas, Groceries ..." style="margin-top: 10px">
-                                <label class="form-label d-lg-flex justify-content-lg-center" style="margin-top: 30px;">Select Category</label>
+                                <label class="form-label d-lg-flex justify-content-lg-center" style="margin-top: 30px;">Choose Category</label>
                                 <select class="form-control form-control_piglet" name="category" style="margin-top: 10px" required="">
                                     {% for c in categorylist %}
                                     <option value="{{ c['id'] }}">{{ c['name'] }}</option>
@@ -33,13 +33,14 @@
                                 <label class="form-label d-lg-flex justify-content-lg-center" style="margin-top: 30px;">Choose order type:</label>
                                 <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
                                     <input type="radio" class="btn-check" name="ordertype" value="normal" id="normal" autocomplete="off" checked onclick="removeFutureSpend()">
-                                    <label class="btn btn-outline-primary" for="normal">Normal</label>
+                                    <label class="btn btn-outline-primary btn-outline-piglet" for="normal">Normal</label>
                                   
-                                    <input type="radio" class="btn-check" name="ordertype" value="recurring" id="recurring" autocomplete="off" onclick="removeFutureSpend()" disabled>
-                                    <label class="btn btn-outline-primary" for="recurring">Recurring</label>
+                                    <!--<input type="radio" class="btn-check" name="ordertype" value="recurring" id="recurring" autocomplete="off" onclick="removeFutureSpend()" disabled>
+                                    <label class="btn btn-outline-piglet" for="recurring">Recurring</label>
+                                    -->
                                   
                                     <input type="radio" class="btn-check" name="ordertype" value="future" id="future" autocomplete="off" onclick="toggleFutureSpend()">
-                                    <label class="btn btn-outline-primary" for="future">Futurespend</label>
+                                    <label class="btn btn-outline-primary btn-outline-piglet" for="future">Futurespend</label>
                                 </div>
                                 <div id="addFutureSpend" class="hidden">
                                   <label class="form-label d-lg-flex justify-content-lg-center" style="margin-top: 30px;" for="additionalField">When would you like to place this order in the future?</label>
