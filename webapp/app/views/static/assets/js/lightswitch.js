@@ -9,6 +9,7 @@
             body.classList.toggle("dark")
             header.classList.toggle("dark")
             if ( theme === "light") {
+                html.setAttribute('data-bs-theme', 'dark')
                 localStorage.setItem("theme", "dark");
                 for (var i = 0; i < table.length; i++) {
                     table[i].classList.add('table-dark')
@@ -18,6 +19,7 @@
                     table[i].classList.remove('table-dark')
                 }
                 localStorage.setItem("theme", 'light')
+                html.removeAttribute('data-bs-theme')
             }
         }
         document.getElementById('light-switch').addEventListener('click', switchLight);
@@ -26,6 +28,7 @@
         if ( theme == "dark"){
             body.classList.toggle("dark")
             header.classList.toggle("dark")
+            html.setAttribute('data-bs-theme', 'dark')
             for (var i = 0; i < table.length; i++) {
                 table[i].classList.add('table-dark')
             }
@@ -33,6 +36,7 @@
             for (var i = 0; i < table.length; i++) {
                 table[i].classList.remove('table-dark')
             }
+            html.removeAttribute('data-bs-theme')
 
         }
     });

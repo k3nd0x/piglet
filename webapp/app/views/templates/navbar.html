@@ -10,9 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
         integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg=="
         crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-        integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg=="
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha512-X/YkDZyjTf4wyc2Vy16YGCPHwAY8rZJY+POgokZjQB2mhIRFJCckEGc6YyX9eNsPfn0PzThEuNs+uaomE5CO6A==" crossorigin="anonymous"></script>
 
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
@@ -84,15 +82,31 @@
             <a id="light-switch" class="header_toggle" title="Switch light" href="#" style="margin-right: 15px;">
                 <i class="bx bx-moon nav_icon"></i>
             </a>
-            <a title="Show notifications" class="header_toggle" href="#" id="notiRead" aria-expanded="false" data-bs-toggle="dropdown" name="{{ notilist }}" onclick="notiRead();">
-                {% if noticount == 0 %}
-                <i class="bx bx-bell nav_icon"></i>
+
+        <a title="Show notifications" class="header_toggle" href="#" id="notiRead" aria-expanded="false" data-bs-toggle="dropdown" name="{{ notilist }}" onclick="notiRead();">
+            {% if noticount == 0 %}
+            <i class="bx bx-bell nav_icon"></i>
+            {% else %}
+            <i class="bx bx-bell nav_icon"></i>
+            {% endif %}
+            <span class="badge">{{ noticount }}</span>
+        </a>
+            <div class="dropdown-menu">
+                {% if notifications != {} %}
+                {% for ts, noti in notifications.items() %}
+                <a class="dropdown-item" href="/notifications">
+                    <div><span class="small text-primary">{{ ts }}</span>
+                        <p> {{ noti }} </p>
+                    </div>
+                </a>
+                {% endfor %}
                 {% else %}
-                <i class="bx bx-bell nav_icon"></i>
-                {% endif %}
-                <span class="badge">{{ noticount }}</span>
-            </a>
+                <a class="dropdown-item" href="/notifications">No unread notifications &#128640;</a>
+                {% endif %} 
+            </div>
         </div>
+
+    
     </header>
     <div id="nav-bar" class="l-navbar">
         <nav id="nav-list" class="nav">
@@ -277,13 +291,30 @@
                 </div>
             </div>
             <div>
+                {% if session.budgets|length > 1 %}
+                <a title="Change current budget" class="nav_link" href="#" aria-expanded="false" data-bs-toggle="dropdown">
+                    <i class="bx bx-library nav_icon"></i>
+                    {% for list in session.budgets %}
+                    {% if list.id == session.budget_id | int %}
+                    <span class="nav_name">{{ list.name }}</span>
+                    {% endif %}
+                    {% endfor %}
+                </a>
+                <div class="dropdown-menu" style="min-width: calc(var(--nav-width) + 156px)">
+                    {% for list in session.budgets %}
+                    <a class="dropdown-item" href="#" value="{{ list.id }}" onclick="updateBudget('{{ list.id }}')">
+                        <p> {{ list.name }} </p>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 {% if session.title == "settings" %}
-                <a href="{{ url_for( 'settings' ) }}" class="nav_link active">
-                    {% else %}
+                    <a href="{{ url_for( 'settings' ) }}" class="nav_link active">
+                {% else %}
                     <a href="{{ url_for( 'settings' ) }}" class="nav_link">
-                        {% endif %}
+                {% endif %}
                         <img class="nav_logo-img-rounded" src="{{ url_for('pictures', filename=session.image) }}">
-                        <span class="nav_name">Accountsettings</span>
+                        <span class="nav_name">{{ session.name }}</span>
                     </a>
                     <a class="nav_link" href="{{ url_for('logout') }}">
                         <i class="bx bx-log-out nav_icon"></i>
@@ -306,8 +337,8 @@
     </div>
     {% endif %}
     <script>
-        function updateBudget() {
-            var x = document.getElementById("updateBudget").value;
+        function updateBudget(x) {
+            /*var x = document.getElementById("updateBudget").value;*/
             $.ajax({
                 url: "{{ url_for('updateBudget') }}",
                 type: 'POST',
