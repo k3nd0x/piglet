@@ -135,3 +135,4 @@ webapp/celerybeat-schedule.pag
 webapp/config/redis/dump.rdb
 docker-compose-dev.yml
 dockerfile-dev
+webapp/app/views/pictures/

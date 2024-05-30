@@ -71,10 +71,9 @@ def budget():
         user_id = session["userid"]
         noticount, notilist, notifications = get_notis(pigapi)
 
-        s, my_budgets = pigapi.get(url="budget/")
+        s, my_budgets = pigapi.get(url="budget/?all=true")
         s, users = pigapi.get(url=f'share/availusers/{budget_id}')
 
-        session["budgets"] = my_budgets
         if request.method == "GET":
             return render_template("budget_settings.html", my_budgets=my_budgets,availusers=users,notifications=notifications, notilist=notilist, noticount=noticount)
 
@@ -146,14 +145,16 @@ def joinBudget():
 
         s, response = pigapi.post(url=f'share/updatejoin?budget_id={bid}&join={join}')
 
-        pigapi.close()
 
         if s:
             string = "You joined a budget"
+            s, my_budgets = pigapi.get(url="budget/")
+            session["budgets"] = my_budgets
             flash_message = {string: "success"}
         else:
             string = "Budget joining failed"
             flash_message = {string: "danger"}
+        pigapi.close()
         
         flash(flash_message)
         return redirect(url_for('budget'))
