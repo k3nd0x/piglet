@@ -31,8 +31,7 @@
 		    {% endif %}
 		    {% endfor %} {% endfor %} {% endif %} {% endwith %}
             {% if orderlist %}
-                    <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
-                        <table id="orders" class="table cell-border compact hover">
+                        <table class="table table-hover table-piglet">
                             <thead>
                                 <tr>
                                     <th>User</th>
@@ -51,12 +50,11 @@
                                     <td> {{ item.value }} </td>
                                     <td> {{ item.timestamp }} </td>
                                     <td> {{ item.description }} </td>
-                                    <td><a style=text-decoration:none href="/fdelete?name=futurespends&id={{ item.id }}" class="btn-sm btn-danger"><i class="far fa-trash-alt"></a></td>
+                                    <td><a style=text-decoration:none href="/fdelete?name=futurespends&id={{ item.id }}" class="btn btn-danger"><i class="far fa-trash-alt"></a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
-                    </div>
                     {% else %}
                         <div class="text-center">
                             <p>Currently there is no data to display - please add some orders</p>
@@ -67,55 +65,6 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" class="init">
-    $(document).ready(function() {
-        $('#orders').DataTable({
-            scrollX: false,
-            scrollY: false,
-            "columnDefs": [{
-                "width": "5%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 5
-            }, {
-                "width": "5%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 4
-            }, {
-                "width": "10%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 3
-            }, {
-                "width": "5%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 2
-            }, {
-                "width": "10%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 1
-            }, {
-                "width": "8%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 0
-            }, ],
-            "pagingType": "full_numbers",
-            "order": [],
-            "language": {
-                "lengthMenu": "Max entries _MENU_",
-                "zeroRecords": "Sorry nothing found &#128533",
-                "info": "Page _PAGE_ of _PAGES_",
-                "infoEmpty": "No entries found",
-                "infoFiltered": "(filter of all _MAX_ entries )",
-                "search": "Search",
-                "paginate": {
-                    "first": "",
-                    "last": "",
-                    "next": "",
-                    "previous": ""
-                },
-            }
-        });
-    });
-</script>
 <script>
 var xValues = {{ monthlist|tojson }};
 var yValues = {{ valuelist|tojson }};

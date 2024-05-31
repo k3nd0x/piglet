@@ -85,10 +85,6 @@ Password: `admin`
 - password change over webui
 - SQLite as database #10
 
-# Known issues
-- Site is flashing white at reload when darkmode is active https://github.com/k3nd0x/piglet/issues/1
-- Nav Menue is popping out at reload when its in mini mode https://github.com/k3nd0x/piglet/issues/2
-
 # Disclaimer
 
 I started to build this project at the beginning of my programming career so please be gentle if something is not working as expected.

@@ -1,12 +1,12 @@
 {% block footer %}
-<link rel="icon" type="image/x-icon" href="static/favicon_v2.ico">
 
-<div class="footer navbar-fixed-bottom d-flex justify-content-center">
-    <p class="text-piglet fw-bold" style="margin-top: 20px">Piglet <span id="year"></span> - v1.2 </p>
-</div>
-<script>
-    document.getElementById("year").innerHTML = new Date().getFullYear();
-</script>
+<footer class="text-center">
+    <div class="text-center" style="margin-top: 10px;">
+      <p class="text-piglet" id="version">
+    </div>
+  </footer>
+
+<script src="{{ url_for('static', filename='assets/js/footer.js') }}"></script>
 
 </html>
 {% endblock %}
