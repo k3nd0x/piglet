@@ -25,9 +25,6 @@ def hex_color():
     return Color('#'+ ''.join([random.choice(L) for i in range(6)][:]))
 
 def check(mysql,budget_id,user_id):
-
-    #query = '''select b0,b1,b2,b3 from pig_bidmapping where id="{}"'''.format(bidmapping)
-
     query = f'''select pig_budgets.* from pig_budgets JOIN pig_userbudgets on pig_budgets.id = pig_userbudgets.budget_id where pig_userbudgets.user_id = {user_id} and {budget_id}'''
 
     response = mysql.get(query)
@@ -40,7 +37,7 @@ def check(mysql,budget_id,user_id):
 
 
 def _get_uids(mysql,budget_id):
-    get_uids = '''select id from registered_user where bid_mapping in (select id from pig_bidmapping where b0={bid} or b1={bid} or b2={bid} or b3={bid})'''.format(bid=budget_id)
+    get_uids = f'''select user_id from pig_userbudgets where budget_id={budget_id}'''
 
     uid_list = mysql.get(get_uids)
 
