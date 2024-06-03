@@ -27,9 +27,13 @@ jobs:
             password: ${{ secrets.DOCKER_KEY }}
       - name: Push the image with latest release tag
         run: | 
+          export DOCKER_BUILDKIT=0
+          export COMPOSE_DOCKER_CLI_BUILD=0
           docker push k3nd0x/piglet:${{ steps.get_tag.outputs.tag }}
       - name: Push the image with latest tag
         run: |
+          export DOCKER_BUILDKIT=0
+          export COMPOSE_DOCKER_CLI_BUILD=0
           docker push k3nd0x/piglet:latest
 
   run-compose:
