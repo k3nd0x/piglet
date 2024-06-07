@@ -205,8 +205,7 @@ async def delete_account(userid: str,budget_id: str, force: bool=False, dict = D
         if mysql.get('''select mode from pig_budgets where id={}'''.format(budget_id))[0]["mode"] == 0:
             query = '''delete from pig_budgets where id={} and mode=0'''.format(budget_id)
             query1 = '''delete from pig_category where budget_id={}'''.format(budget_id)
-            query2 = '''delete from pig_bidmapping where b0={}'''.format(budget_id)
-            for i in query,query1,query2:
+            for i in query,query1:
                 response.append(mysql.delete(i))
         query = '''delete from pig_orders where user_id={}'''.format(userid)
         query1 = '''delete from registered_user where id={}'''.format(userid)

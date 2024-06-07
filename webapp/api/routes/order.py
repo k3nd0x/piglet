@@ -11,7 +11,7 @@ from hashlib import md5
 from pdfquery import PDFQuery
 
 from .mysql import sql
-from .functs import get_budgetid,check,_get_uids,get_notisettings,normalize_date
+from .functs import get_budgetid,check,_get_uids,get_notisettings,normalize_date, schedulemapping
 from .sendmail import mail
 
 from .admin import oauth2_scheme,get_current_user
@@ -58,6 +58,7 @@ class newOrder(BaseModel):
     day: Optional[str] = None
     date: Optional[str] = None
     currency: Optional[str] = None
+    recurring: Optional[str] = None
     budget_id: str
     class Config:
         schema_extra = {
@@ -70,8 +71,9 @@ class newOrder(BaseModel):
                 "day": "01 (optional)",
                 "date": "2024-01-01 (optional)",
                 "budget_id": "151",
-                "description": "Einkaufen Kupsch (optional)",
-                "currency": "EUR (optional)"
+                "description": "Groceries (optional)",
+                "currency": "EUR (optional)",
+                "recurring": "choose between daily weekly monthly quarterly halfyearly yearly"
             }
         }
 
@@ -121,6 +123,16 @@ async def orders(newOrder: newOrder,current_user = Depends(get_current_user)):
 
 
     insert = mysql.post(query)
+    if newOrder.recurring:
+        schedule = newOrder.recurring
+        order_id = mysql.lastrowid()
+
+        query = f'''INSERT into pig_schedules(schedule,o_id) VALUES("{schedule}",{order_id})'''
+
+        insert = mysql.post(query)
+        return insert
+
+
 
     if insert == True:
         output = "Order added".format(userid,value, curr, category,description)
