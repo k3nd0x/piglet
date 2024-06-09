@@ -29,7 +29,7 @@ def futurespends():
                 return_list.append(response)
         mysql.close()
         return return_list
-    except Exception as e
+    except Exception as e:
         mysql.close
         return e
 

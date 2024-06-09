@@ -111,20 +111,23 @@ async def startup_event():
                 continue
 
     #### migrate pig_bidmapping to pig_userbudgets
-    user_data = mysql.get('''select * from registered_user''')
-    bidmapping_data = mysql.get('''select * from pig_bidmapping''')
+    try:
+        user_data = mysql.get('''select * from registered_user''')
+        bidmapping_data = mysql.get('''select * from pig_bidmapping''')
 
-    insert_query = "INSERT INTO pig_userbudgets (user_id, budget_id, joined) VALUES (%s, %s, %s)"
+        insert_query = "INSERT INTO pig_userbudgets (user_id, budget_id, joined) VALUES (%s, %s, %s)"
 
-    for user in user_data:
-        for bidmapping in bidmapping_data:
-            if bidmapping["id"] == user["bid_mapping"]:
-                for i in "b0", "b1", "b2", "b3":
-                    if bidmapping[i]:
-                        mysql.post(f'''insert into pig_userbudgets values ({user["id"]},{bidmapping[i]},1)''')
-        
-        noti_queries = "INSERT IGNORE INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1),({user_id},3,3,1,1),({user_id},1,3,1,1),({user_id},2,3,1,1),({user_id},4,3,1,1)".format(user_id=user["id"])
-        mysql.post(noti_queries)
+        for user in user_data:
+            for bidmapping in bidmapping_data:
+                if bidmapping["id"] == user["bid_mapping"]:
+                    for i in "b0", "b1", "b2", "b3":
+                        if bidmapping[i]:
+                            mysql.post(f'''insert into pig_userbudgets values ({user["id"]},{bidmapping[i]},1)''')
+            
+            noti_queries = "INSERT IGNORE INTO pig_notisettings VALUES ({user_id},1,1,1,1),({user_id},1,2,1,1),({user_id},2,1,1,1),({user_id},2,2,1,1),({user_id},3,3,1,1),({user_id},1,3,1,1),({user_id},2,3,1,1),({user_id},4,3,1,1)".format(user_id=user["id"])
+            mysql.post(noti_queries)
+    except:
+        print("Skipping bid_mapping migration")
 
     mysql.close()
 
@@ -197,7 +200,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     except JWTError:
         mysql.close()
         raise credentials_exception
-    user = mysql.get('''select id,email,name,bid_mapping from registered_user where email="{}"'''.format(username))
+    user = mysql.get('''select id,email,name from registered_user where email="{}"'''.format(username))
     mysql.close()
     if user is None:
         raise credentials_exception

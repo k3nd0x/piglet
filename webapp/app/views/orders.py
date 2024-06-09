@@ -41,8 +41,13 @@ def get_data():
                 else:
                     flash_message = {response: "success"}
             elif data["ordertype"] == "recurring":
-                print("skip")
-                flash_message = {False: "danger"}
+                data.pop("ordertype")
+
+                s, response = pigapi.post(url="order/new", data=data)
+                if response == "Order added!":
+                    flash_message = {response: "danger"}
+                else:
+                    flash_message = {response: "success"}
 
             flash(flash_message)
             pigapi.close()
