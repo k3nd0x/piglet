@@ -79,3 +79,126 @@ async def _get(budget_id: str,month: Optional[str] = None, year: Optional[str]=N
 
     mysql.close()
     return return_dict
+
+@graph.get("/compare")
+async def compare(budget_id: str,year1: int,year2:int, current_user = Depends(get_current_user)):
+    try:
+        mysql = sql()
+
+        check(mysql,budget_id,current_user["id"])
+
+        def get_data(year):
+            query = f'''
+            WITH AllCombinations AS (
+        SELECT
+            m.year,
+            m.month,
+            c.name,
+            c.color
+        FROM (
+            SELECT DISTINCT
+                YEAR(po.timestamp) AS year,
+                MONTH(po.timestamp) AS month
+            FROM pig_orders po
+            WHERE YEAR(po.timestamp) = {year} AND po.budget_id = {budget_id}
+        ) m
+        CROSS JOIN (
+            SELECT DISTINCT
+                pc.name,
+                pc.color
+            FROM pig_category pc
+            JOIN pig_orders po ON po.category_id = pc.id
+            WHERE po.budget_id = {budget_id}
+        ) c
+    ),
+    OrdersSummary AS (
+        SELECT
+            YEAR(po.timestamp) AS year,
+            MONTH(po.timestamp) AS month,
+            SUM(po.value) AS value,
+            pc.name,
+            pc.color
+        FROM pig_orders po
+        JOIN pig_category pc ON po.category_id = pc.id
+        WHERE YEAR(po.timestamp) = {year} AND po.budget_id = {budget_id}
+        GROUP BY YEAR(po.timestamp), MONTH(po.timestamp), pc.name, pc.color
+    )
+    SELECT
+        ac.year,
+        ac.month,
+        COALESCE(os.value, 0) AS value,
+        ac.name,
+        ac.color
+    FROM AllCombinations ac
+    LEFT JOIN OrdersSummary os
+    ON ac.year = os.year AND ac.month = os.month AND ac.name = os.name AND ac.color = os.color
+    ORDER BY ac.year, ac.month, ac.name
+    '''
+            data = mysql.get(query)
+
+            return data
+
+        graph_data = []
+        for year in [year1, year2]:
+            if year == year1:
+                stack = 'Stack 0'
+            elif year == year2:
+                stack = 'Stack 1'
+            data = get_data(year)
+
+            helper_dict = {}
+
+            for i in data:
+                if i["name"] not in helper_dict:
+                    helper_dict[i["name"]] = []
+
+                helper_dict[i["name"]].append(i["value"])
+
+            processed = []
+            for i in data:
+                if i["name"] not in processed:
+                    graph_data.append({
+                        "label": i["name"],
+                        "backgroundColor": i["color"], 
+                        "data": helper_dict[i["name"]],
+                        "stack": stack
+                    })
+                    processed.append(i["name"])
+
+        mysql.close()
+    except:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+    return graph_data
+
+# select (select name from pig_category where id=category_id) as category, round(avg(value),2) as avg_value from pig_orders where budget_id='100' and YEAR(timestamp)=2024 group by category_id;
+
+@graph.get('/average')
+async def avg(budget_id: str,year: int, mode: str, current_user = Depends(get_current_user)):
+    mysql = sql()
+
+    check(mysql,budget_id,current_user["id"])
+
+    try:
+        if mode == "category_spending":
+            query = f'''SELECT 
+        c.name AS label, 
+        c.color as backgroundColor,
+        ROUND(AVG(o.value), 2) AS data
+    FROM 
+        pig_orders o
+    JOIN 
+        pig_category c ON o.category_id = c.id
+    WHERE 
+        o.budget_id = '{budget_id}' 
+        AND YEAR(o.timestamp) = {year}
+    GROUP BY 
+        c.name'''
+
+        data = mysql.get(query)
+    
+        mysql.close()   
+    except:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+    return data
