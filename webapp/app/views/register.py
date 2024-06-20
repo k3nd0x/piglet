@@ -84,7 +84,7 @@ def login():
                         session["surname"] = response["surname"]
                     else:
                         session["surname"] = email
-                s, my_budgets = pigapi.get(url="budget/",data=response["id"])
+                s, my_budgets = pigapi.get(url="budget/")
                 if s:
                     session["month"] = "None"
                     session["year"] = "None"

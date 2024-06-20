@@ -13,7 +13,7 @@ import uuid
 
 from .mysql import sql
 from .sendmail import mail
-from .functs import hex_color, get_timestamp, random_name
+from .functs import hex_color, get_timestamp, random_name,random_image
 from .admin import oauth2_scheme,get_current_user
 
 user = APIRouter()
@@ -48,9 +48,10 @@ async def register_user(registerUser: registerUser):
     color = hex_color()
 
     name, surname = random_name()
-
-    query = '''insert into registered_user( id, email,name, surname, password,color, shamail,budget_id) select max( id ) + 1, "{}", "{}", "{}", "{}", "{}", "{}","{}" from registered_user'''.format(email, name,surname, password,color,shamail,budget_id)
-    print(query,flush=True)
+    image,image_name = random_image()
+    if image:
+        image.save(f'app/views/pictures/{image_name}')
+    query = '''insert into registered_user( id, email,name, surname, password,color, shamail,budget_id,image) select max( id ) + 1, "{}", "{}", "{}", "{}", "{}", "{}","{}","{}" from registered_user'''.format(email, name,surname, password,color,shamail,budget_id,image_name)
 
     return_value = mysql.post(query)
     user_id = mysql.lastrowid()
@@ -95,19 +96,22 @@ async def login_user(current_user = Depends(get_current_user)):
 
     query = '''select r.id,r.email,r.verified,r.name,r.surname,r.color,r.image,r.budget_id,r.bid_mapping,pig_bidmapping.b0,pig_bidmapping.b1,pig_bidmapping.b2,pig_bidmapping.b3 from registered_user as r join pig_bidmapping on pig_bidmapping.id = r.bid_mapping where r.email="{}"'''.format(email)
 
-    query1 = f'''select id,email,verified,name,surname,color,image,budget_id from registered_user where id={userid}'''
+    query1 = f'''select id,email,verified,name,surname,color,image from registered_user where id={userid}'''
 
     query2 = f'''select budget_id from pig_userbudgets where user_id={userid} and joined=1'''
 
     user_data = mysql.get(query1)[0]
     budget_ids = mysql.get(query2)
 
+
     budgets = []
     for i in budget_ids:
         budgets.append(i["budget_id"])
 
+    budget_id = min(budgets)
 
     user_data["budgetids"] = budgets
+    user_data["budget_id"] = budget_id
 
     response = user_data
 

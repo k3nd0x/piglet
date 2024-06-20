@@ -9,7 +9,11 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-center">
+                        {% if graphdata.user.value %}
                         <canvas id="byUser"></canvas>
+                        {% else %}
+                            <p>Currently there is no data to display - please add some orders</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -21,7 +25,11 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-center">
-			            <canvas id="byCat"> </canvas>
+                        {% if graphdata.cat.value %}
+                        <canvas id="byCat"></canvas>
+                        {% else %}
+                            <p>Currently there is no data to display - please add some orders</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -37,7 +45,8 @@
                 </div>
                 <div class="card-body">{% with messages = get_flashed_messages() %} {% if messages %} {% for msgs in messages %} {{msgs}} {% endfor %} {% endif %} {% endwith %}
                     <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
-                        <table id="orders" class="table cell-border compact hover">
+                        {% if orderlist %}
+                        <table id="orders" class="table table-hover table-piglet">
                             <thead>
                                 <tr>
                                     <th>User</th>
@@ -56,11 +65,16 @@
                                     <td> {{ item.value }} </td>
                                     <td> {{ item.timestamp }} </td>
                                     <td> {{ item.description }} </td>
-                                    <td><a style=text-decoration:none href="/delete-ts/{{ item.id }}" class="btn-sm btn-danger"><i class="far fa-trash-alt"></a></td>
+                                    <td><a style=text-decoration:none href="/delete-ts/{{ item.id }}" class="btn btn-danger"><i class="far fa-trash-alt"></a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
+                        {% else %}
+                        <div class="text-center">
+                            <p>Currently there is no data to display - please add some orders</p>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -74,32 +88,10 @@
         $('#orders').DataTable({
             scrollX: false,
             scrollY: false,
-            "columnDefs": [{
-                "width": "5%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 5
-            }, {
-                "width": "5%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 4
-            }, {
-                "width": "10%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 3
-            }, {
-                "width": "5%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 2
-            }, {
-                "width": "10%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 1
-            }, {
-                "width": "8%",
-                className: 'dt-body-center dt-head-center',
-                "targets": 0
-            }, ],
             "pagingType": "full_numbers",
+            columnDefs: [
+                { className: 'dt-center', targets: '_all' },
+            ],
             "order": [],
             "language": {
                 "lengthMenu": "Max entries _MENU_",
