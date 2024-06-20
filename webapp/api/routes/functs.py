@@ -4,7 +4,10 @@ from colour import Color
 import random as random
 from datetime import datetime, timedelta
 from dateutil import parser
-import random
+from PIL import Image
+import hashlib
+import time
+
 def get_budgetid(user_id):
     mysql = sql()
     query = '''select budget_id from registered_user where id="{}"'''.format(user_id)
@@ -93,3 +96,35 @@ def random_name():
     random_name = random.choice(names)
     random_surname = random.choice(surnames)
     return random_name, random_surname
+
+
+def random_image(size=8, scale=32):
+    try:
+        image = Image.new('RGB', (size, size), 'white')
+        pixels = image.load()
+        
+        # Generate random colors
+        colors = [(
+            random.randint(0, 255),
+            random.randint(0, 255),
+            random.randint(0, 255)
+        ) for _ in range(size * size // 2)]
+            
+
+        for x in range(size // 2):
+            for y in range(size):
+                color = random.choice(colors)
+                pixels[x, y] = color
+                pixels[size - 1 - x, y] = color  # Mirror the left half to the right half
+        
+        image = image.resize((size * scale, size * scale), Image.NEAREST)
+
+        current_time = str(time.time())
+        hash_object = hashlib.sha256(current_time.encode())
+        name = hash_object.hexdigest()
+
+        name = f'gen_{name}.png'
+
+        return image,name
+    except:
+        return None,"default.png"
