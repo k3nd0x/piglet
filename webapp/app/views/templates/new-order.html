@@ -1,5 +1,4 @@
 {% include "navbar.html" %}
-
 <div class="container" style="margin-top: 10px">
     <div class="row">
         <div class="col-lg-12 offset-lg-0">
@@ -15,35 +14,39 @@
                                 <input class="form-control form-control_piglet" type="number" min="0.01" step="0.01" name="value" placeholder="Value" style="margin-top: 10px">
                                 <label class="form-label d-lg-flex justify-content-lg-center" style="margin-top: 30px;">Optional Description</label>
                                 <input class="form-control form-control_piglet" name="description" placeholder="Optional: e.g. Gas, Groceries ..." style="margin-top: 10px">
-                                <label class="form-label d-lg-flex justify-content-lg-center" style="margin-top: 30px;">Select Category</label>
+                                <label class="form-label d-lg-flex justify-content-lg-center" style="margin-top: 30px;">Choose Category</label>
                                 <select class="form-control form-control_piglet" name="category" style="margin-top: 10px" required="">
                                     {% for c in categorylist %}
                                     <option value="{{ c['id'] }}">{{ c['name'] }}</option>
                                     {% endfor %}
                                 </select>
 
-                                <!--
-                                <label class="form-label d-lg-flex justify-content-lg-center" style="margin-top: 30px;">Future order?</label>
-                                <input type="radio" value="ordertype" name="ordertype" onclick="toggleFutureSpend()" id="future">
-
-                                <label class="form-label d-lg-flex justify-content-lg-center">Recurring order?</label>
-                                <input type="radio" name="ordertype" value="ordertype" onclick="removeFutureSpend()" id="recurring">
-
-                            -->
                                 <label class="form-label d-lg-flex justify-content-lg-center" style="margin-top: 30px;">Choose order type:</label>
                                 <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
                                     <input type="radio" class="btn-check" name="ordertype" value="normal" id="normal" autocomplete="off" checked onclick="removeFutureSpend()">
-                                    <label class="btn btn-outline-primary" for="normal">Normal</label>
+                                    <label class="btn btn-outline-primary btn-outline-piglet" for="normal">Normal</label>
                                   
-                                    <input type="radio" class="btn-check" name="ordertype" value="recurring" id="recurring" autocomplete="off" onclick="removeFutureSpend()" disabled>
-                                    <label class="btn btn-outline-primary" for="recurring">Recurring</label>
+                                    <input type="radio" class="btn-check" name="ordertype" value="recurring" id="recurring" autocomplete="off" onclick="toggleRecurringOrder()">
+                                    <label class="btn btn-outline-piglet" for="recurring">Recurring</label>
                                   
                                     <input type="radio" class="btn-check" name="ordertype" value="future" id="future" autocomplete="off" onclick="toggleFutureSpend()">
-                                    <label class="btn btn-outline-primary" for="future">Futurespend</label>
+                                    <label class="btn btn-outline-primary btn-outline-piglet" for="future">Futurespend</label>
                                 </div>
                                 <div id="addFutureSpend" class="hidden">
                                   <label class="form-label d-lg-flex justify-content-lg-center" style="margin-top: 30px;" for="additionalField">When would you like to place this order in the future?</label>
 				                  <input class="form-control form-control_piglet" name="timestamp" type="date" value="{{ today }}"/>
+                                </div>
+                                <div id="addRecurringOrder" class="hidden">
+                                    <label class="form-label d-lg-flex justify-content-lg-center" style="margin-top: 30px;" for="additionalField">When should be the order scheduled?</label>
+                                    <label class="form-label d-lg-flex justify-content-lg-center" for="additionalField">(Hint: the order will be always placed at the first day of schedule)</label>
+                                    <select class="form-control form-control_piglet" name="recurring" style="margin-top: 10px" required="">
+                                        <option value="daily">daily</option>
+                                        <option value="weekly">weekly</option>
+                                        <option value="monthly">monthly</option>
+                                        <option value="quarterly">quarterly</option>
+                                        <option value="halfyearly">halfyearly</option>
+                                        <option value="yearly">yearly</option>
+                                    </select>
                                 </div>
                                 <button class="btn btn-piglet" type="submit" style="width: 100%;margin-top: 30px;">Add Order</button>
                             </form>
@@ -90,15 +93,22 @@
     const recurringfield = document.getElementById('addRecurringOrder')
 
 
+    function toggleRecurringOrder() {
+        recurringfield.classList.toggle('hidden');
+        futurefield.classList.add('hidden');
+    };
+    function removeRecurringOrder() {
+        recurringfield.classList.add('hidden')
+    }
     function toggleFutureSpend() {
         futurefield.classList.toggle('hidden');
+        recurringfield.classList.add('hidden');
     };
     function removeFutureSpend() {
         futurefield.classList.add('hidden')
+        recurringfield.classList.add('hidden');
     }
 </script>
-</div>
 {% extends "footer.html" %}
-
 
 </html>
