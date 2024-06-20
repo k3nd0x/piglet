@@ -18,12 +18,15 @@ import uuid
 budget = APIRouter()
 
 @budget.get("/")
-async def _get(current_user = Depends(get_current_user)):
+async def _get(current_user = Depends(get_current_user),all: Optional[bool] = False):
     mysql = sql()
-    query = f'''select pig_budgets.*, pig_userbudgets.joined from pig_budgets JOIN pig_userbudgets on pig_budgets.id = pig_userbudgets.budget_id where pig_userbudgets.user_id = {current_user["id"]} order by joined'''
+    if not all:
+        query = f'''select pig_budgets.*, pig_userbudgets.joined from pig_budgets JOIN pig_userbudgets on pig_budgets.id = pig_userbudgets.budget_id where pig_userbudgets.user_id = {current_user["id"]} and pig_userbudgets.joined = 1 order by joined'''
+    else:
+        query = f'''select pig_budgets.*, pig_userbudgets.joined from pig_budgets JOIN pig_userbudgets on pig_budgets.id = pig_userbudgets.budget_id where pig_userbudgets.user_id = {current_user["id"]} order by joined'''
     response = mysql.get(query)
-
     mysql.close()
+
     return response
 
 @budget.post("/add")
@@ -82,56 +85,3 @@ async def _leave(budgetid: str, force: bool, current_user = Depends(get_current_
         return True, "Budget left"
     else:
         return False, "You cannot leave your last budget"
-
-
-
-    #bid_mapping = current_user["bid_mapping"]
-
-    #query = '''select b0,b1,b2,b3 from pig_bidmapping where id=(select bid_mapping from registered_user where id={})'''.format(userid)
-
-    #empty = 0
-
-    #for _k,_v in mysql.get(query)[0].items():
-
-    #    if _v != None:
-    #        empty += 1
-
-    #if empty <= 1:
-    #    return False, "You cannot leave your last budget"
-    #else:
-    #    query = '''update pig_bidmapping set b0=NULL where b0={budgetid} and id={bid}'''.format(budgetid=budgetid,bid=bid_mapping)
-    #    query1 = '''update pig_bidmapping set b1=NULL where b1={budgetid} and id={bid}'''.format(budgetid=budgetid,bid=bid_mapping)
-    #    query2 = '''update pig_bidmapping set b2=NULL where b2={budgetid} and id={bid}'''.format(budgetid=budgetid,bid=bid_mapping)
-    #    query3 = '''update pig_bidmapping set b3=NULL where b3={budgetid} and id={bid}'''.format(budgetid=budgetid,bid=bid_mapping)
-    #    
-    #    response = []
-    #    for i in query,query1,query2,query3:
-    #        response.append(mysql.post(i))
-
-    #    query = '''select mode from pig_budgets where id={budgetid}'''.format(budgetid=budgetid)
-
-    #    response = mysql.get(query)
-
-    #    mode = int(response[0]["mode"])
-
-    #    if mode == 0:
-    #        if force:
-    #            query = '''delete from pig_budgets where id={}'''.format(budgetid)
-    #            response = mysql.post(query)
-    #            return True, "Budget deleted"
-    #        else:
-    #            query = '''select budget_id from pig_orders where budget_id={}'''.format(budgetid)
-    #            if mysql.get(query) == []:
-    #                query = '''select budget_id from pig_category where budget_id={}'''.format(budgetid)
-    #                if mysql.get(query) == []:
-    #                    query = '''delete from pig_budgets where id={}'''.format(budgetid)
-    #                    response = mysql.post(query)
-    #                    return True, "Budget deleted"
-    #                else:
-    #                    return False, "Categories still in budget"
-    #            else:
-    #                return False, "Orders still in budget"
-    #    else:
-    #        return True, "Budget in use"
-
-    

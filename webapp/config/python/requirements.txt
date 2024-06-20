@@ -24,3 +24,4 @@ passlib
 jose 
 python-jose
 pdfquery
+pillow
