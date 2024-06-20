@@ -16,11 +16,11 @@ jobs:
       - name: Get latest release tag
         id: get_tag
         run: |
-          echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
+          TAG=`git describe --tags --abbrev=0`
       - name: Build the Docker image with latest release tag
-        run: docker build . --file dockerfile --tag k3nd0x/piglet:${{ steps.get_tag.outputs.tag }}
+        run: docker build . --file dockerfile --tag k3nd0x/piglet:$TAG
       - name: Tag the image as latest
-        run: docker tag k3nd0x/piglet:${{ steps.get_tag.outputs.tag }} k3nd0x/piglet:latest
+        run: docker tag k3nd0x/piglet:$TAG k3nd0x/piglet:latest
       - uses: docker/login-action@v2
         with:
             username: ${{ secrets.DOCKER_USER }}
@@ -29,7 +29,7 @@ jobs:
         run: | 
           export DOCKER_BUILDKIT=0
           export COMPOSE_DOCKER_CLI_BUILD=0
-          docker push k3nd0x/piglet:${{ steps.get_tag.outputs.tag }}
+          docker push k3nd0x/piglet:$TAG
       - name: Push the image with latest tag
         run: |
           export DOCKER_BUILDKIT=0
