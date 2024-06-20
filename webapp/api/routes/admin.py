@@ -75,30 +75,44 @@ async def startup_event():
             mysql.post(i)
         except:
             continue
-    
-
-
     try:
         version = mysql.get("""select value from pig_meta where `key` = 'version'""")[0]["value"]
         print(f"Piglet Schema Version: {version}",flush=True)
+        sql_files = []
+        version = float(version)
+
+        if version >= 1.2:
+            schema_directory = '/webapp/config/dbschema/update'
+            for file in os.listdir(schema_directory):
+                if file.endswith('.sql'):
+                    sql_files.append(file)
+            
+            for new_version in sql_files:
+                new_version_float = float(new_version.split('.sql')[0])
+
+                if new_version_float > version:
+                    with open(f'/webapp/config/dbschema/update/{new_version}','r') as file:
+                        sql_commands = file.read()
+                    commands = sql_commands.split(";")
+                    for i in commands:
+                        try:
+                            mysql.post(i)
+                        except Exception as e:
+                            print(f'Error in db schema upgrade -> {new_version_float} - {e}')
+                            continue
 
     except:
-        v1_2inserts = ["""RENAME table new_orders to pig_orders""",
-                       """alter table pig_orders add column id int auto_increment primary key first""",
-                       """CREATE TABLE `pig_meta` (`key` VARCHAR(255),`value` VARCHAR(255), PRIMARY KEY (`key`))""",
-                       """INSERT IGNORE INTO `pig_meta` (`key`, `value`) VALUES ('version', '1.2')""",
-                       """CREATE TABLE IF NOT EXISTS `pig_userbudgets` (`user_id` int(11) NOT NULL,`budget_id` int(11) NOT NULL,`joined` tinyint(4) DEFAULT NULL,PRIMARY KEY (`user_id`,`budget_id`),KEY `budget_id` (`budget_id`),CONSTRAINT `budget_id` FOREIGN KEY (`budget_id`) REFERENCES `pig_budgets` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION, CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `registered_user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION)""",
-                       """INSERT IGNORE INTO pig_notitype VALUES (3,"budget","Budget")""",
-                       """INSERT IGNORE INTO pig_notiobj VALUES (3,'joined','joined'),(4,'shared','shared')""",
-                       """ALTER TABLE pig_notisettings ADD CONSTRAINT unique_line_constraint UNIQUE (user_id, notiobj, notitype, mail, web)"""
-                       ]
-        for i in v1_2inserts:
+        with open('/webapp/config/dbschema/update/1.2.sql','r') as file:
+            sql_commands = file.read()
+        commands = sql_commands.split(";")
+
+        for i in commands:
             try:
                 mysql.post(i)
-            except:
+            except Exception as e:
+                print(f'Error in db schema upgrade -> 1.2 {e}')
                 continue
 
-    
     #### migrate pig_bidmapping to pig_userbudgets
     user_data = mysql.get('''select * from registered_user''')
     bidmapping_data = mysql.get('''select * from pig_bidmapping''')
@@ -116,6 +130,8 @@ async def startup_event():
         mysql.post(noti_queries)
 
     mysql.close()
+
+
 
 
 ### AUTHENTICATION ###

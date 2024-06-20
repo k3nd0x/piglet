@@ -95,7 +95,6 @@ async def login_user(current_user = Depends(get_current_user)):
     userid = current_user["id"]
 
     query = '''select r.id,r.email,r.verified,r.name,r.surname,r.color,r.image,r.budget_id,r.bid_mapping,pig_bidmapping.b0,pig_bidmapping.b1,pig_bidmapping.b2,pig_bidmapping.b3 from registered_user as r join pig_bidmapping on pig_bidmapping.id = r.bid_mapping where r.email="{}"'''.format(email)
-
     query1 = f'''select id,email,verified,name,surname,color,image from registered_user where id={userid}'''
 
     query2 = f'''select budget_id from pig_userbudgets where user_id={userid} and joined=1'''
@@ -114,9 +113,6 @@ async def login_user(current_user = Depends(get_current_user)):
     user_data["budget_id"] = budget_id
 
     response = user_data
-
-
-    #response = mysql.get(query)
 
     mysql.close()
 
