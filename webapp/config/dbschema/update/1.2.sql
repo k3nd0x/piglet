@@ -23,4 +23,4 @@ INSERT IGNORE INTO pig_notitype VALUES (3, "budget", "Budget");
 
 INSERT IGNORE INTO pig_notiobj VALUES (3, 'joined', 'joined'), (4, 'shared', 'shared');
 
-ALTER TABLE pig_notisettings ADD CONSTRAINT IF NOT EXISTS unique_line_constraint UNIQUE (user_id, notiobj, notitype, mail, web);
+ALTER TABLE pig_notisettings ADD CONSTRAINT unique_line_constraint UNIQUE (user_id, notiobj, notitype, mail, web);

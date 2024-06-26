@@ -1,6 +1,6 @@
 UPDATE `pig_meta` set `value` = '1.3' where `key` = 'version';
 
-CREATE TABLE `pig_schedules` IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS `pig_schedules`(
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `schedule` varchar(32) DEFAULT NULL,
   `o_id` int(11) DEFAULT NULL,

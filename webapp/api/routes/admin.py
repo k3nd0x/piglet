@@ -56,7 +56,7 @@ async def startup_event():
             f"""INSERT IGNORE INTO pig_category VALUES (1,"Groceries",1,1,100,"{hex_color()}")""",
             """INSERT IGNORE INTO pig_notitype VALUES (1,"order","Money"),(2,"category","Category"),(3,"budget","Budget")""",
             """INSERT IGNORE INTO pig_notiobj VALUES (1,'added','added'),(2,'removed','removed'),(3,'joined','joined'),(4,'shared','shared')""",
-            f'''INSERT IGNORE INTO registered_user VALUES (1,"admin@{domain}",1,"864fd3978f508ef03a3e9c24aef43b639d7725c15e08eeaf961a9b81c3adc097:0b108f78bca548fa8fa2721e46d83150","{name}","{surname}","{image_name}",NULL,"{hex_color()}","7eb304283ead5f6",100,10000,1)''',
+            f'''INSERT IGNORE INTO registered_user VALUES (1,"admin@{domain}",1,"864fd3978f508ef03a3e9c24aef43b639d7725c15e08eeaf961a9b81c3adc097:0b108f78bca548fa8fa2721e46d83150","{name}","{surname}","{image_name}",NULL,"{hex_color()}","7eb304283ead5f6",100,1)''',
             """INSERT IGNORE into pig_userbudgets values (1,100,1)""",
     ]
 
@@ -64,7 +64,7 @@ async def startup_event():
         for i in inserts:
             try:
                 mysql.post(i)
-            except:
+            except Exception as e:
                 continue
 
     
