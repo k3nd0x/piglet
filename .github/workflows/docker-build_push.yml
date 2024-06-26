@@ -9,32 +9,22 @@ on:
     - 'dockerfile'
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Get latest release tag
-        id: get_tag
-        run: |
-          TAG=`git describe --tags --abbrev=0`
-      - name: Build the Docker image with latest release tag
-        run: docker build . --file dockerfile --tag k3nd0x/piglet:$TAG
-      - name: Tag the image as latest
-        run: docker tag k3nd0x/piglet:$TAG k3nd0x/piglet:latest
-      - uses: docker/login-action@v2
-        with:
-            username: ${{ secrets.DOCKER_USER }}
-            password: ${{ secrets.DOCKER_KEY }}
-      - name: Push the image with latest release tag
-        run: | 
-          export DOCKER_BUILDKIT=0
-          export COMPOSE_DOCKER_CLI_BUILD=0
-          docker push k3nd0x/piglet:$TAG
-      - name: Push the image with latest tag
-        run: |
-          export DOCKER_BUILDKIT=0
-          export COMPOSE_DOCKER_CLI_BUILD=0
-          docker push k3nd0x/piglet:latest
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file dockerfile --tag k3nd0x/piglet:latest
+    - uses: docker/login-action@v2
+      with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_KEY }}
+    - name: Push the image
+      run: | 
+        export DOCKER_BUILDKIT=0
+        export COMPOSE_DOCKER_CLI_BUILD=0
+        docker push k3nd0x/piglet:latest
 
   run-compose:
     needs: build
