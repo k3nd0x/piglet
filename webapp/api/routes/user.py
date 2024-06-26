@@ -400,6 +400,7 @@ async def settings_get(current_user = Depends(get_current_user)):
                 
             return_response.append({ i["type"] + "_" + i["obj"]: [{ "mail": i["mail"], "web": i["web"]}, {"display_name": "{} {}".format(display_type,display_obj)}]})
     else:
+        mysql.close()
         return response
 
     mysql.close()

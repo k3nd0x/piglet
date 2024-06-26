@@ -65,7 +65,6 @@ async def startup_event():
             try:
                 mysql.post(i)
             except Exception as e:
-                print(e,flush=True)
                 continue
 
     
