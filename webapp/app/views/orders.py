@@ -27,6 +27,7 @@ def get_data():
             if data["ordertype"] == "future":
 
                 data.pop("ordertype")
+                data.pop("recurring")
                 s, response = pigapi.post(url="futurespends/new", data=data)
                 if response == "Future spend added!":
                     flash_message = {response: "danger"}
@@ -35,6 +36,7 @@ def get_data():
 
             elif data["ordertype"] == "normal":
                 data.pop("ordertype")
+                data.pop("recurring")
                 s, response = pigapi.post(url="order/new", data=data)
                 if response == "Order added!":
                     flash_message = {response: "danger"}
