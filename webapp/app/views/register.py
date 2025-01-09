@@ -75,7 +75,7 @@ def login():
                     session["color"] = response["color"]
                     session["budget_id"] = str(response["budget_id"])
                     session["verified"] = response["verified"]
-                    session["userid"] = response["id"]
+                    session["userid"] = str(response["id"])
                     if response["name"]:
                         session["name"] = response["name"]
                     else:

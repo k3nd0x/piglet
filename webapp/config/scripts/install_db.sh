@@ -43,22 +43,22 @@ then
 	exit 0
 else
 	echo "$DATE create database $DATABASE if not exist"
-	mysql -u root -p"$DB_ROOT_PASSWORD" -h "$HOST" -e "create database IF NOT EXISTS $DATABASE"
+	mysql --ssl=0 -u root -p"$DB_ROOT_PASSWORD" -h "$HOST" -e "create database IF NOT EXISTS $DATABASE"
 	if [[ $? != 0 ]]
 	then
 		echo "$DATE provided root password is not correct"
 		exit 128
 	fi
-	mysql -u root -p"$DB_ROOT_PASSWORD" -h "$HOST" -e "create user IF NOT EXISTS '$USER'@'%' identified by '$MYSQL_PASSWORD'"
-	mysql -u root -p"$DB_ROOT_PASSWORD" -h "$HOST" -e "grant all privileges on $DATABASE.* to $USER@'%'"
+	mysql -u root --ssl=0 -p"$DB_ROOT_PASSWORD" -h "$HOST" -e "create user IF NOT EXISTS '$USER'@'%' identified by '$MYSQL_PASSWORD'"
+	mysql -u root --ssl=0 -p"$DB_ROOT_PASSWORD" -h "$HOST" -e "grant all privileges on $DATABASE.* to $USER@'%'"
 fi
 
-TABLES=`mysql -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST -e 'show tables'`
+TABLES=`mysql --ssl=0 -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST -e 'show tables'`
 
 if [ -z "$TABLES" ]
 then
 	echo "$DATE Import schema"
-	mysql -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST < /webapp/config/dbschema/init/piglet-schema.sql
+	mysql --ssl=0  -u $USER -p$MYSQL_PASSWORD $DATABASE -h $HOST < /webapp/config/dbschema/init/piglet-schema.sql
 	exit 0
 else
 	echo "$DATE Database schema is already set - not overwriting"
