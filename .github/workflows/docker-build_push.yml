@@ -1,34 +1,38 @@
-name: Docker_build_ubuntu
+name: Docker_Build_All_Branches
 
 on:
   push:
     branches:
-    - main
+      - '**' # Trigger on all branches
     paths:
-    - 'webapp/**'
-    - 'dockerfile'
+      - 'webapp/**'
+      - 'dockerfile'
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+
+    - name: Determine Docker Tag
+      id: docker_tag
+      run: |
+        if [ "${{ github.ref_name }}" == "main" ]; then
+          echo "tag=latest" >> $GITHUB_ENV
+        else
+          echo "tag=${{ github.ref_name }}" >> $GITHUB_ENV
+        fi
+
     - name: Build the Docker image
-      run: docker build . --file dockerfile --tag k3nd0x/piglet:latest
+      run: docker build . --file dockerfile --tag k3nd0x/piglet:${{ env.tag }}
+
     - uses: docker/login-action@v2
       with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_KEY }}
-    - name: Push the image
-      run: | 
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_KEY }}
+
+    - name: Push the Docker image
+      run: |
         export DOCKER_BUILDKIT=0
         export COMPOSE_DOCKER_CLI_BUILD=0
-        docker push k3nd0x/piglet:latest
-
-  run-compose:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Run the compose
-      run: pwd && ls -al
+        docker push k3nd0x/piglet:${{ env.tag }}
