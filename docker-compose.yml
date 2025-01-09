@@ -39,3 +39,4 @@ services:
         MARIADB_PASSWORD: ${MYSQL_PASSWORD}
 volumes:
   database-data:
+

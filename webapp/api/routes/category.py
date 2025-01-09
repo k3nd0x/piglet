@@ -57,7 +57,7 @@ async def categories(catname: str, color: str, budget_id: int, current_user = De
         uid_list = _get_uids(mysql,budget_id)
 
         for dstuid in uid_list:
-            dstuid = dstuid["id"]
+            dstuid = dstuid["user_id"]
 
             if dstuid != user_id:
                 notisettings = get_notisettings(mysql,dstuid,"1","2")

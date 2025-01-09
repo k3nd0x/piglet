@@ -37,6 +37,7 @@ def get_data():
             elif data["ordertype"] == "normal":
                 data.pop("ordertype")
                 data.pop("recurring")
+                print(data,flush=True)
                 s, response = pigapi.post(url="order/new", data=data)
                 if response == "Order added!":
                     flash_message = {response: "danger"}
