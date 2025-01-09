@@ -109,10 +109,3 @@ class api:
     
     def close(self):
         self.session.close()
-
-
-		
-
-if __name__ == '__main__':
-    pass
-
