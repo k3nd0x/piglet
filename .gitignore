@@ -137,3 +137,4 @@ docker-compose-dev.yml
 dockerfile-dev
 webapp/app/views/pictures
 !webapp/app/views/pictures/default.png
+.env-dev
