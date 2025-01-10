@@ -46,7 +46,6 @@ def login():
     if request.method == "POST":
         data = request.form.to_dict()
 
-        #responsare = get_token(data)
         pigapi = api()
         code,responsare = pigapi.get_token(payload=data)
 
