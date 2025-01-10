@@ -1,6 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", function() {
-    const currentVersion = "v1.3"
+    const currentVersion = "v1.4"
     const owner = 'k3nd0x'
     const repo = 'piglet'
     const p_version = document.getElementById('version')
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
     .then(data => {
         const latestVersion = data.tag_name; // Assumes the version is stored in the tag_name field
         if (currentVersion !== latestVersion) {
-            p_version.textContent = `New Version available at Github '${latestVersion}'`;
+            p_version.textContent = `Piglet - Version ${currentVersion} - Newer version available at Github '${latestVersion}'`;
         } else {
             p_version.textContent = `Piglet - Version ${currentVersion}`;
         }
